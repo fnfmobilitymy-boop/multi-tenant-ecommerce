@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Payouts } from "./payouts";
 import { ImageUpload } from "./image-upload";
 import { COURIERS } from "./delivery";
+import {MerchantPayments} from "./payments";
 import { Link } from "react-router-dom";
 import {
   ArrowUpRight,
@@ -34,12 +35,13 @@ type Tab =
   | "team"
   | "platform"
   | "notifications"
-  | "payouts";
+  | "payouts"
+  | "payments";
 export function MerchantApp() {
   const [data, setData] = useState<Dashboard | null>(null),
     [loading, setLoading] = useState(true),
     [error, setError] = useState(""),
-    [tab, setTab] = useState<Tab>("dashboard"),
+    [tab, setTab] = useState<Tab>(() => {const query=new URLSearchParams(window.location.search);return query.has("connect")||query.has("billing")?"payments":"dashboard"}),
     [register, setRegister] = useState(false),
     [busy, setBusy] = useState(false),
     [modal, setModal] = useState<"product" | "agent" | null>(null),
@@ -177,6 +179,7 @@ export function MerchantApp() {
     { id: "agents", name: "代理与佣金", icon: Users },
     { id: "settings", name: "店铺设置", icon: Settings },
     { id: "notifications", name: "邮件通知", icon: ShoppingBag },
+    { id: "payments", name: "收款与订阅", icon: Wallet },
     { id: "payouts", name: "佣金结算", icon: Wallet },
     { id: "team", name: "团队与权限", icon: Users },
     { id: "platform", name: "平台管理", icon: LayoutDashboard },
@@ -259,6 +262,13 @@ export function MerchantApp() {
                 placeholder={register ? "至少 10 个字符" : "输入你的密码"}
               />
             </label>
+            {!register && supabase && (
+              <div style={{ textAlign: "right", margin: "-5px 0 15px" }}>
+                <Link className="text-button" to="/forgot-password">
+                  忘记密码？
+                </Link>
+              </div>
+            )}
             <ErrorBox error={error} />
             <button className="button full" disabled={busy || uploading}>
               {busy ? "请稍候…" : register ? "创建店铺" : "登录工作台"}
@@ -330,7 +340,7 @@ export function MerchantApp() {
             t.id === "settings" ||
             t.id === "agents" ||
             t.id === "notifications" ||
-            t.id === "payouts"
+            t.id === "payouts" || t.id === "payments"
           ? role === "owner"
           : t.id === "products"
             ? ["owner", "manager", "inventory"].includes(role)
@@ -599,7 +609,7 @@ export function MerchantApp() {
               </section>
             </>
           )}
-          {tab === "payouts" && <Payouts />}
+          {tab === "payments" && <MerchantPayments/>}{tab === "payouts" && <Payouts />}
           {tab === "notifications" && <Notifications />}
           {tab === "team" && <Team />}
           {tab === "platform" && <Platform />}
@@ -907,6 +917,7 @@ export function MerchantApp() {
                     defaultValue={editing?.name}
                   />
                 </label>
+                <label>规格 / 款式（选填）<input name="variant" maxLength={100} defaultValue={editing?.variant} placeholder="例如：黑色 / M 或 500ml"/><small>不同规格分别建立商品，各自设置价格及库存。</small></label>
                 <div className="form-grid">
                   <label>
                     价格（MYR）

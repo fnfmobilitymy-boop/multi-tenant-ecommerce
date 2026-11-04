@@ -1,3 +1,9 @@
 # 此函数由定时任务凭独立密钥调用。JWT 检查由函数内 Authorization 校验替代。
 [functions.send-notifications]
 verify_jwt = false
+
+# 顾客按高熵订单凭证付款；所有者操作在函数内验证 Auth，Webhook 必须验签。
+[functions.payments]
+verify_jwt = false
+[functions.stripe-webhook]
+verify_jwt = false

@@ -1,6 +1,10 @@
 import { createClient } from "@supabase/supabase-js";
 import { supabaseApi } from "./supabase-api";
+import {paymentsApi} from "./payments-api";
 import { normalizeSupabaseUrl } from "./supabase-config";
+import { isPasswordRecovery } from "./auth-redirect";
+export const initialPasswordRecovery =
+  typeof window !== "undefined" && isPasswordRecovery(window.location.href);
 // Only public project credentials belong in the browser.
 // Cloud adapter is enabled only when both project settings are supplied.
 export const supabase =
@@ -11,7 +15,7 @@ export const supabase =
       )
     : null;
 export async function api<T>(path: string, data?: unknown): Promise<T> {
-  if (supabase) return supabaseApi<T>(supabase, path, data);
+  if (supabase) return path.startsWith("payments/")?paymentsApi<T>(supabase,path.slice(9),data):supabaseApi<T>(supabase, path, data);
   const response = await fetch("/api/" + path, {
     credentials: "same-origin",
     method: data === undefined ? "GET" : "POST",

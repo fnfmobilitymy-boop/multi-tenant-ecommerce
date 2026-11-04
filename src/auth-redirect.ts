@@ -11,3 +11,9 @@ export function authRedirectUrl(
   callback.pathname = callback.pathname.replace(/\/+$/, "") + "/";
   return callback.toString();
 }
+
+/** Read only the flow marker, never persist or log access/refresh tokens. */
+export function isPasswordRecovery(url: string): boolean {
+  const current = new URL(url);
+  return new URLSearchParams(current.hash.slice(1)).get("type") === "recovery";
+}

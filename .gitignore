@@ -13,3 +13,4 @@ playwright-report/
 *.tsbuildinfo
 auth-test-dist/
 local-test-dist/
+__pycache__/

@@ -30,6 +30,20 @@ class Flow(unittest.TestCase):
         result=json.load(res)
         self.assertEqual(res.status,expected,result)
         return result
+    def test_product_specs_are_persisted_and_snapshotted(self):
+        a,guest=self.client(),self.client()
+        self.call(a,'register',dict(name='Specs',slug='specs-store',email='specs@example.test',password='Testing-12345'))
+        self.call(a,'products',dict(name='Shirt',price=2500,stock=4,emoji='📦',variant='黑色 / M'),201)
+        product=self.call(a,'dashboard')['products'][0]
+        self.assertEqual(self.call(guest,'store?slug=specs-store')['products'][0]['variant'],'黑色 / M')
+        request=dict(slug='specs-store',customer='Buyer',email='buyer@example.test',phone='0123456789',address='KL',checkout_key='specs-checkout-key-1234567890',items=[dict(id=product['id'],quantity=1)])
+        order=self.call(guest,'checkout',request,201)
+        product=self.call(a,'dashboard')['products'][0]
+        self.call(a,'products/update',{**product,'variant':'白色 / L'})
+        self.call(guest,'checkout',request)
+        result=self.call(guest,'order-result',dict(slug='specs-store',reference=order['reference'],token=order['access_token']))
+        self.assertEqual(result['items'][0]['name'],'Shirt · 黑色 / M')
+        self.assertEqual(self.call(guest,'store?slug=specs-store')['products'][0]['variant'],'白色 / L')
     def test_full_commerce_and_isolation(self):
         a,b,guest=self.client(),self.client(),self.client()
         self.call(guest,'dashboard',expected=401)

@@ -1,5 +1,5 @@
 """验证浏览器端确认邮件回跳。所有远端请求均拦截，不发送实际邮件。"""
-import os,json,threading,functools
+import os,json,threading,functools,time,base64
 from pathlib import Path
 from http.server import ThreadingHTTPServer,SimpleHTTPRequestHandler
 from urllib.parse import urlparse,parse_qs
@@ -7,6 +7,9 @@ from playwright.sync_api import sync_playwright
 root=Path(__file__).resolve().parent.parent
 class Quiet(SimpleHTTPRequestHandler):
     def log_message(self,*args):pass
+    def do_GET(self):
+        if urlparse(self.path).path in ('/forgot-password','/reset-password'):self.path='/index.html'
+        return super().do_GET()
 server=ThreadingHTTPServer(('127.0.0.1',3104),functools.partial(Quiet,directory=str(root/os.environ.get('EZSHOP_AUTH_TEST_DIST','dist'))))
 threading.Thread(target=server.serve_forever,daemon=True).start()
 base='http://127.0.0.1:3104';captured=[];errors=[]
@@ -23,6 +26,12 @@ try:
                 captured.append((url.path,parse_qs(url.query),request.post_data_json))
                 if url.path.endswith('/signup'):
                     return route.fulfill(status=200,content_type='application/json',body=json.dumps({'user':{'id':'11111111-1111-4111-8111-111111111111','email':'test@example.test','app_metadata':{},'user_metadata':{}},'session':None}))
+                if url.path.endswith('/recover'):
+                    return route.fulfill(status=200,content_type='application/json',body='{}')
+                if url.path.endswith('/user'):
+                    return route.fulfill(status=200,content_type='application/json',body=json.dumps({'id':'11111111-1111-4111-8111-111111111111','aud':'authenticated','role':'authenticated','email':'test@example.test','app_metadata':{'provider':'email','providers':['email']},'user_metadata':{}}))
+                if url.path.endswith('/logout'):
+                    return route.fulfill(status=204,body='')
                 if url.path.endswith('/resend'):
                     return route.fulfill(status=200,content_type='application/json',body='{}')
                 return route.fulfill(status=401,content_type='application/json',body='{"message":"Test: authentication required"}')
@@ -45,8 +54,37 @@ try:
         resend=next(c for c in captured if c[0].endswith('/resend'))
         assert signup[1].get('redirect_to')==[base+'/'], 'Wrong signup callback'
         assert resend[1].get('redirect_to')==[base+'/'] or resend[2].get('email_redirect_to')==base+'/', 'Wrong resend callback'
+        page.get_by_role('button',name='立即登录',exact=True).click()
+        page.get_by_role('link',name='忘记密码？',exact=True).click()
+        page.get_by_label('注册邮箱',exact=True).fill('test@example.test')
+        page.get_by_role('button',name='发送重设邮件',exact=True).click()
+        page.get_by_role('status').filter(has_text='若此邮箱已注册').wait_for()
+        recover=next(c for c in captured if c[0].endswith('/recover'))
+        assert recover[2].get('email')=='test@example.test'
+        assert recover[1].get('redirect_to')==[base+'/'], 'Wrong password recovery callback'
+        def encoded(value):return base64.urlsafe_b64encode(json.dumps(value).encode()).decode().rstrip('=')
+        token=encoded({'alg':'HS256','typ':'JWT'})+'.'+encoded({'iss':'https://auth-test.supabase.co/auth/v1','sub':'11111111-1111-4111-8111-111111111111','aud':'authenticated','role':'authenticated','iat':int(time.time()),'exp':int(time.time())+3600})+'.'+base64.urlsafe_b64encode(b'test-only-signature-bytes').decode().rstrip('=')
+        page.goto(base+'/#access_token='+token+'&refresh_token=fixture-only-refresh&expires_in=3600&token_type=bearer&type=recovery')
+        page.get_by_role('heading',name='设置新密码',exact=True).wait_for()
+        page.get_by_label('新密码',exact=True).fill('New-test-only-12345')
+        page.get_by_label('再次输入新密码',exact=True).fill('Different-test-12345')
+        page.get_by_role('button',name='保存新密码',exact=True).click()
+        page.get_by_role('alert').filter(has_text='两次输入的密码不一致').wait_for()
+        page.get_by_label('再次输入新密码',exact=True).fill('New-test-only-12345')
+        page.get_by_role('button',name='保存新密码',exact=True).click()
+        page.get_by_role('status').filter(has_text='密码已更新').wait_for()
+        assert any(c[0].endswith('/user') and c[2] and c[2].get('password')=='New-test-only-12345' for c in captured)
+        assert any(c[0].endswith('/logout') and c[1].get('scope')==['global'] for c in captured)
+        page.get_by_role('link',name='返回登录',exact=True).click()
+        page.get_by_role('heading',name='欢迎回来 👋',exact=True).wait_for()
+        page.evaluate('document.fonts.ready')
+        assert page.evaluate('document.fonts.check(\'27px "Racing Sans One"\')')
+        (root/'test-results').mkdir(exist_ok=True)
+        page.screenshot(path=str(root/'test-results/brand-font.png'),full_page=True)
+        page.goto(base+'/reset-password')
+        page.get_by_role('alert').filter(has_text='重设链接已失效').wait_for()
         assert not errors,errors
         browser.close()
-        print('PASS: 注册和重发验证邮件都使用网站根目录回跳；界面显示真实的待验证提示。全部邮件接口已模拟，没有发送实际邮件。')
+        print('PASS: 品牌字体已加载；注册/重发/找回邮件回跳正确；重设密码、退出会话及失效链接提示正常。全部邮件接口已模拟，没有发送实际邮件。')
 finally:
     server.shutdown();server.server_close()

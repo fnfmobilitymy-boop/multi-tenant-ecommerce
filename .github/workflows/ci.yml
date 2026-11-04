@@ -25,10 +25,17 @@ jobs:
       - run: npm ci --no-audit --no-fund
       - name: TypeScript 与构建
         run: npm run build
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.9.6
+      - name: 支付服务类型与依赖校验
+        run: deno check --no-config --lock=supabase/functions/deno.lock --frozen supabase/functions/payments/index.ts supabase/functions/stripe-webhook/index.ts
       - name: 购物车及 PostgreSQL 权限测试
         run: npm test
       - name: 本地后端集成测试
-        run: npm run test:api
+        run: |
+          npm run test:api
+          python server/test_backup.py
       - name: 浏览器依赖
         run: |
           python -m pip install playwright==1.62.0
@@ -44,6 +51,10 @@ jobs:
         env:
           EZSHOP_AUTH_TEST_DIST: auth-test-dist
         run: python tests/auth_browser.py
+      - name: 收款及订阅界面（所有远端请求均拦截）
+        env:
+          EZSHOP_AUTH_TEST_DIST: auth-test-dist
+        run: python tests/payments_browser.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:

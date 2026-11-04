@@ -13,7 +13,8 @@ import {
   CheckCircle2,
   Package,
 } from "lucide-react";
-import { api, money, statusLabel } from "./api";
+import { api, money, statusLabel, supabase } from "./api";
+import {OrderPayment} from "./payments";
 import { getCart, putCart, setQuantity } from "./cart";
 import type { CartLine, Merchant, OrderResult, Product } from "./types";
 import { Brand, Empty, ErrorBox, Loading } from "./ui";
@@ -38,6 +39,8 @@ export function Storefront() {
   const [quote, setQuote] = useState<ShippingQuote | null>(null),
     [quoteError, setQuoteError] = useState(""),
     [quoteLoading, setQuoteLoading] = useState(false);
+  const [onlineEnabled,setOnlineEnabled]=useState(false);
+  useEffect(()=>{let active=true;setOnlineEnabled(false);if(supabase)api<{online_enabled:boolean}>("payments/store-options",{slug}).then(r=>{if(active)setOnlineEnabled(r.online_enabled)}).catch(()=>{});return()=>{active=false}},[slug]);
   const base = "/shop/" + encodeURIComponent(slug),
     kind = location.pathname.endsWith("/cart")
       ? "cart"
@@ -355,7 +358,7 @@ export function Storefront() {
                       ? "现货 · 可售 " + current.stock + " 件"
                       : "暂时售罄"}
                   </div>
-                  <p className="muted">规格：标准款</p>
+                  <p className="muted">规格：{current.variant || "单一规格"}</p>
                   <div className="quantity">
                     <button
                       onClick={() => setQty(Math.max(1, quantity - 1))}
@@ -627,7 +630,7 @@ export function Storefront() {
                         联系商家付款 · 由商家核实到账
                       </div>
                       <p className="muted">
-                        当前未开通在线支付，提交订单不会自动扣款。
+                        {onlineEnabled?"提交订单后，可在结果页进入安全付款页面，或联系商家安排付款。":"当前由商家核实收款，提交订单不会自动扣款。"}
                       </p>
                     </form>
                   )}
@@ -760,6 +763,7 @@ export function Storefront() {
                 <strong>总金额</strong>
                 <strong>{money(result.order.total)}</strong>
               </div>
+              <OrderPayment slug={slug} reference={result.order.reference} token={sessionStorage.getItem('ezshop:order:'+result.order.reference)||''} status={result.order.status} onRefresh={async()=>{const fresh=await api<OrderResult>('order-result',{slug,reference:result.order.reference,token:sessionStorage.getItem('ezshop:order:'+result.order.reference)||''});setResult(current=>current?.order.reference===fresh.order.reference?fresh:current)}}/>
               <Link className="button secondary" to={base}>
                 返回店铺
               </Link>

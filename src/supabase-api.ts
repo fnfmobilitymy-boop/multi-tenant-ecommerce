@@ -55,6 +55,33 @@ export async function supabaseApi<T>(
     if (error) throw error;
     return { ok: true } as T;
   }
+  if (route === "recover-password") {
+    const { error } = await client.auth.resetPasswordForEmail(
+      String(payload.email),
+      { redirectTo: authRedirectUrl() },
+    );
+    if (error) throw error;
+    return { ok: true } as T;
+  }
+  if (route === "update-password") {
+    if (
+      typeof payload.password !== "string" ||
+      payload.password.length < 10 ||
+      payload.password.length > 256
+    )
+      throw new Error("新密码需要 10 到 256 个字符。");
+    const { data: current, error: sessionError } = await client.auth.getUser();
+    if (sessionError || !current.user)
+      throw new Error("重设链接已失效，请重新申请。");
+    const { error } = await client.auth.updateUser({
+      password: payload.password,
+    });
+    if (error) throw error;
+    const { error: signOutError } = await client.auth.signOut({
+      scope: "global",
+    });
+    return { ok: true, sign_out_pending: !!signOutError } as T;
+  }
   if (route === "login") {
     const { error } = await client.auth.signInWithPassword({
       email: String(payload.email),

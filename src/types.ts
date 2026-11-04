@@ -22,6 +22,7 @@ export interface Product {
   emoji: string;
   version?: number;
   description?: string;
+  variant?: string;
   category?: string;
   image?: string;
   published?: number;

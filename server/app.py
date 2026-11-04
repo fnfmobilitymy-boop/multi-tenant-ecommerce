@@ -47,6 +47,7 @@ def init():
             ('orders', 'shipped_at', 'TEXT'),
             ('merchants', 'logo', "TEXT NOT NULL DEFAULT ''"),
             ('merchants', 'banner', "TEXT NOT NULL DEFAULT ''"),
+            ('products', 'variant', "TEXT NOT NULL DEFAULT ''"),
             ('products', 'featured', 'INTEGER NOT NULL DEFAULT 0'),
             ('merchants', 'phone', "TEXT NOT NULL DEFAULT ''"),
             ('merchants', 'description', "TEXT NOT NULL DEFAULT ''"),
@@ -86,7 +87,7 @@ def public_order(row):
 
 def product_extras(data):
     result = []
-    for key, default, maximum in [('description', '', 2000), ('category', '全部商品', 80), ('image', '', 2000)]:
+    for key, default, maximum in [('description', '', 2000), ('category', '全部商品', 80), ('image', '', 2000), ('variant', '', 100)]:
         value = data.get(key, default)
         if not isinstance(value, str) or len(value) > maximum:
             raise ValueError('商品资料格式无效')
@@ -278,7 +279,7 @@ class Handler(BaseHTTPRequestHandler):
             merchant = db.execute("SELECT id,name,slug,phone,description,logo,banner,shipping_fee,courier FROM merchants WHERE slug=? AND status='active'", (slug,)).fetchone()
             if not merchant:
                 return self.reply({'error': '找不到这家店铺'}, 404)
-            products = [dict(p) for p in db.execute('SELECT id,name,price,stock,emoji,description,category,image,featured FROM products WHERE merchant_id=? AND published=1 ORDER BY id DESC', (merchant['id'],))]
+            products = [dict(p) for p in db.execute('SELECT id,name,price,stock,emoji,description,category,image,featured,variant FROM products WHERE merchant_id=? AND published=1 ORDER BY id DESC', (merchant['id'],))]
             return self.reply({'store': {**{k: merchant[k] for k in ('name', 'slug', 'phone', 'description','shipping_fee','courier')}, **{k:merchant[k] for k in ('logo','banner') if merchant[k]}}, 'products': products})
         if path == '/api/order-result' and method == 'POST':
             reference = text_field(data, 'reference', 50)
@@ -417,7 +418,7 @@ class Handler(BaseHTTPRequestHandler):
             price = integer(data, 'price', 1, 100000000)
             stock = integer(data, 'stock', 0, 1000000)
             emoji = text_field(data, 'emoji', 12)
-            db.execute('INSERT INTO products(merchant_id,name,price,stock,emoji,description,category,image,published,featured) VALUES(?,?,?,?,?,?,?,?,?,?)', (mid, name, price, stock, emoji, *product_extras(data)))
+            db.execute('INSERT INTO products(merchant_id,name,price,stock,emoji,description,category,image,variant,published,featured) VALUES(?,?,?,?,?,?,?,?,?,?,?)', (mid, name, price, stock, emoji, *product_extras(data)))
             db.commit()
             return self.reply({'ok': True}, 201)
         if path == '/api/products/update' and method == 'POST':
@@ -428,12 +429,13 @@ class Handler(BaseHTTPRequestHandler):
             stock = integer(data, 'stock', 0, 1000000)
             emoji = text_field(data, 'emoji', 12)
             db.execute('BEGIN IMMEDIATE')
-            product = db.execute('SELECT version FROM products WHERE id=? AND merchant_id=?', (pid, mid)).fetchone()
+            product = db.execute('SELECT version,variant FROM products WHERE id=? AND merchant_id=?', (pid, mid)).fetchone()
             if not product:
                 return self.reply({'error': '找不到商品'}, 404)
             if product['version'] != version:
                 return self.reply({'error': '商品或库存已更新，请关闭窗口并刷新页面后重新编辑'}, 409)
-            db.execute('UPDATE products SET name=?,price=?,stock=?,emoji=?,description=?,category=?,image=?,published=?,featured=?,version=version+1 WHERE id=? AND merchant_id=? AND version=?', (name, price, stock, emoji, *product_extras(data), pid, mid, version))
+            if 'variant' not in data:data={**data,'variant':product['variant']}
+            db.execute('UPDATE products SET name=?,price=?,stock=?,emoji=?,description=?,category=?,image=?,variant=?,published=?,featured=?,version=version+1 WHERE id=? AND merchant_id=? AND version=?', (name, price, stock, emoji, *product_extras(data), pid, mid, version))
             db.commit()
             return self.reply({'ok': True})
         if path == '/api/settings' and method == 'POST':
@@ -549,7 +551,7 @@ class Handler(BaseHTTPRequestHandler):
         token = secrets.token_urlsafe(32)
         db.execute('UPDATE orders SET note=?,checkout_key=?,access_token=?,subtotal=?,shipping=?,state=?,postcode=?,city=? WHERE id=?', (note, checkout_key, token,subtotal,shipping,state,postcode,city,oid))
         for p, qty in lines:
-            db.execute('INSERT INTO order_items(order_id,product_id,name,price,quantity) VALUES(?,?,?,?,?)', (oid, p['id'], p['name'], p['price'], qty))
+            db.execute('INSERT INTO order_items(order_id,product_id,name,price,quantity) VALUES(?,?,?,?,?)', (oid, p['id'], p['name']+(' · '+p['variant'] if p['variant'] else ''), p['price'], qty))
             db.execute('UPDATE products SET stock=stock-?,version=version+1 WHERE id=? AND merchant_id=?', (qty, p['id'], mid))
         db.commit()
         return self.reply({'reference': reference, 'total': total, 'status': 'pending', 'access_token': token, 'message': '订单已提交。请联系商家确认付款方式；本原型尚未接入线上支付。'}, 201)
