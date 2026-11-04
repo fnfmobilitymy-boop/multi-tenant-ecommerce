@@ -1,0 +1,30 @@
+name: EZShop · 通知发送任务
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 发送已排队的真实收据及提醒，输入 SEND_NOTIFICATIONS
+        type: string
+        required: true
+  schedule:
+    - cron: '*/15 * * * *'
+permissions:
+  contents: read
+concurrency:
+  group: ezshop-email-dispatch
+  cancel-in-progress: false
+jobs:
+  dispatch:
+    if: (github.event_name == 'workflow_dispatch' && inputs.confirm == 'SEND_NOTIFICATIONS') || (github.event_name == 'schedule' && vars.EZSHOP_EMAIL_DISPATCH_ENABLED == 'true')
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: 发送队列任务，不输出收件人或密钥
+        env:
+          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          NOTIFICATION_JOB_SECRET: ${{ secrets.NOTIFICATION_JOB_SECRET }}
+        run: node scripts/dispatch-notifications.mjs

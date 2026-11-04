@@ -1,3 +1,4 @@
+import { PlatformBillingAdmin } from "./platform-billing";
 import { useI18n } from "./i18n";
 import { useEffect, useState } from "react";
 import { Payouts } from "./payouts";
@@ -301,6 +302,7 @@ export function Platform() {
           "方案为平台手动分配标识，不代表订阅已收款。自动订阅计费与网关尚未开通。",
         )}
       </div>
+      <PlatformBillingAdmin />
       <ErrorBox error={error} />
       {loading ? (
         <Loading />

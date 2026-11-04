@@ -3666,5 +3666,334 @@
     "ยังไม่เปิดเนื้อหาหลายภาษา โปรดติดต่อผู้ดูแลแพลตฟอร์ม",
     "មិនទាន់បើកមាតិកាច្រើនភាសា។ ទាក់ទងអ្នកគ្រប់គ្រងវេទិកា។",
     "Chưa bật nội dung đa ngôn ngữ. Hãy liên hệ quản trị viên."
+  ],
+  "平台订阅申请": [
+    "Platform service application",
+    "Permohonan perkhidmatan platform",
+    "คำขอใช้บริการแพลตฟอร์ม",
+    "សំណើសេវាវេទិកា",
+    "Đăng ký dịch vụ nền tảng"
+  ],
+  "向 EZShop 平台支付服务费；自填金额需平台核实，并明确开通期限，不会自动续费。": [
+    "Pay EZShop for platform service. Entered amounts need verification and an explicit service period. No automatic renewal.",
+    "Bayar perkhidmatan EZShop. Amaun diisi perlu disahkan dengan tempoh jelas. Tiada pembaharuan automatik.",
+    "ชำระค่าบริการให้ EZShop จำนวนที่กรอกต้องตรวจสอบและกำหนดระยะเวลาให้ชัดเจน ไม่มีการต่ออายุอัตโนมัติ",
+    "បង់ថ្លៃសេវា EZShop។ ចំនួនបញ្ចូលត្រូវផ្ទៀងផ្ទាត់ និងកំណត់រយៈពេលច្បាស់។ មិនបន្តស្វ័យប្រវត្តិទេ។",
+    "Trả phí dịch vụ EZShop. Số tiền tự nhập cần xác minh và xác định thời hạn. Không tự gia hạn."
+  ],
+  "服务有效至": [
+    "Service valid until",
+    "Perkhidmatan sah hingga",
+    "ใช้บริการได้ถึง",
+    "សេវាមានសុពលភាពដល់",
+    "Dịch vụ hiệu lực đến"
+  ],
+  "申请金额": [
+    "Requested amount",
+    "Amaun permohonan",
+    "จำนวนเงินที่ยื่น",
+    "ចំនួនប្រាក់ស្នើ",
+    "Số tiền đăng ký"
+  ],
+  "创建订阅申请": [
+    "Create service request",
+    "Cipta permohonan",
+    "สร้างคำขอใช้บริการ",
+    "បង្កើតសំណើសេវា",
+    "Tạo yêu cầu đăng ký"
+  ],
+  "平台尚未开放订阅付款方式。": [
+    "Platform payment methods are not enabled yet.",
+    "Kaedah bayaran platform belum aktif.",
+    "ยังไม่เปิดวิธีชำระค่าบริการแพลตฟอร์ม",
+    "មិនទាន់បើកវិធីទូទាត់វេទិកា។",
+    "Chưa bật phương thức thanh toán nền tảng."
+  ],
+  "收款资料已更新，请联系平台后再付款。": [
+    "Payment details changed. Contact the platform before paying.",
+    "Maklumat bayaran berubah. Hubungi platform sebelum membayar.",
+    "ข้อมูลรับเงินเปลี่ยนแล้ว โปรดติดต่อแพลตฟอร์มก่อนชำระ",
+    "ព័ត៌មានទទួលប្រាក់បានផ្លាស់ប្ដូរ។ ទាក់ទងវេទិកាមុនទូទាត់។",
+    "Thông tin nhận tiền đã đổi. Liên hệ nền tảng trước khi thanh toán."
+  ],
+  "平台收款二维码": [
+    "Platform payment QR",
+    "Kod QR bayaran platform",
+    "คิวอาร์รับเงินแพลตฟอร์ม",
+    "QR ទទួលប្រាក់វេទិកា",
+    "Mã QR nhận tiền nền tảng"
+  ],
+  "仅发送 TRC20 USDT；请核对网络及地址，网络手续费另计。": [
+    "Send TRC20 USDT only. Verify the network and address; network fees are extra.",
+    "Hantar USDT TRC20 sahaja. Semak rangkaian dan alamat; caj rangkaian berasingan.",
+    "ส่งเฉพาะ TRC20 USDT ตรวจสอบเครือข่ายและที่อยู่ ค่าธรรมเนียมเครือข่ายแยกต่างหาก",
+    "ផ្ញើតែ TRC20 USDT។ ពិនិត្យបណ្ដាញ និងអាសយដ្ឋាន ថ្លៃបណ្ដាញគិតដាច់ដោយឡែក។",
+    "Chỉ gửi USDT TRC20. Kiểm tra mạng và địa chỉ; phí mạng tính riêng."
+  ],
+  "打开 Stripe 收款页面": [
+    "Open Stripe payment page",
+    "Buka halaman bayaran Stripe",
+    "เปิดหน้าชำระเงิน Stripe",
+    "បើកទំព័រទូទាត់ Stripe",
+    "Mở trang thanh toán Stripe"
+  ],
+  "请在 Stripe 页面填写申请金额；返回网站不代表已付款或已开通。": [
+    "Enter your requested amount on Stripe. Returning here does not prove payment or activation.",
+    "Isi amaun permohonan di Stripe. Kembali ke sini tidak membuktikan bayaran atau pengaktifan.",
+    "กรอกจำนวนตามคำขอใน Stripe การกลับมาหน้านี้ไม่ได้ยืนยันว่าชำระหรือเปิดบริการแล้ว",
+    "បញ្ចូលចំនួនស្នើនៅ Stripe។ ការត្រឡប់មកទីនេះមិនបញ្ជាក់ការទូទាត់ ឬការបើកសេវាទេ។",
+    "Nhập số tiền đăng ký trên Stripe. Quay lại đây không xác nhận đã thanh toán hay kích hoạt."
+  ],
+  "付款参考号 / 交易哈希": [
+    "Payment reference / transaction hash",
+    "Rujukan bayaran / hash transaksi",
+    "เลขอ้างอิง / แฮชธุรกรรม",
+    "លេខយោងទូទាត់ / ហាសប្រតិបត្តិការ",
+    "Mã thanh toán / mã giao dịch"
+  ],
+  "提交付款资料": [
+    "Submit payment details",
+    "Hantar maklumat bayaran",
+    "ส่งข้อมูลการชำระเงิน",
+    "ដាក់ព័ត៌មានទូទាត់",
+    "Gửi thông tin thanh toán"
+  ],
+  "仅在尚未付款时取消申请；已付款请联系平台。": [
+    "Cancel only if you have not paid. If paid, contact the platform.",
+    "Batalkan hanya jika belum bayar. Jika sudah, hubungi platform.",
+    "ยกเลิกเฉพาะเมื่อยังไม่ชำระ หากชำระแล้วโปรดติดต่อแพลตฟอร์ม",
+    "បោះបង់តែពេលមិនទាន់ទូទាត់។ បើបង់រួច សូមទាក់ទងវេទិកា។",
+    "Chỉ hủy khi chưa trả tiền. Nếu đã trả, hãy liên hệ nền tảng."
+  ],
+  "取消申请": [
+    "Cancel request",
+    "Batalkan permohonan",
+    "ยกเลิกคำขอ",
+    "បោះបង់សំណើ",
+    "Hủy yêu cầu"
+  ],
+  "已提交，等待平台核实真实到账。此状态不代表已开通 Pro。": [
+    "Submitted for payment verification. Pro is not activated by this status.",
+    "Dihantar untuk pengesahan bayaran. Status ini tidak mengaktifkan Pro.",
+    "ส่งข้อมูลเพื่อรอตรวจสอบยอดรับจริง สถานะนี้ไม่ได้เปิด Pro",
+    "បានដាក់ស្នើ រង់ចាំផ្ទៀងផ្ទាត់ប្រាក់ទទួលពិត។ ស្ថានភាពនេះមិនបើក Pro ទេ។",
+    "Đã gửi, chờ xác minh tiền thực nhận. Trạng thái này không kích hoạt Pro."
+  ],
+  "平台收款与订阅审核": [
+    "Platform payments & service review",
+    "Bayaran platform & semakan perkhidmatan",
+    "รับชำระและตรวจสอบบริการแพลตฟอร์ม",
+    "ការទូទាត់ និងត្រួតពិនិត្យសេវាវេទិកា",
+    "Thu tiền nền tảng và duyệt dịch vụ"
+  ],
+  "平台收款设置": [
+    "Platform receiving settings",
+    "Tetapan penerimaan platform",
+    "ตั้งค่ารับเงินแพลตฟอร์ม",
+    "ការកំណត់ទទួលប្រាក់វេទិកា",
+    "Cài đặt nhận tiền nền tảng"
+  ],
+  "启用 Hong Leong Bank 转账": [
+    "Enable Hong Leong Bank transfer",
+    "Aktifkan pindahan Hong Leong Bank",
+    "เปิดโอนผ่าน Hong Leong Bank",
+    "បើកការផ្ទេរ Hong Leong Bank",
+    "Bật chuyển khoản Hong Leong Bank"
+  ],
+  "银行收款人": [
+    "Bank beneficiary",
+    "Penerima bank",
+    "ชื่อผู้รับเงินธนาคาร",
+    "អ្នកទទួលប្រាក់ធនាគារ",
+    "Tên người thụ hưởng"
+  ],
+  "银行账号": [
+    "Bank account number",
+    "Nombor akaun bank",
+    "เลขบัญชีธนาคาร",
+    "លេខគណនីធនាគារ",
+    "Số tài khoản ngân hàng"
+  ],
+  "启用 Touch ’n Go / DuitNow": [
+    "Enable Touch ’n Go / DuitNow",
+    "Aktifkan Touch ’n Go / DuitNow",
+    "เปิด Touch ’n Go / DuitNow",
+    "បើក Touch ’n Go / DuitNow",
+    "Bật Touch ’n Go / DuitNow"
+  ],
+  "TNG 收款人": [
+    "TNG recipient",
+    "Penerima TNG",
+    "ชื่อผู้รับ TNG",
+    "អ្នកទទួល TNG",
+    "Người nhận TNG"
+  ],
+  "TNG / DuitNow 钱包号码": [
+    "TNG / DuitNow wallet number",
+    "Nombor dompet TNG / DuitNow",
+    "หมายเลขกระเป๋า TNG / DuitNow",
+    "លេខកាបូប TNG / DuitNow",
+    "Số ví TNG / DuitNow"
+  ],
+  "启用 USDT · TRC20（TRON）": [
+    "Enable USDT · TRC20 (TRON)",
+    "Aktifkan USDT · TRC20 (TRON)",
+    "เปิด USDT · TRC20 (TRON)",
+    "បើក USDT · TRC20 (TRON)",
+    "Bật USDT · TRC20 (TRON)"
+  ],
+  "TRC20 公开收款地址": [
+    "Public TRC20 receiving address",
+    "Alamat penerimaan awam TRC20",
+    "ที่อยู่รับเงินสาธารณะ TRC20",
+    "អាសយដ្ឋានទទួលប្រាក់សាធារណៈ TRC20",
+    "Địa chỉ nhận công khai TRC20"
+  ],
+  "启用 Stripe 收款链接": [
+    "Enable Stripe payment link",
+    "Aktifkan pautan bayaran Stripe",
+    "เปิดลิงก์ชำระเงิน Stripe",
+    "បើកតំណទូទាត់ Stripe",
+    "Bật liên kết thanh toán Stripe"
+  ],
+  "Stripe 收款链接": [
+    "Stripe payment link",
+    "Pautan bayaran Stripe",
+    "ลิงก์ชำระเงิน Stripe",
+    "តំណទូទាត់ Stripe",
+    "Liên kết thanh toán Stripe"
+  ],
+  "保存收款资料": [
+    "Save receiving details",
+    "Simpan maklumat penerimaan",
+    "บันทึกข้อมูลรับเงิน",
+    "រក្សាទុកព័ត៌មានទទួលប្រាក់",
+    "Lưu thông tin nhận tiền"
+  ],
+  "核实并处理": [
+    "Verify & process",
+    "Sahkan & proses",
+    "ตรวจสอบและดำเนินการ",
+    "ផ្ទៀងផ្ទាត់ និងដំណើរការ",
+    "Xác minh và xử lý"
+  ],
+  "核实平台订阅付款": [
+    "Verify platform service payment",
+    "Sahkan bayaran perkhidmatan platform",
+    "ตรวจสอบการชำระค่าบริการแพลตฟอร์ม",
+    "ផ្ទៀងផ្ទាត់ការទូទាត់សេវាវេទិកា",
+    "Xác minh phí dịch vụ nền tảng"
+  ],
+  "在 TRON 浏览器核实": [
+    "Verify on TRON explorer",
+    "Sahkan di pelayar TRON",
+    "ตรวจสอบใน TRON explorer",
+    "ផ្ទៀងផ្ទាត់នៅ TRON explorer",
+    "Kiểm tra trên trình khám phá TRON"
+  ],
+  "实际到账金额": [
+    "Actual amount received",
+    "Amaun sebenar diterima",
+    "จำนวนเงินที่ได้รับจริง",
+    "ចំនួនប្រាក់ទទួលពិត",
+    "Số tiền thực nhận"
+  ],
+  "开通天数": [
+    "Service days",
+    "Hari perkhidmatan",
+    "จำนวนวันใช้บริการ",
+    "ចំនួនថ្ងៃសេវា",
+    "Số ngày dịch vụ"
+  ],
+  "已核对银行、钱包或 Stripe 的真实到账": [
+    "I verified actual receipt in the bank, wallet or Stripe",
+    "Saya mengesahkan penerimaan sebenar di bank, dompet atau Stripe",
+    "ตรวจสอบยอดเงินจริงในธนาคาร กระเป๋า หรือ Stripe แล้ว",
+    "ខ្ញុំបានផ្ទៀងផ្ទាត់ប្រាក់ទទួលពិតក្នុងធនាគារ កាបូប ឬ Stripe",
+    "Tôi đã xác minh tiền thực nhận ở ngân hàng, ví hoặc Stripe"
+  ],
+  "确认到账并开通服务": [
+    "Confirm receipt & activate service",
+    "Sahkan penerimaan & aktifkan perkhidmatan",
+    "ยืนยันรับเงินและเปิดบริการ",
+    "បញ្ជាក់ប្រាក់ទទួល និងបើកសេវា",
+    "Xác nhận nhận tiền và kích hoạt"
+  ],
+  "拒绝申请": [
+    "Reject request",
+    "Tolak permohonan",
+    "ปฏิเสธคำขอ",
+    "បដិសេធសំណើ",
+    "Từ chối yêu cầu"
+  ],
+  "等待付款资料": [
+    "Awaiting payment details",
+    "Menunggu maklumat bayaran",
+    "รอข้อมูลการชำระเงิน",
+    "រង់ចាំព័ត៌មានទូទាត់",
+    "Chờ thông tin thanh toán"
+  ],
+  "等待平台核实": [
+    "Awaiting platform verification",
+    "Menunggu pengesahan platform",
+    "รอแพลตฟอร์มตรวจสอบ",
+    "រង់ចាំវេទិកាផ្ទៀងផ្ទាត់",
+    "Chờ nền tảng xác minh"
+  ],
+  "已核实并开通": [
+    "Verified & activated",
+    "Disahkan & diaktifkan",
+    "ตรวจสอบและเปิดบริการแล้ว",
+    "បានផ្ទៀងផ្ទាត់ និងបើកសេវា",
+    "Đã xác minh và kích hoạt"
+  ],
+  "Hong Leong Bank 转账": [
+    "Hong Leong Bank transfer",
+    "Pindahan Hong Leong Bank",
+    "โอนผ่าน Hong Leong Bank",
+    "ផ្ទេរតាម Hong Leong Bank",
+    "Chuyển khoản Hong Leong Bank"
+  ],
+  "Touch ’n Go / DuitNow": [
+    "Touch ’n Go / DuitNow",
+    "Touch ’n Go / DuitNow",
+    "Touch ’n Go / DuitNow",
+    "Touch ’n Go / DuitNow",
+    "Touch ’n Go / DuitNow"
+  ],
+  "USDT · TRC20（TRON）": [
+    "USDT · TRC20 (TRON)",
+    "USDT · TRC20 (TRON)",
+    "USDT · TRC20 (TRON)",
+    "USDT · TRC20 (TRON)",
+    "USDT · TRC20 (TRON)"
+  ],
+  "收款资料已保存": [
+    "Receiving details saved",
+    "Maklumat penerimaan disimpan",
+    "บันทึกข้อมูลรับเงินแล้ว",
+    "បានរក្សាទុកព័ត៌មានទទួលប្រាក់",
+    "Đã lưu thông tin nhận tiền"
+  ],
+  "平台订阅收款尚未启用，请联系平台管理员。": [
+    "Platform billing is not enabled. Contact the administrator.",
+    "Bayaran platform belum aktif. Hubungi pentadbir.",
+    "ยังไม่เปิดรับค่าบริการแพลตฟอร์ม โปรดติดต่อผู้ดูแล",
+    "មិនទាន់បើកការទូទាត់វេទិកា។ ទាក់ទងអ្នកគ្រប់គ្រង។",
+    "Chưa bật thu phí nền tảng. Hãy liên hệ quản trị viên."
+  ],
+  "TRC20 收款地址校验失败": [
+    "TRC20 receiving address validation failed",
+    "Pengesahan alamat TRC20 gagal",
+    "ตรวจสอบที่อยู่รับเงิน TRC20 ไม่ผ่าน",
+    "ការផ្ទៀងផ្ទាត់អាសយដ្ឋាន TRC20 បរាជ័យ",
+    "Địa chỉ nhận TRC20 không hợp lệ"
+  ],
+  "Stripe 收款币种": [
+    "Stripe receiving currency",
+    "Mata wang penerimaan Stripe",
+    "สกุลเงินรับชำระ Stripe",
+    "រូបិយប័ណ្ណទទួលប្រាក់ Stripe",
+    "Tiền tệ nhận thanh toán Stripe"
   ]
 }

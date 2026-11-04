@@ -1,0 +1,93 @@
+name: EZShop · 后端检查与手动升级
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 检查不改数据；升级会应用已审查的 SQL 并部署后端函数
+        type: choice
+        options: [check, deploy-functions, upgrade-and-deploy]
+        default: check
+      confirm:
+        description: 升级输入 UPGRADE_AND_DEPLOY；已执行SQL只部署函数输入 DEPLOY_FUNCTIONS
+        type: string
+        required: false
+permissions:
+  contents: read
+concurrency:
+  group: ezshop-backend
+  cancel-in-progress: false
+jobs:
+  backend:
+    if: inputs.action == 'check' || github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+      VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
+      SUPABASE_PROJECT_REF: ${{ vars.SUPABASE_PROJECT_REF }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: 仅检查，不修改远端
+        if: inputs.action == 'check'
+        run: npm run check:live
+      - name: 升级确认及凭证检查
+        if: inputs.action != 'check'
+        env:
+          UPGRADE_CONFIRM: ${{ inputs.confirm }}
+          INPUT_ACTION: ${{ inputs.action }}
+        run: |
+          if [ "$INPUT_ACTION" = upgrade-and-deploy ]; then
+            test "$UPGRADE_CONFIRM" = UPGRADE_AND_DEPLOY || { echo '未确认，停止升级'; exit 1; }
+          else
+            test "$UPGRADE_CONFIRM" = DEPLOY_FUNCTIONS || { echo '未确认，停止部署'; exit 1; }
+          fi
+          node scripts/check-public-config.mjs --target
+          npm test
+          npm run build:upgrade
+          git diff --exit-code -- supabase/upgrade-after-004.sql
+      - name: 应用已审查的升级事务
+        if: inputs.action == 'upgrade-and-deploy'
+        env:
+          UPGRADE_CONFIRM: ${{ inputs.confirm }}
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+        run: |
+          test -n "$SUPABASE_ACCESS_TOKEN" || { echo '缺少 Secret SUPABASE_ACCESS_TOKEN'; exit 1; }
+          node scripts/upgrade-database.mjs
+      - name: 验证数据库能力
+        if: inputs.action != 'check'
+        run: npm run check:live -- --database-only
+      - uses: supabase/setup-cli@v1
+        if: inputs.action != 'check'
+        with:
+          version: 3.0.0
+      - name: 保存服务端配置并部署函数
+        if: inputs.action != 'check'
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_YES: "true"
+          APP_URL: ${{ vars.APP_URL }}
+          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+          STRIPE_PRO_PRICE_ID: ${{ secrets.STRIPE_PRO_PRICE_ID }}
+          STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
+          STRIPE_CONNECT_WEBHOOK_SECRET: ${{ secrets.STRIPE_CONNECT_WEBHOOK_SECRET }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          MAIL_FROM: ${{ secrets.MAIL_FROM }}
+          NOTIFICATION_JOB_SECRET: ${{ secrets.NOTIFICATION_JOB_SECRET }}
+          GOOGLE_TRANSLATE_API_KEY: ${{ secrets.GOOGLE_TRANSLATE_API_KEY }}
+        run: |
+          test -n "$SUPABASE_ACCESS_TOKEN" || { echo '缺少 Secret SUPABASE_ACCESS_TOKEN'; exit 1; }
+          node scripts/write-service-config.mjs
+          supabase secrets set --env-file "$RUNNER_TEMP/ezshop-services.env" --remote="$SUPABASE_PROJECT_REF"
+          rm "$RUNNER_TEMP/ezshop-services.env"
+          supabase functions deploy payments --remote="$SUPABASE_PROJECT_REF" --use-api --no-verify-jwt
+          supabase functions deploy stripe-webhook --remote="$SUPABASE_PROJECT_REF" --use-api --no-verify-jwt
+          supabase functions deploy translate-content --remote="$SUPABASE_PROJECT_REF" --use-api --no-verify-jwt
+          supabase functions deploy send-notifications --remote="$SUPABASE_PROJECT_REF" --use-api --no-verify-jwt
+      - name: 验证部署可达性
+        if: inputs.action != 'check'
+        run: npm run check:live

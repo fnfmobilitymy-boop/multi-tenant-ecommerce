@@ -1,3 +1,4 @@
+import { SubscriptionApplication } from "./platform-billing";
 import { ContentEditor } from "./content-editor";
 import { I18nProvider, LanguageToolbar, useI18n } from "./i18n";
 import { useEffect, useState } from "react";
@@ -657,7 +658,12 @@ function MerchantPage({
               </section>
             </>
           )}
-          {tab === "payments" && <MerchantPayments />}
+          {tab === "payments" && (
+            <>
+              <MerchantPayments />
+              <SubscriptionApplication />
+            </>
+          )}
           {tab === "payouts" && <Payouts />}
           {tab === "notifications" && <Notifications />}
           {tab === "team" && <Team />}

@@ -29,11 +29,13 @@ jobs:
         with:
           deno-version: v2.9.6
       - name: 支付服务类型与依赖校验
-        run: deno check --no-config --lock=supabase/functions/deno.lock --frozen supabase/functions/payments/index.ts supabase/functions/stripe-webhook/index.ts supabase/functions/translate-content/index.ts
+        run: deno check --no-config --lock=supabase/functions/deno.lock --frozen supabase/functions/payments/index.ts supabase/functions/stripe-webhook/index.ts supabase/functions/translate-content/index.ts supabase/functions/send-notifications/index.ts
       - name: 购物车及 PostgreSQL 权限测试
         run: |
           npm test
           npm run test:i18n
+          npm run build:upgrade
+          git diff --exit-code -- supabase/upgrade-after-004.sql
       - name: 本地后端集成测试
         run: |
           npm run test:api
@@ -61,7 +63,9 @@ jobs:
       - name: 收款及订阅界面（所有远端请求均拦截）
         env:
           EZSHOP_AUTH_TEST_DIST: auth-test-dist
-        run: python tests/payments_browser.py
+        run: |
+          python tests/payments_browser.py
+          python tests/platform_billing_browser.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:

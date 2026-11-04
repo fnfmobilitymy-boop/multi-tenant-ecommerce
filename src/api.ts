@@ -16,6 +16,14 @@ export const supabase =
       )
     : null;
 export async function api<T>(path: string, data?: unknown): Promise<T> {
+  if (supabase && path.startsWith("platform-billing/")) {
+    const { data: result, error } = await supabase.rpc(
+      "ezshop_platform_billing_api",
+      { route: path.slice(17), payload: data || {} },
+    );
+    if (error) throw new Error(error.message);
+    return result as T;
+  }
   if (supabase)
     return path.startsWith("payments/")
       ? paymentsApi<T>(supabase, path.slice(9), data)

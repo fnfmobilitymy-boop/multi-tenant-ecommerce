@@ -11,6 +11,7 @@ interface Review {
   resolved: boolean;
 }
 interface PaymentStatus {
+  manual_billing_enabled?: boolean;
   merchant_id: number;
   account_id?: string;
   charges_enabled: boolean;
@@ -175,10 +176,11 @@ export function MerchantPayments() {
                     </p>
                   )}
                   <div className="row">
-                    {!data.billing.customer_id ||
-                    ["none", "canceled", "incomplete_expired"].includes(
-                      data.billing.status || "none",
-                    ) ? (
+                    {!data.manual_billing_enabled &&
+                    (!data.billing.customer_id ||
+                      ["none", "canceled", "incomplete_expired"].includes(
+                        data.billing.status || "none",
+                      )) ? (
                       <button
                         className="button"
                         disabled={busy}

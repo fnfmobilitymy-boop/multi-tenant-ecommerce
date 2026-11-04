@@ -484,3 +484,153 @@ describe("支付与订阅受控数据库接口", () => {
     await expect(claim()).resolves.toBeTruthy();
   });
 });
+
+describe("平台自填金额订阅与安全上线检查", () => {
+  it("平台配置只允许管理员，TRON 地址必须通过校验和", async () => {
+    await user(other);
+    await expect(
+      call("ezshop_platform_billing_api", "settings"),
+    ).rejects.toThrow();
+    await db.query("update ezshop.merchants set is_admin=true where id=$1", [
+      mid,
+    ]);
+    await user(owner);
+    const config = {
+      bank_enabled: true,
+      bank_holder: "Test Platform",
+      bank_account: "11112222333",
+      tng_enabled: true,
+      tng_holder: "Test Wallet",
+      tng_identifier: "9988111122223",
+      tng_qr: "",
+      usdt_enabled: false,
+      usdt_address: "",
+      stripe_enabled: true,
+      stripe_link: "https://buy.stripe.com/testOnlyFixture",
+    };
+    const validAddress = (
+      await db.query<{ valid: boolean }>(
+        "select ezshop.valid_tron_address('T9yD14Nj9j7xAB4dbGeiX9h8unkKHxuWwb') valid",
+      )
+    ).rows[0].valid;
+    expect(validAddress).toBe(true);
+    await call("ezshop_platform_billing_api", "save", config);
+    const version = (await call("ezshop_platform_billing_api", "settings"))
+      .settings.version;
+    await call("ezshop_platform_billing_api", "save", config);
+    expect(
+      (await call("ezshop_platform_billing_api", "settings")).settings.version,
+    ).toBe(version);
+    await expect(
+      call("ezshop_platform_billing_api", "save", {
+        ...config,
+        usdt_enabled: true,
+        usdt_address: "T" + "1".repeat(33),
+      }),
+    ).rejects.toThrow("校验");
+    const status = (
+      await db.query<{ body: any }>(
+        "select public.ezshop_release_status() body",
+      )
+    ).rows[0].body;
+    expect(status.database_ready).toBe(true);
+    expect(status.production_verified).toBe(false);
+    expect(status).not.toHaveProperty("bank_account");
+  });
+  it("参考号或自填金额不会自动开通，审批需实际到账声明且到期会失效", async () => {
+    await user(other);
+    const api = (route: string, payload: any = {}) =>
+      call("ezshop_platform_billing_api", route, payload);
+    const req = (
+      await api("create", { method: "bank_transfer", amount: "19.90" })
+    ).request;
+    expect(req.instructions.account).toBe("11112222333");
+    expect((await main("dashboard")).merchant.plan).toBe("free");
+    await api("submit", { id: req.id, reference: "TEST-BANK-REFERENCE" });
+    await api("submit", { id: req.id, reference: "TEST-BANK-REFERENCE" });
+    expect((await main("dashboard")).merchant.plan).toBe("free");
+    await expect(
+      api("review", { id: req.id, status: "approved" }),
+    ).rejects.toThrow();
+    await user(owner);
+    await expect(
+      api("review", {
+        id: req.id,
+        status: "approved",
+        actual_reference: "VERIFIED-BANK-TEST",
+        actual_amount: "19.90",
+        days: 30,
+        verified: false,
+      }),
+    ).rejects.toThrow();
+    await api("review", {
+      id: req.id,
+      status: "approved",
+      actual_reference: "VERIFIED-BANK-TEST",
+      actual_amount: "19.90",
+      days: 30,
+      verified: true,
+    });
+    await user(other);
+    expect((await main("dashboard")).merchant.plan).toBe("pro");
+    await user(owner);
+    await expect(
+      api("review", {
+        id: req.id,
+        status: "approved",
+        actual_reference: "VERIFIED-BANK-TEST",
+        actual_amount: "19.90",
+        days: 30,
+        verified: true,
+      }),
+    ).rejects.toThrow();
+    await db.query(
+      "update ezshop.manual_plan_grants set paid_until=now()-interval '1 minute' where merchant_id=(select id from ezshop.merchants where owner=$1)",
+      [other],
+    );
+    await user(other);
+    expect((await main("dashboard")).merchant.plan).toBe("free");
+    await user("");
+    await expect(api("view")).rejects.toThrow();
+  });
+  it("邮件任务使用订单语言及成交译文，普通商家不能调用发送接口", async () => {
+    await user(other);
+    await expect(
+      db.exec(
+        "set role authenticated;select public.ezshop_mail_api('mail/claim','{}')",
+      ),
+    ).rejects.toThrow();
+    await db.exec("reset role");
+    await user(owner);
+    await main("products", {
+      name: "Mail original",
+      price: 1000,
+      stock: 3,
+      content_translations: { vi: { name: "Tên đã mua" } },
+    });
+    const product = (await main("dashboard")).products[0];
+    await user("");
+    const order = await main("checkout", {
+      slug: "pay-store",
+      customer: "Buyer",
+      email: "buyer@example.test",
+      phone: "0123456789",
+      address: "KL",
+      locale: "vi",
+      checkout_key: "mail-language-order-key-123456",
+      items: [{ id: product.id, quantity: 1 }],
+    });
+    await user(owner);
+    const stored = (await main("dashboard")).orders.find(
+      (o: any) => o.reference === order.reference,
+    );
+    await main("orders/paid", { id: stored.id });
+    await db.exec(
+      "update ezshop.notification_jobs set status='sent' where order_id<>" +
+        stored.id,
+    );
+    const job = await service(() => call("ezshop_mail_api", "mail/claim"));
+    expect(job.locale).toBe("vi");
+    expect(job.items[0].name).toBe("Tên đã mua");
+  });
+});

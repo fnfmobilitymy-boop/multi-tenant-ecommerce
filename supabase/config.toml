@@ -1,3 +1,5 @@
+project_id = "ezshop"
+
 # 此函数由定时任务凭独立密钥调用。JWT 检查由函数内 Authorization 校验替代。
 [functions.send-notifications]
 verify_jwt = false
