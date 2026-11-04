@@ -12,3 +12,4 @@ test-results/
 playwright-report/
 *.tsbuildinfo
 auth-test-dist/
+local-test-dist/

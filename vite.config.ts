@@ -7,6 +7,7 @@ export default defineConfig({
     proxy: {
       "/api": "http://127.0.0.1:3000",
       "/brand": "http://127.0.0.1:3000",
+      "/media": "http://127.0.0.1:3000",
     },
   },
 });

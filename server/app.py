@@ -9,6 +9,12 @@ ROOT = Path(__file__).parent
 DB = Path(os.environ.get('EZSHOP_DB', str(ROOT / 'data/ezshop.db')))
 DB.parent.mkdir(parents=True, exist_ok=True)
 LOGO = Path(os.environ.get('EZSHOP_LOGO_PATH', str(ROOT / 'assets/logo.png')))
+MEDIA_DIR = DB.parent / 'media'
+DIST = Path(os.environ.get('EZSHOP_DIST', str(ROOT.parent / 'dist')))
+MAX_IMAGE_BYTES=5*1024*1024
+
+def valid_image_url(value):
+    return bool((urlparse(value).scheme=='https' and urlparse(value).hostname) or re.fullmatch(r'/media/[0-9]+/[a-f0-9]{40}\.(png|jpg|webp)',value))
 
 def connect():
     db = sqlite3.connect(DB, timeout=15)
@@ -72,7 +78,7 @@ def product_extras(data):
         value = data.get(key, default)
         if not isinstance(value, str) or len(value) > maximum:
             raise ValueError('商品资料格式无效')
-        if key == 'image' and value and not (urlparse(value).scheme == 'https' and urlparse(value).hostname):
+        if key == 'image' and value and not valid_image_url(value):
             raise ValueError('图片必须使用 HTTPS 网址')
         result.append(value.strip())
     published = data.get('published', 1)
@@ -126,6 +132,19 @@ class Handler(BaseHTTPRequestHandler):
     def handle_request(self):
         try:
             path = urlparse(self.path).path
+            if path.startswith('/media/') and self.command=='GET':
+                if not re.fullmatch(r'/media/[0-9]+/[a-f0-9]{40}\.(png|jpg|webp)',path):
+                    return self.reply({'error':'Image not found'},404)
+                image=MEDIA_DIR / path.removeprefix('/media/')
+                if not image.is_file():
+                    return self.reply({'error':'Image not found'},404)
+                body=image.read_bytes()
+                self.send_response(200)
+                self.send_header('Content-Type',mimetypes.guess_type(str(image))[0] or 'application/octet-stream')
+                self.send_header('Content-Length',str(len(body)))
+                self.send_header('X-Content-Type-Options','nosniff')
+                self.send_header('Cache-Control','public,max-age=31536000,immutable')
+                self.end_headers();self.wfile.write(body);return
             if path == '/brand/logo.png' and self.command == 'GET':
                 if not LOGO.is_file():
                     return self.reply({'error': 'Brand logo not configured'}, 404)
@@ -146,7 +165,7 @@ class Handler(BaseHTTPRequestHandler):
                 if path == '/legacy':
                     file = ROOT / 'legacy.html'
                 else:
-                    dist = ROOT.parent / 'dist'
+                    dist = DIST
                     candidate = (dist / path.lstrip('/')).resolve()
                     if not candidate.is_relative_to(dist.resolve()):
                         return self.reply({'error': 'Not found'}, 404)
@@ -167,6 +186,14 @@ class Handler(BaseHTTPRequestHandler):
             if self.command == 'POST':
                 if self.headers.get('Sec-Fetch-Site') == 'cross-site':
                     return self.reply({'error': 'Cross-site request denied'}, 403)
+                if path=='/api/media':
+                    length=int(self.headers.get('Content-Length','0'))
+                    if not 0<length<=MAX_IMAGE_BYTES:
+                        return self.reply({'error':'图片不能为空或超过 5 MB'},413)
+                    data={'_bytes':self.rfile.read(length),'_mime':self.headers.get('Content-Type','').split(';')[0]}
+                    with connect() as db:
+                        self.route(db,path,data)
+                    return
                 if self.headers.get('Content-Type', '').split(';')[0] != 'application/json':
                     return self.reply({'error': 'JSON required'}, 415)
                 length = int(self.headers.get('Content-Length', '0'))
@@ -279,6 +306,27 @@ class Handler(BaseHTTPRequestHandler):
         finance = handle_finance(db,mid,role,member,path,data,method)
         if finance is not None:
             return self.reply(*finance)
+        if path=='/api/media' and method=='POST':
+            if role not in ('owner','manager','inventory'):
+                return self.reply({'error':'当前角色不能上传店铺或商品图片'},403)
+            body=data['_bytes'];mime=data['_mime']
+            extension=None
+            if mime=='image/png' and len(body)>=33 and body.startswith(b'\x89PNG\r\n\x1a\n'):
+                import struct
+                width,height=struct.unpack('>II',body[16:24])
+                if width*height>40000000 or width==0 or height==0:
+                    raise ValueError('图片尺寸无效或过大')
+                extension='png'
+            elif mime=='image/jpeg' and body.startswith(b'\xff\xd8\xff') and body.endswith(b'\xff\xd9'):
+                extension='jpg'
+            elif mime=='image/webp' and len(body)>=20 and body.startswith(b'RIFF') and body[8:12]==b'WEBP':
+                extension='webp'
+            if not extension:
+                return self.reply({'error':'请选择有效的 JPG、PNG 或 WebP 图片'},415)
+            folder=MEDIA_DIR/str(mid);folder.mkdir(parents=True,exist_ok=True)
+            name=secrets.token_hex(20)+'.'+extension
+            with (folder/name).open('xb') as file:file.write(body)
+            return self.reply({'url':'/media/'+str(mid)+'/'+name},201)
         if path == '/api/dashboard' and method == 'GET':
             if role == 'agent':
                 agent = db.execute('SELECT id,name,code,rate FROM agents WHERE id=? AND merchant_id=?', (member['agent_id'],mid)).fetchone()
@@ -381,7 +429,7 @@ class Handler(BaseHTTPRequestHandler):
             assets=[]
             for key in ('logo','banner'):
                 value=data.get(key,merchant[key])
-                if not isinstance(value,str) or len(value)>2000 or (value and not (urlparse(value).scheme=='https' and urlparse(value).hostname)):
+                if not isinstance(value,str) or len(value)>2000 or (value and not valid_image_url(value)):
                     raise ValueError('店铺图片必须使用 HTTPS 网址')
                 assets.append(value)
             db.execute('UPDATE merchants SET name=?,phone=?,description=?,logo=?,banner=? WHERE id=?', (name, phone, description.strip(), *assets, mid))

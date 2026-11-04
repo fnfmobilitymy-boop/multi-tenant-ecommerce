@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Payouts } from "./payouts";
+import { ImageUpload } from "./image-upload";
 import { Link } from "react-router-dom";
 import {
   ArrowUpRight,
@@ -47,6 +48,16 @@ export function MerchantApp() {
     [refunding, setRefunding] = useState(false),
     [filter, setFilter] = useState("all"),
     [query, setQuery] = useState("");
+  const [uploads, setUploads] = useState<Record<string, boolean>>({});
+  const uploading = Object.values(uploads).some(Boolean);
+  function imageUploading(id: string, busy: boolean) {
+    setUploads((previous) => {
+      const next = { ...previous };
+      if (busy) next[id] = true;
+      else delete next[id];
+      return next;
+    });
+  }
   async function refresh() {
     setData(await api<Dashboard>("dashboard"));
   }
@@ -83,6 +94,10 @@ export function MerchantApp() {
   const shop = data ? "/shop/" + encodeURIComponent(data.merchant.slug) : "";
   async function save(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (uploading) {
+      setError("请等待图片上传完成后再保存。");
+      return;
+    }
     setBusy(true);
     setError("");
     const form = Object.fromEntries(new FormData(e.currentTarget));
@@ -234,7 +249,7 @@ export function MerchantApp() {
               />
             </label>
             <ErrorBox error={error} />
-            <button className="button full" disabled={busy}>
+            <button className="button full" disabled={busy || uploading}>
               {busy ? "请稍候…" : register ? "创建店铺" : "登录工作台"}
               <ArrowRight size={17} />
             </button>
@@ -255,7 +270,7 @@ export function MerchantApp() {
               <button
                 className="text-button full"
                 type="button"
-                disabled={busy}
+                disabled={busy || uploading}
                 onClick={async (e) => {
                   const input =
                     e.currentTarget.form?.querySelector<HTMLInputElement>(
@@ -756,24 +771,19 @@ export function MerchantApp() {
                     defaultValue={data.merchant.description}
                   />
                 </label>
-                <label>
-                  商家 Logo 图片 HTTPS 网址
-                  <input
-                    name="logo"
-                    type="url"
-                    pattern="https://.*"
-                    defaultValue={data.merchant.logo}
-                  />
-                </label>
-                <label>
-                  商店 Banner 图片 HTTPS 网址
-                  <input
-                    name="banner"
-                    type="url"
-                    pattern="https://.*"
-                    defaultValue={data.merchant.banner}
-                  />
-                </label>
+                <ImageUpload
+                  name="logo"
+                  label="商家 Logo"
+                  initialValue={data.merchant.logo}
+                  onUploading={imageUploading}
+                />
+                <ImageUpload
+                  name="banner"
+                  label="商店 Banner"
+                  initialValue={data.merchant.banner}
+                  onUploading={imageUploading}
+                  wide
+                />
                 <label>
                   公开 WhatsApp 联系电话
                   <input
@@ -786,6 +796,22 @@ export function MerchantApp() {
                   />
                 </label>
                 <p className="muted">简介及电话会显示在公开商店。</p>
+                <div className="store-guide">
+                  <strong>直播卖货，怎样用店铺接单？</strong>
+                  <ol>
+                    <li>先在「商品管理」添加商品、价格和库存。</li>
+                    <li>
+                      把下方店铺链接放到 TikTok、Facebook 直播简介、置顶留言或
+                      WhatsApp。
+                    </li>
+                    <li>
+                      顾客点链接进入店铺下单，你在「订单管理」收款核实和安排发货。
+                    </li>
+                  </ol>
+                  <p>
+                    目前不会自动导入社交平台的商品或订单；添加社交账号不等于接通平台订单。
+                  </p>
+                </div>
                 <div className="soft-note">
                   店铺网址：
                   <Link to={shop}>
@@ -796,7 +822,7 @@ export function MerchantApp() {
                   <br />
                   交易币种：MYR · 马来西亚令吉
                 </div>
-                <button className="button" disabled={busy}>
+                <button className="button" disabled={busy || uploading}>
                   保存店铺资料
                 </button>
               </form>
@@ -875,15 +901,13 @@ export function MerchantApp() {
                     defaultValue={editing?.category || "全部商品"}
                   />
                 </label>
-                <label>
-                  商品图片 HTTPS 网址
-                  <input
-                    name="image"
-                    type="url"
-                    pattern="https://.*"
-                    defaultValue={editing?.image}
-                  />
-                </label>
+                <ImageUpload
+                  name="image"
+                  label="商品图片"
+                  initialValue={editing?.image}
+                  onUploading={imageUploading}
+                  wide
+                />
                 <label>
                   无图片时使用的图标
                   <select name="emoji" defaultValue={editing?.emoji || "📦"}>
@@ -933,7 +957,7 @@ export function MerchantApp() {
               </>
             )}
             <ErrorBox error={error} />
-            <button className="button full" disabled={busy}>
+            <button className="button full" disabled={busy || uploading}>
               {busy ? "正在保存…" : "保存"}
             </button>
           </form>
@@ -1029,7 +1053,7 @@ export function MerchantApp() {
                     <input name="restock" type="checkbox" />
                     已确认收回商品，恢复库存
                   </label>
-                  <button className="button" disabled={busy}>
+                  <button className="button" disabled={busy || uploading}>
                     已核实，登记全额退款
                   </button>
                 </form>
@@ -1040,14 +1064,14 @@ export function MerchantApp() {
             <div className="row end">
               <button
                 className="button secondary danger"
-                disabled={busy}
+                disabled={busy || uploading}
                 onClick={() => orderAction(detail.order, "cancel")}
               >
                 取消订单
               </button>
               <button
                 className="button"
-                disabled={busy}
+                disabled={busy || uploading}
                 onClick={() => orderAction(detail.order, "paid")}
               >
                 确认收款

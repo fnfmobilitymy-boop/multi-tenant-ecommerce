@@ -18,6 +18,14 @@ beforeAll(async () => {
   await db.exec(
     `create role anon; create role authenticated; create role service_role; create schema auth; create schema extensions; create table auth.users(id uuid primary key,email text,raw_user_meta_data jsonb); create function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid $$;`,
   );
+  await db.exec(`create schema storage;
+    create table storage.buckets(id text primary key,name text,public boolean,file_size_limit bigint,allowed_mime_types text[]);
+    create table storage.objects(id uuid primary key default gen_random_uuid(),bucket_id text references storage.buckets(id),name text not null);
+    alter table storage.objects enable row level security;
+    create function storage.foldername(name text) returns text[] language sql immutable as $$ select string_to_array(regexp_replace(name,'/[^/]*$',''),'/') $$;
+    grant usage on schema storage,auth to authenticated,anon;
+    grant select,insert,update,delete on storage.objects to authenticated;
+  `);
   for (const file of readdirSync("supabase/migrations")
     .filter((f) => f.endsWith(".sql"))
     .sort()) {
@@ -368,5 +376,66 @@ describe("Supabase PostgreSQL RPC", () => {
     ).rejects.toThrow();
     await user(idB);
     expect((await rpc("payouts")).payouts).toHaveLength(0);
+  });
+  it("图片存储仅允许有效商家/员工上传到自己的目录", async () => {
+    await user(idA);
+    await db.exec("set role authenticated");
+    try {
+      await db.query(
+        "insert into storage.objects(bucket_id,name) values($1,$2)",
+        ["ezshop-media", idA + "/logo.png"],
+      );
+      await expect(
+        db.query("insert into storage.objects(bucket_id,name) values($1,$2)", [
+          "ezshop-media",
+          idB + "/foreign.png",
+        ]),
+      ).rejects.toThrow();
+      await expect(
+        db.query("delete from storage.objects returning id"),
+      ).resolves.toMatchObject({ rows: [] });
+    } finally {
+      await db.exec("reset role");
+    }
+    await user("44444444-4444-4444-8444-444444444444");
+    await db.exec("set role authenticated");
+    try {
+      await expect(
+        db.query("insert into storage.objects(bucket_id,name) values($1,$2)", [
+          "ezshop-media",
+          "44444444-4444-4444-8444-444444444444/agent.png",
+        ]),
+      ).rejects.toThrow();
+    } finally {
+      await db.exec("reset role");
+    }
+    await user(idB);
+    await db.exec("set role authenticated");
+    try {
+      expect(
+        (await db.query("select * from storage.objects")).rows,
+      ).toHaveLength(0);
+    } finally {
+      await db.exec("reset role");
+    }
+    await user("");
+    await db.exec("set role anon");
+    try {
+      await expect(
+        db.query("insert into storage.objects(bucket_id,name) values($1,$2)", [
+          "ezshop-media",
+          "anonymous.png",
+        ]),
+      ).rejects.toThrow();
+    } finally {
+      await db.exec("reset role");
+    }
+    await db.exec(
+      readFileSync("supabase/migrations/202611040003_media.sql", "utf8"),
+    );
+    expect(
+      (await db.query("select * from storage.buckets where id='ezshop-media'"))
+        .rows,
+    ).toHaveLength(1);
   });
 });

@@ -1582,3 +1582,125 @@ tr:last-child td {
   background: #f0edf9;
   color: #8a71b0;
 }
+
+.image-upload {
+  margin: 22px 0;
+}
+.image-upload-title {
+  display: block;
+  font-size: 12px;
+  font-weight: 550;
+  color: #6c6581;
+  margin-bottom: 10px;
+}
+.image-upload-body {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 18px;
+  border: 1px dashed #ddd3ed;
+  border-radius: 11px;
+  background: #fcfaff;
+}
+.image-upload-body > img {
+  width: 110px;
+  height: 110px;
+  object-fit: contain;
+  background: white;
+  border: 1px solid #eee5f6;
+  border-radius: 8px;
+}
+.image-upload.wide .image-upload-body > img {
+  width: 180px;
+  height: 110px;
+  object-fit: cover;
+}
+.image-placeholder {
+  width: 110px;
+  height: 110px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  color: #b29fc9;
+  background: #f2edf9;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+.image-placeholder > span {
+  font-size: 10px;
+}
+.image-file-input {
+  position: absolute;
+  width: 1px !important;
+  height: 1px;
+  opacity: 0;
+  overflow: hidden;
+  padding: 0 !important;
+  pointer-events: none;
+}
+.image-upload-controls > label {
+  margin: 0 0 10px;
+  font-size: 11px;
+  cursor: pointer;
+}
+.image-upload-controls p,
+.image-upload-controls small {
+  display: block;
+  font-size: 10px;
+  line-height: 1.8;
+}
+.image-upload-controls .text-button {
+  display: flex;
+  margin-bottom: 8px;
+}
+.upload-success {
+  display: block;
+  font-size: 10px;
+  color: #57936f;
+  margin-top: 8px;
+}
+.store-guide {
+  background: #f8f5fd;
+  border: 1px solid #eee6f7;
+  padding: 18px;
+  border-radius: 10px;
+  margin: 22px 0;
+  font-size: 12px;
+}
+.store-guide strong {
+  font-size: 13px;
+  color: #755991;
+}
+.store-guide ol {
+  list-style: decimal;
+  padding-left: 20px;
+  color: #8d7ba0;
+  margin: 12px 0;
+  line-height: 1.9;
+}
+.store-guide p {
+  font-size: 10px;
+  color: #a492b2;
+}
+.image-upload-controls:focus-within > label {
+  outline: 2px solid #b9a3e8;
+  outline-offset: 3px;
+}
+@media (max-width: 650px) {
+  .image-upload-body {
+    align-items: flex-start;
+    gap: 12px;
+    padding: 13px;
+  }
+  .image-upload.wide .image-upload-body > img {
+    width: 115px;
+    height: 90px;
+  }
+  .image-upload-body > img,
+  .image-placeholder {
+    width: 90px;
+    height: 90px;
+  }
+}

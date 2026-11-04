@@ -271,6 +271,31 @@ class Flow(unittest.TestCase):
         self.call(owner,'payouts/update',dict(id=reserved['id'],status='paid',reference='TEST-LATE'),409)
         self.call(owner,'orders/paid',dict(id=oid),409)
         self.assertEqual(self.call(other,'payouts')['payouts'],[])
+    def test_image_upload_and_public_store_display(self):
+        owner,guest=self.client(),self.client()
+        self.call(owner,'register',dict(name='Image Store',slug='image-store',email='imageowner@example.test',password='Testing-12345'))
+        png=(ROOT.parent/'tests/fixtures/shop-image.png').read_bytes()
+        def upload(client,body,mime,length=None):
+            headers={'Content-Type':mime}
+            if length:headers['Content-Length']=str(length)
+            request=urllib.request.Request(self.base+'media',data=body,headers=headers)
+            try:response=client.open(request)
+            except urllib.error.HTTPError as error:response=error
+            return response.status,json.load(response)
+        self.assertEqual(upload(guest,png,'image/png')[0],401)
+        self.assertEqual(upload(owner,b'<svg/>','image/svg+xml')[0],415)
+        self.assertEqual(upload(owner,b'not a PNG','image/png')[0],415)
+        self.assertEqual(upload(owner,b'x','image/png',5*1024*1024+1)[0],413)
+        code,media=upload(owner,png,'image/png');self.assertEqual(code,201)
+        self.assertRegex(media['url'],r'^/media/[0-9]+/[a-f0-9]{40}\.png$')
+        self.call(owner,'settings',dict(name='Image Store',description='',phone='',logo=media['url'],banner=media['url']))
+        self.call(owner,'products',dict(name='Photo product',price=1000,stock=1,emoji='box',image=media['url']),201)
+        store=self.call(guest,'store?slug=image-store');self.assertEqual(store['store']['logo'],media['url']);self.assertEqual(store['products'][0]['image'],media['url'])
+        with guest.open(self.base.removesuffix('/api/')+media['url']) as response:
+            self.assertEqual(response.headers['Content-Type'],'image/png');self.assertEqual(response.read(),png)
+        code,second=upload(owner,png,'image/png');self.assertEqual(code,201);self.assertNotEqual(second['url'],media['url'])
+        with self.assertRaises(urllib.error.HTTPError) as error:guest.open(self.base.removesuffix('/api/')+'/media/../app.py')
+        self.assertEqual(error.exception.code,404)
     def test_validation_and_csrf(self):
         c=self.client()
         self.call(c,'register',dict(name='Invalid',slug='../x',email='invalid',password='short'),400)
