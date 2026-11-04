@@ -211,7 +211,7 @@ export function Storefront() {
   if (!data)
     return (
       <div className="store-shell">
-        <Brand />
+        <Brand to={base} />
         {error ? <ErrorBox error={error} /> : <Loading />}
       </div>
     );
@@ -253,7 +253,7 @@ export function Storefront() {
   return (
     <div className="storefront">
       <header className="store-nav">
-        <Brand />
+        <Brand to={base} />
         <Link to={base} className="store-name">
           {data.store.name}
         </Link>
@@ -884,7 +884,7 @@ export function Storefront() {
       </main>
       <footer className="store-footer">
         <div>
-          <Brand />
+          <Brand to={base} />
           <p>{data.store.name}</p>
           <p>{data.store.description}</p>
         </div>

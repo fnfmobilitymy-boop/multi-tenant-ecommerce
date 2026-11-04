@@ -3995,5 +3995,19 @@
     "สกุลเงินรับชำระ Stripe",
     "រូបិយប័ណ្ណទទួលប្រាក់ Stripe",
     "Tiền tệ nhận thanh toán Stripe"
+  ],
+  "平台管理员登录": [
+    "Platform administrator login",
+    "Log masuk pentadbir platform",
+    "เข้าสู่ระบบผู้ดูแลแพลตฟอร์ม",
+    "ចូលគណនីអ្នកគ្រប់គ្រងវេទិកា",
+    "Đăng nhập quản trị nền tảng"
+  ],
+  "需要平台管理员权限": [
+    "Platform administrator access required",
+    "Memerlukan akses pentadbir platform",
+    "ต้องมีสิทธิ์ผู้ดูแลแพลตฟอร์ม",
+    "ត្រូវការសិទ្ធិអ្នកគ្រប់គ្រងវេទិកា",
+    "Yêu cầu quyền quản trị nền tảng"
   ]
 }

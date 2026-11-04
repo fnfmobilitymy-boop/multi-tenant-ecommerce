@@ -28,7 +28,7 @@ import {
 import { api, money, statusLabel, dateLabel, supabase } from "./api";
 import type { Dashboard, Product, Order, OrderResult } from "./types";
 import { Brand, Empty, ErrorBox, Loading, Modal } from "./ui";
-import { Team, Platform, Affiliate, Notifications } from "./management";
+import { Team, Affiliate, Notifications } from "./management";
 type Tab =
   | "dashboard"
   | "products"
@@ -36,7 +36,6 @@ type Tab =
   | "agents"
   | "settings"
   | "team"
-  | "platform"
   | "notifications"
   | "payouts"
   | "payments";
@@ -48,7 +47,7 @@ export function MerchantApp() {
       : "dashboard";
   });
   return (
-    <I18nProvider audience={tab === "platform" ? "platform" : "merchant"}>
+    <I18nProvider audience="merchant">
       <LanguageToolbar />
       <MerchantPage tab={tab} setTab={setTab} />
     </I18nProvider>
@@ -216,7 +215,6 @@ function MerchantPage({
     { id: "payments", name: "收款与订阅", icon: Wallet },
     { id: "payouts", name: "佣金结算", icon: Wallet },
     { id: "team", name: "团队与权限", icon: Users },
-    { id: "platform", name: "平台管理", icon: LayoutDashboard },
   ] as const;
   if (loading) return <Loading />;
   if (!data)
@@ -368,9 +366,7 @@ function MerchantPage({
   const visibleTabs = tabs.filter(
     (t) =>
       t.id === "dashboard" ||
-      (t.id === "platform"
-        ? role === "owner" && data.merchant.is_admin
-        : t.id === "team" ||
+      (t.id === "team" ||
             t.id === "settings" ||
             t.id === "agents" ||
             t.id === "notifications" ||
@@ -667,7 +663,6 @@ function MerchantPage({
           {tab === "payouts" && <Payouts />}
           {tab === "notifications" && <Notifications />}
           {tab === "team" && <Team />}
-          {tab === "platform" && <Platform />}
           {tab === "products" && (
             <>
               <div className="page-heading">

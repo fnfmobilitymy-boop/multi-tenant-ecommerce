@@ -45,11 +45,11 @@ with tempfile.TemporaryDirectory() as directory:
             response=page.request.post(base+'/api/settings',data={'name':'Kenny Demo','description':'商家原始店铺介绍','phone':'60123456789','shipping_fee':500,'courier':'J&T Express'})
             assert response.ok,response.text()
             with sqlite3.connect(database) as db:db.execute("update merchants set is_admin=1 where slug='language-store'")
-            page.reload();page.get_by_role('button',name=text('平台管理','vi'),exact=True).click()
+            page.goto(base+'/platform')
             assert selector.locator('option').evaluate_all('(options)=>options.map(o=>o.value)')==['zh','en']
             selector.select_option('en');page.get_by_role('heading',name='Platform admin',exact=True).wait_for()
             assert page.locator('html').get_attribute('lang')=='en'
-            page.get_by_role('button',name='Products',exact=True).click()
+            page.goto(base+'/merchant');page.get_by_role('button',name=text('商品管理','vi'),exact=True).click()
             assert selector.input_value()=='vi', 'Platform changed merchant preference'
             assert selector.locator('option').count()==6
             page.get_by_role('heading',name=text('商品管理','vi'),exact=True).wait_for()

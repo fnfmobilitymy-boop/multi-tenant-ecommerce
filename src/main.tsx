@@ -1,7 +1,8 @@
 import { I18nProvider, LanguageToolbar, useI18n } from "./i18n";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
+import { PlatformApp } from "./platform";
 import { MerchantApp } from "./merchant";
 import { Storefront } from "./storefront";
 import { Join } from "./management";
@@ -13,7 +14,9 @@ import {
 import "./style.css";
 function AppRoutes() {
   const location = useLocation();
-  if (location.pathname === "/") return <MerchantApp />;
+  if (location.pathname === "/") return <Navigate to={"/merchant" + location.search + location.hash} replace />;
+  if (location.pathname === "/merchant") return <MerchantApp />;
+  if (location.pathname === "/platform" || location.pathname.startsWith("/platform/")) return <PlatformApp />;
   return (
     <I18nProvider
       audience={

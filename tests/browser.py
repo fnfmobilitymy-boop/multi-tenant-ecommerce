@@ -140,10 +140,10 @@ with tempfile.TemporaryDirectory() as temp:
             # Admin rights are bootstrapped only in this disposable test database.
             import sqlite3
             with sqlite3.connect(temp+'/browser.db') as db:db.execute("UPDATE merchants SET is_admin=1 WHERE email='merchant@example.test'")
-            merchant.reload();merchant.get_by_role('button',name='平台管理',exact=True).click()
+            merchant.goto(base+'/platform')
             merchant.get_by_role('heading',name='平台管理',exact=True).wait_for()
             merchant.screenshot(path=str(out/'platform-desktop.png'),full_page=True)
-            merchant.get_by_role('button',name='团队与权限',exact=True).click()
+            merchant.goto(base+'/merchant');merchant.get_by_role('button',name='团队与权限',exact=True).click()
             merchant.get_by_role('button',name='邀请成员',exact=True).click()
             dialog=merchant.get_by_role('dialog')
             dialog.get_by_label('成员姓名').fill('销售伙伴')

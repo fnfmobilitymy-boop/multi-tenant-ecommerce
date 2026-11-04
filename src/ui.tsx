@@ -2,10 +2,10 @@ import { useI18n } from "./i18n";
 import { Link } from "react-router-dom";
 import { ShoppingBag, X, LoaderCircle } from "lucide-react";
 import type { ReactNode } from "react";
-export function Brand() {
+export function Brand({ to = "/" }: { to?: string }) {
   const { t, locale, errorText } = useI18n();
   return (
-    <Link to="/" className="brand" aria-label="EZShop">
+    <Link to={to} className="brand" aria-label="EZShop">
       <span className="brand-icon">
         <ShoppingBag size={23} />
       </span>
