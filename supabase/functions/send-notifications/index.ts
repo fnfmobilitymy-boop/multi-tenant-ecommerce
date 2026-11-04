@@ -17,7 +17,7 @@ Deno.serve(async(req:Request)=>{
    const title=job.kind==='receipt'?'付款收据':'订单付款提醒';
    const lines=(job.items||[]).map((i:{name:string;quantity:number;price:number})=>`<li>${escape(i.name)} × ${i.quantity} · RM ${(i.price*i.quantity/100).toFixed(2)}</li>`).join('');
    try{
-    const response=await fetch('https://api.resend.com/emails',{method:'POST',headers:{Authorization:'Bearer '+apiKey,'Content-Type':'application/json','Idempotency-Key':'ezshop-mail-'+job.id},body:JSON.stringify({from:sender,to:[job.recipient],subject:title+' · '+job.reference,html:`<h2>${escape(job.store_name)} · ${title}</h2><p>${escape(job.reference)}</p><ul>${lines}</ul><p>总额 RM ${(job.total/100).toFixed(2)}</p><p>${job.kind==='receipt'?'商家已确认收款。':'订单仍待付款。如已付款，请联系商家核实，请勿重复付款。'}</p>`})});
+    const response=await fetch('https://api.resend.com/emails',{method:'POST',headers:{Authorization:'Bearer '+apiKey,'Content-Type':'application/json','Idempotency-Key':'ezshop-mail-'+job.id},body:JSON.stringify({from:sender,to:[job.recipient],subject:title+' · '+job.reference,html:`<h2>${escape(job.store_name)} · ${title}</h2><p>${escape(job.reference)}</p><ul>${lines}</ul><p>邮费 RM ${((job.shipping||0)/100).toFixed(2)}</p><p>总额 RM ${(job.total/100).toFixed(2)}</p><p>${job.kind==='receipt'?'商家已确认收款。':'订单仍待付款。如已付款，请联系商家核实，请勿重复付款。'}</p>`})});
     const result=await response.json();if(!response.ok||!result.id)throw Error('HTTP '+response.status);
     await rpc('mail/finish',{id:job.id,status:'sent',provider_id:result.id});accepted++;
    }catch{await rpc('mail/finish',{id:job.id,status:'failed',error:'provider request failed'});failed++}

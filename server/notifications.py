@@ -19,7 +19,7 @@ def claim():
         # Recover interrupted attempts after 10 minutes; the provider idempotency
         # key stays stable so a repeated delivery request does not duplicate mail.
         db.execute("UPDATE notification_jobs SET status='queued' WHERE status='sending' AND updated<?",(int(time.time())-600,))
-        row=db.execute("SELECT n.*,o.reference,o.email,o.customer,o.total,o.status order_status,m.name store_name FROM notification_jobs n JOIN orders o ON o.id=n.order_id JOIN merchants m ON m.id=n.merchant_id WHERE n.status IN ('queued','failed') AND n.attempts<3 ORDER BY n.id LIMIT 1").fetchone()
+        row=db.execute("SELECT n.*,o.reference,o.email,o.customer,o.total,o.shipping,o.status order_status,m.name store_name FROM notification_jobs n JOIN orders o ON o.id=n.order_id JOIN merchants m ON m.id=n.merchant_id WHERE n.status IN ('queued','failed') AND n.attempts<3 ORDER BY n.id LIMIT 1").fetchone()
         if not row:return None
         expected='paid' if row['kind']=='receipt' else 'pending'
         if row['order_status']!=expected:
@@ -40,7 +40,7 @@ def dispatch(limit=20):
         with connect() as db:
             items=db.execute('SELECT name,price,quantity FROM order_items WHERE order_id=?',(job['order_id'],)).fetchall()
         lines=''.join('<li>'+escape(i['name'])+' × '+str(i['quantity'])+' · RM '+format(i['price']*i['quantity']/100,'.2f')+'</li>' for i in items)
-        html='<h2>'+escape(job['store_name'])+' · '+title+'</h2><p>订单 '+escape(job['reference'])+'</p><ul>'+lines+'</ul><p>总额 RM '+format(job['total']/100,'.2f')+'</p><p>'+('商家已确认收款。' if job['kind']=='receipt' else '此订单仍待付款。如已付款，请联系商家核实，请勿重复付款。')+'</p>'
+        html='<h2>'+escape(job['store_name'])+' · '+title+'</h2><p>订单 '+escape(job['reference'])+'</p><ul>'+lines+'</ul><p>邮费 RM '+format(job['shipping']/100,'.2f')+'</p><p>总额 RM '+format(job['total']/100,'.2f')+'</p><p>'+('商家已确认收款。' if job['kind']=='receipt' else '此订单仍待付款。如已付款，请联系商家核实，请勿重复付款。')+'</p>'
         request=urllib.request.Request('https://api.resend.com/emails',data=json.dumps({'from':sender,'to':[job['email']],'subject':title+' · '+job['reference'],'html':html}).encode(),headers={'Authorization':'Bearer '+key,'Content-Type':'application/json','Idempotency-Key':'ezshop-mail-'+str(job['id'])},method='POST')
         try:
             with urllib.request.urlopen(request,timeout=20) as response:

@@ -438,4 +438,100 @@ describe("Supabase PostgreSQL RPC", () => {
         .rows,
     ).toHaveLength(1);
   });
+  it("邮费由商家设置，结账核算并保留快递和邮费快照", async () => {
+    const owner = "99999999-9999-4999-8999-999999999999";
+    await db.query("insert into auth.users values($1,$2,$3)", [
+      owner,
+      "deliveryowner@example.test",
+      JSON.stringify({ name: "Delivery Store", slug: "delivery-store" }),
+    ]);
+    await user(owner);
+    await rpc("dashboard");
+    await rpc("settings", {
+      name: "Delivery Store",
+      shipping_fee: 750,
+      courier: "J&T Express",
+    });
+    await rpc("products", {
+      name: "Shipped Item",
+      price: 1000,
+      stock: 10,
+      published: 1,
+    });
+    await rpc("agents", { name: "Delivery Agent", rate: 10 });
+    const d = await rpc("dashboard"),
+      pid = d.products[0].id,
+      agent = d.agents[0].code;
+    await user("");
+    expect(
+      (await rpc("store", { slug: "delivery-store" })).store.shipping_fee,
+    ).toBe(750);
+    expect(
+      await rpc("shipping-quote", {
+        slug: "delivery-store",
+        items: [{ id: pid, quantity: 2 }],
+        shipping: 0,
+        total: 1,
+      }),
+    ).toEqual({ subtotal: 2000, shipping: 750, discount: 0, total: 2750 });
+    const payload = {
+      slug: "delivery-store",
+      customer: "Buyer",
+      email: "deliverybuyer@example.test",
+      phone: "0123456789",
+      address: "Street 1",
+      city: "Kuala Lumpur",
+      state: "Kuala Lumpur",
+      postcode: "50000",
+      items: [{ id: pid, quantity: 2 }],
+      agent,
+      checkout_key: "delivery-request-key-123456",
+      shipping: 0,
+      total: 1,
+    };
+    await expect(
+      rpc("checkout", { ...payload, postcode: "123" }),
+    ).rejects.toThrow();
+    const result = await rpc("checkout", payload);
+    expect(result.total).toBe(2750);
+    await user(owner);
+    const order = (await rpc("dashboard")).orders[0];
+    expect(order.subtotal).toBe(2000);
+    expect(order.shipping).toBe(750);
+    expect(order.commission).toBe(200);
+    await rpc("settings", {
+      name: "Delivery Store",
+      shipping_fee: 900,
+      courier: "DHL eCommerce",
+    });
+    await user("");
+    expect((await rpc("checkout", payload)).total).toBe(2750);
+    const shipment = {
+      id: order.id,
+      carrier: "J&T Express",
+      tracking: "TEST-SHIP-001",
+    };
+    await user(owner);
+    expect((await rpc("dashboard")).products[0].stock).toBe(8);
+    await expect(rpc("orders/ship", shipment)).rejects.toThrow();
+    await rpc("orders/paid", { id: order.id });
+    await rpc("orders/ship", shipment);
+    await rpc("orders/ship", shipment);
+    await expect(
+      rpc("orders/ship", { ...shipment, tracking: "OTHER" }),
+    ).rejects.toThrow();
+    await user("");
+    const safe = (
+      await rpc("order-result", {
+        slug: "delivery-store",
+        reference: result.reference,
+        token: result.access_token,
+      })
+    ).order;
+    expect(safe.fulfillment_status).toBe("shipped");
+    expect(safe.tracking).toBe("TEST-SHIP-001");
+    expect(safe.shipping).toBe(750);
+    await user(idB);
+    await expect(rpc("orders/ship", shipment)).rejects.toThrow();
+  });
 });

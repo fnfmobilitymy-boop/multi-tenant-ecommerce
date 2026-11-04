@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Payouts } from "./payouts";
 import { ImageUpload } from "./image-upload";
+import { COURIERS } from "./delivery";
 import { Link } from "react-router-dom";
 import {
   ArrowUpRight,
@@ -113,7 +114,14 @@ export function MerchantApp() {
         });
       else if (modal === "agent")
         await api("agents", { ...form, rate: Number(form.rate) });
-      else await api("settings", form);
+      else
+        await api("settings", {
+          ...form,
+          shipping_fee:
+            form.shipping_fee === undefined
+              ? data?.merchant.shipping_fee || 0
+              : Math.round(Number(form.shipping_fee) * 100),
+        });
       await refresh();
       setModal(null);
       setEditing(null);
@@ -795,7 +803,44 @@ export function MerchantApp() {
                     defaultValue={data.merchant.phone}
                   />
                 </label>
-                <p className="muted">简介及电话会显示在公开商店。</p>
+                <h2 style={{ marginTop: 28 }}>配送及邮费</h2>
+                <label>
+                  每单邮费（MYR）
+                  <input
+                    name="shipping_fee"
+                    type="number"
+                    min="0"
+                    max="10000"
+                    step="0.01"
+                    required
+                    defaultValue={(data.merchant.shipping_fee || 0) / 100}
+                  />
+                </label>
+                <p className="muted">
+                  由你自行设定，填 0
+                  代表免邮。只影响新订单，邮费不计入代理佣金。
+                </p>
+                <label>
+                  常用快递公司
+                  <input
+                    name="courier"
+                    list="store-couriers"
+                    maxLength={100}
+                    defaultValue={data.merchant.courier}
+                    placeholder="可选择或自行填写"
+                  />
+                </label>
+                <datalist id="store-couriers">
+                  {COURIERS.map((c) => (
+                    <option key={c} value={c} />
+                  ))}
+                </datalist>
+                <p className="muted">
+                  快递由你自行安排，实际公司及运单号可在发货时填写。系统不会自动报价或叫件。
+                </p>
+                <p className="muted" style={{ marginTop: 20 }}>
+                  简介及电话会显示在公开商店。
+                </p>
                 <div className="store-guide">
                   <strong>直播卖货，怎样用店铺接单？</strong>
                   <ol>
@@ -978,6 +1023,11 @@ export function MerchantApp() {
             <div>
               <small>收货地址</small>
               <p>{detail.order.address}</p>
+              <p>
+                {[detail.order.postcode, detail.order.city, detail.order.state]
+                  .filter(Boolean)
+                  .join(", ")}
+              </p>
               <small>订单备注</small>
               <p>{detail.order.note || "无"}</p>
             </div>
@@ -991,6 +1041,14 @@ export function MerchantApp() {
               <strong>{money(i.price * i.quantity)}</strong>
             </div>
           ))}
+          <div className="summary-line">
+            <span>商品小计</span>
+            <span>{money(detail.order.subtotal ?? detail.order.total)}</span>
+          </div>
+          <div className="summary-line">
+            <span>邮费</span>
+            <span>{money(detail.order.shipping || 0)}</span>
+          </div>
           <div className="summary-total">
             <strong>订单总额</strong>
             <strong>{money(detail.order.total)}</strong>
@@ -1000,6 +1058,70 @@ export function MerchantApp() {
             {money(detail.order.commission)}
           </p>
           <ErrorBox error={error} />
+          {detail.order.fulfillment_status === "shipped" ? (
+            <div className="soft-note">
+              <strong>已登记发货</strong>
+              <p>
+                {detail.order.carrier} · {detail.order.tracking}
+              </p>
+            </div>
+          ) : (
+            detail.order.status === "paid" && (
+              <form
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  setBusy(true);
+                  setError("");
+                  const f = Object.fromEntries(new FormData(e.currentTarget));
+                  try {
+                    await api("orders/ship", { id: detail.order.id, ...f });
+                    await refresh();
+                    setDetail(
+                      await api<OrderResult>(
+                        "orders/detail?id=" + detail.order.id,
+                      ),
+                    );
+                    setNotice("发货记录已保存");
+                  } catch (error) {
+                    setError((error as Error).message);
+                  } finally {
+                    setBusy(false);
+                  }
+                }}
+              >
+                <h2 style={{ marginTop: 22 }}>登记已寄出的包裹</h2>
+                <label>
+                  实际快递公司
+                  <input
+                    name="carrier"
+                    list="shipment-couriers"
+                    maxLength={100}
+                    required
+                    defaultValue={data.merchant.courier}
+                  />
+                </label>
+                <datalist id="shipment-couriers">
+                  {COURIERS.map((c) => (
+                    <option key={c} value={c} />
+                  ))}
+                </datalist>
+                <label>
+                  运单号
+                  <input name="tracking" maxLength={100} required />
+                </label>
+                <p className="muted">
+                  请先自行寄件，再填写真实运单号。此操作不会向快递公司下单。
+                </p>
+                <button
+                  className="button"
+                  style={{ marginTop: 15 }}
+                  disabled={busy}
+                >
+                  已寄件，保存发货记录
+                </button>
+              </form>
+            )
+          )}
           {detail.order.status === "paid" && (
             <button
               className="button secondary"

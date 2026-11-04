@@ -114,7 +114,7 @@ class Flow(unittest.TestCase):
         self.assertEqual(self.call(guest,'checkout',order,201)['total'],4000)
         self.call(a,'settings',dict(name='New Store',phone='+60123456789',description='Fresh local products'))
         public=self.call(guest,'store?slug=edit-a')['store']
-        self.assertEqual(public,dict(name='New Store',slug='edit-a',phone='+60123456789',description='Fresh local products'))
+        self.assertEqual(public,dict(name='New Store',slug='edit-a',phone='+60123456789',description='Fresh local products',shipping_fee=0,courier=''))
         self.assertEqual(self.call(b,'dashboard')['merchant']['name'],'Edit B')
         self.call(a,'settings',dict(name='Bad',phone='javascript:alert(1)',description='x'),400)
         self.call(a,'settings',dict(name='New Store',phone='',description=''))
@@ -206,9 +206,10 @@ class Flow(unittest.TestCase):
     def test_notification_queue_does_not_claim_delivery_before_provider_acceptance(self):
         c,guest=self.client(),self.client()
         self.call(c,'register',dict(name='Mail Store',slug='mail-store',email='mailowner@example.test',password='Testing-12345'))
+        self.call(c,'settings',dict(name='Mail Store',shipping_fee=500))
         self.call(c,'products',dict(name='Receipt Product',price=1500,stock=5,emoji='box'),201)
         p=self.call(c,'dashboard')['products'][0]
-        checkout=dict(slug='mail-store',customer='Buyer',email='mailbuyer@example.test',phone='0123456789',address='KL',items=[dict(id=p['id'],quantity=1)])
+        checkout=dict(slug='mail-store',customer='Buyer',email='mailbuyer@example.test',phone='0123456789',address='KL',city='Kuala Lumpur',state='Kuala Lumpur',postcode='50000',items=[dict(id=p['id'],quantity=1)])
         self.call(guest,'checkout',checkout,201)
         oid=self.call(c,'dashboard')['orders'][0]['id']
         self.call(c,'orders/paid',dict(id=oid));self.call(c,'orders/paid',dict(id=oid))
@@ -220,6 +221,8 @@ class Flow(unittest.TestCase):
             with patch.dict(os.environ,{'RESEND_API_KEY':'test-only-key','MAIL_FROM':'test@example.test'}),patch('notifications.urllib.request.urlopen',side_effect=lambda *args,**kwargs:io.BytesIO(b'{"id":"provider-test-id"}')) as provider:
                 notifications.dispatch(limit=100)
                 self.assertGreaterEqual(provider.call_count,1)
+                html=[json.loads(call.args[0].data)['html'] for call in provider.call_args_list]
+                self.assertTrue(any('邮费 RM 5.00' in body and '总额 RM 20.00' in body for body in html))
             job=self.call(c,'notifications')['jobs'][0];self.assertEqual(job['status'],'sent');self.assertEqual(job['provider_id'],'provider-test-id')
             with patch.dict(os.environ,{'RESEND_API_KEY':'test-only-key','MAIL_FROM':'test@example.test'}),patch('notifications.urllib.request.urlopen') as provider:
                 notifications.dispatch(limit=1);self.assertEqual(provider.call_count,0)
@@ -296,6 +299,35 @@ class Flow(unittest.TestCase):
         code,second=upload(owner,png,'image/png');self.assertEqual(code,201);self.assertNotEqual(second['url'],media['url'])
         with self.assertRaises(urllib.error.HTTPError) as error:guest.open(self.base.removesuffix('/api/')+'/media/../app.py')
         self.assertEqual(error.exception.code,404)
+    def test_merchant_shipping_fee_and_manual_dispatch(self):
+        owner,other,guest=self.client(),self.client(),self.client()
+        self.call(owner,'register',dict(name='Delivery Store',slug='delivery-store',email='deliveryowner@example.test',password='Testing-12345'))
+        self.call(other,'register',dict(name='Delivery Other',slug='delivery-other',email='deliveryother@example.test',password='Testing-12345'))
+        self.call(owner,'settings',dict(name='Delivery Store',shipping_fee=750,courier='J&T Express'))
+        self.call(owner,'products',dict(name='Shipped Item',price=1000,stock=10,emoji='box'),201)
+        self.call(owner,'agents',dict(name='Shipping Agent',rate=10),201)
+        d=self.call(owner,'dashboard');pid=d['products'][0]['id'];agent=d['agents'][0]['code']
+        self.assertEqual(self.call(guest,'store?slug=delivery-store')['store']['shipping_fee'],750)
+        items=[dict(id=pid,quantity=2)]
+        quote=self.call(guest,'shipping-quote',dict(slug='delivery-store',items=items,shipping=0,total=1));self.assertEqual(quote,dict(subtotal=2000,shipping=750,discount=0,total=2750))
+        self.assertEqual(self.call(owner,'dashboard')['orders'],[])
+        payload=dict(slug='delivery-store',customer='Buyer',email='deliverybuyer@example.test',phone='0123456789',address='Street 1',city='Kuala Lumpur',state='Kuala Lumpur',postcode='50000',items=items,agent=agent,checkout_key='delivery-request-key-123456',shipping=0,total=1)
+        self.call(guest,'checkout',{**payload,'postcode':'123'},400)
+        self.call(guest,'checkout',{**payload,'country':'SG'},400)
+        result=self.call(guest,'checkout',payload,201);self.assertEqual(result['total'],2750)
+        d=self.call(owner,'dashboard');o=d['orders'][0];self.assertEqual(o['subtotal'],2000);self.assertEqual(o['shipping'],750);self.assertEqual(o['commission'],200)
+        self.call(owner,'settings',dict(name='Delivery Store',shipping_fee=900,courier='DHL eCommerce'))
+        self.assertEqual(self.call(guest,'checkout',payload)['total'],2750)
+        self.assertEqual(self.call(owner,'dashboard')['products'][0]['stock'],8)
+        shipment=dict(id=o['id'],carrier='J&T Express',tracking='TEST-SHIP-001')
+        self.call(owner,'orders/ship',shipment,409);self.call(other,'orders/ship',shipment,404)
+        self.call(owner,'orders/paid',dict(id=o['id']))
+        self.call(owner,'orders/ship',shipment);self.call(owner,'orders/ship',shipment)
+        self.call(owner,'orders/ship',{**shipment,'tracking':'OTHER'},409)
+        public=self.call(guest,'order-result',dict(slug='delivery-store',reference=result['reference'],token=result['access_token']))['order']
+        self.assertEqual(public['fulfillment_status'],'shipped');self.assertEqual(public['tracking'],'TEST-SHIP-001');self.assertEqual(public['shipping'],750)
+        self.call(owner,'settings',dict(name='Delivery Store',shipping_fee=-1),400)
+        self.assertEqual(self.call(owner,'dashboard')['merchant']['shipping_fee'],900)
     def test_validation_and_csrf(self):
         c=self.client()
         self.call(c,'register',dict(name='Invalid',slug='../x',email='invalid',password='short'),400)

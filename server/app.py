@@ -2,6 +2,7 @@
 import os, json, sqlite3, secrets, hashlib, hmac, re, time, mimetypes
 from pathlib import Path
 from finance import handle as handle_finance, FinanceError
+from delivery import cart_items, destination
 from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
 from urllib.parse import urlparse, parse_qs
 
@@ -34,6 +35,16 @@ def init():
         ''')
         # Additive, repeatable migrations preserve existing merchant/order data.
         for table, column, definition in (
+            ('merchants', 'shipping_fee', 'INTEGER NOT NULL DEFAULT 0'),
+            ('merchants', 'courier', "TEXT NOT NULL DEFAULT ''"),
+            ('orders', 'subtotal', 'INTEGER NOT NULL DEFAULT 0'),
+            ('orders', 'state', "TEXT NOT NULL DEFAULT ''"),
+            ('orders', 'postcode', "TEXT NOT NULL DEFAULT ''"),
+            ('orders', 'city', "TEXT NOT NULL DEFAULT ''"),
+            ('orders', 'fulfillment_status', "TEXT NOT NULL DEFAULT 'unfulfilled'"),
+            ('orders', 'carrier', "TEXT NOT NULL DEFAULT ''"),
+            ('orders', 'tracking', "TEXT NOT NULL DEFAULT ''"),
+            ('orders', 'shipped_at', 'TEXT'),
             ('merchants', 'logo', "TEXT NOT NULL DEFAULT ''"),
             ('merchants', 'banner', "TEXT NOT NULL DEFAULT ''"),
             ('products', 'featured', 'INTEGER NOT NULL DEFAULT 0'),
@@ -64,6 +75,7 @@ def init():
         db.execute('''CREATE TABLE IF NOT EXISTS audit_log(id INTEGER PRIMARY KEY,merchant_id INTEGER NOT NULL REFERENCES merchants(id),actor TEXT NOT NULL,action TEXT NOT NULL,object_id INTEGER,created TEXT NOT NULL DEFAULT (datetime('now')))''')
         db.execute('''CREATE TABLE IF NOT EXISTS notification_jobs(id INTEGER PRIMARY KEY,merchant_id INTEGER NOT NULL REFERENCES merchants(id),order_id INTEGER NOT NULL REFERENCES orders(id),kind TEXT NOT NULL,event_key TEXT UNIQUE NOT NULL,status TEXT NOT NULL DEFAULT 'queued',attempts INTEGER NOT NULL DEFAULT 0,provider_id TEXT,error TEXT,updated INTEGER NOT NULL DEFAULT 0)''')
         db.execute('''CREATE TABLE IF NOT EXISTS payouts(id INTEGER PRIMARY KEY,merchant_id INTEGER NOT NULL REFERENCES merchants(id),agent_id INTEGER NOT NULL REFERENCES agents(id),amount INTEGER NOT NULL CHECK(amount>0),bank_details TEXT NOT NULL,request_key TEXT NOT NULL,status TEXT NOT NULL DEFAULT 'requested' CHECK(status IN ('requested','paid','rejected')),reference TEXT NOT NULL DEFAULT '',created TEXT NOT NULL DEFAULT (datetime('now')),updated TEXT NOT NULL DEFAULT (datetime('now')),UNIQUE(merchant_id,agent_id,request_key))''')
+        db.execute('UPDATE orders SET subtotal=total-shipping+discount WHERE subtotal=0 AND total>0')
         db.execute('CREATE UNIQUE INDEX IF NOT EXISTS order_checkout_key ON orders(merchant_id,checkout_key)')
 
 def public_order(row):
@@ -263,11 +275,11 @@ class Handler(BaseHTTPRequestHandler):
             return self.reply({'ok': True}, cookie='ezshop_session=' + token + '; HttpOnly; SameSite=Lax; Path=/; Max-Age=86400')
         if path == '/api/store' and method == 'GET':
             slug = parse_qs(urlparse(self.path).query).get('slug', [''])[0]
-            merchant = db.execute("SELECT id,name,slug,phone,description,logo,banner FROM merchants WHERE slug=? AND status='active'", (slug,)).fetchone()
+            merchant = db.execute("SELECT id,name,slug,phone,description,logo,banner,shipping_fee,courier FROM merchants WHERE slug=? AND status='active'", (slug,)).fetchone()
             if not merchant:
                 return self.reply({'error': '找不到这家店铺'}, 404)
             products = [dict(p) for p in db.execute('SELECT id,name,price,stock,emoji,description,category,image,featured FROM products WHERE merchant_id=? AND published=1 ORDER BY id DESC', (merchant['id'],))]
-            return self.reply({'store': {**{k: merchant[k] for k in ('name', 'slug', 'phone', 'description')}, **{k:merchant[k] for k in ('logo','banner') if merchant[k]}}, 'products': products})
+            return self.reply({'store': {**{k: merchant[k] for k in ('name', 'slug', 'phone', 'description','shipping_fee','courier')}, **{k:merchant[k] for k in ('logo','banner') if merchant[k]}}, 'products': products})
         if path == '/api/order-result' and method == 'POST':
             reference = text_field(data, 'reference', 50)
             token = text_field(data, 'token', 100)
@@ -278,13 +290,19 @@ class Handler(BaseHTTPRequestHandler):
             if data.get('slug') != store['slug']:
                 return self.reply({'error': '订单不存在或访问凭证无效'}, 404)
             items = [dict(i) for i in db.execute('SELECT name,price,quantity FROM order_items WHERE order_id=?', (order['id'],))]
-            safe = {key: order[key] for key in ('reference','total','status','created','shipping','discount')}
+            safe = {key: order[key] for key in ('reference','total','status','created','subtotal','shipping','discount','fulfillment_status','carrier','tracking','shipped_at')}
             return self.reply({'order': safe, 'items': items, 'store': dict(store)})
+        if path == '/api/shipping-quote' and method == 'POST':
+            slug=text_field(data,'slug',60)
+            store=db.execute("SELECT id,shipping_fee FROM merchants WHERE slug=? AND status='active'",(slug,)).fetchone()
+            if not store:return self.reply({'error':'找不到店铺'},404)
+            _,subtotal=cart_items(db,store['id'],data.get('items'))
+            return self.reply({'subtotal':subtotal,'shipping':store['shipping_fee'],'discount':0,'total':subtotal+store['shipping_fee']})
         if path == '/api/checkout' and method == 'POST':
             return self.checkout(db, data)
         cookie = self.headers.get('Cookie', '')
         token = next((p.strip().split('=', 1)[1] for p in cookie.split(';') if p.strip().startswith('ezshop_session=')), '')
-        merchant = db.execute('SELECT m.id,m.name,m.slug,m.email,m.phone,m.description,m.logo,m.banner,m.is_admin,m.plan,m.status,s.member_id FROM merchants m JOIN sessions s ON s.merchant_id=m.id WHERE s.token=? AND s.expires>?', (token, int(time.time()))).fetchone()
+        merchant = db.execute('SELECT m.id,m.name,m.slug,m.email,m.phone,m.description,m.logo,m.banner,m.shipping_fee,m.courier,m.is_admin,m.plan,m.status,s.member_id FROM merchants m JOIN sessions s ON s.merchant_id=m.id WHERE s.token=? AND s.expires>?', (token, int(time.time()))).fetchone()
         if not merchant:
             return self.reply({'error': '请先登录'}, 401)
         mid = merchant['id']
@@ -432,7 +450,11 @@ class Handler(BaseHTTPRequestHandler):
                 if not isinstance(value,str) or len(value)>2000 or (value and not valid_image_url(value)):
                     raise ValueError('店铺图片必须使用 HTTPS 网址')
                 assets.append(value)
-            db.execute('UPDATE merchants SET name=?,phone=?,description=?,logo=?,banner=? WHERE id=?', (name, phone, description.strip(), *assets, mid))
+            shipping_fee=data.get('shipping_fee',merchant['shipping_fee'])
+            courier=data.get('courier',merchant['courier'])
+            if type(shipping_fee) is not int or not 0<=shipping_fee<=1000000:raise ValueError('邮费须为 0 到 RM 10,000 之间的金额')
+            if not isinstance(courier,str) or len(courier)>100:raise ValueError('快递公司名称不能超过 100 字')
+            db.execute('UPDATE merchants SET name=?,phone=?,description=?,logo=?,banner=?,shipping_fee=?,courier=? WHERE id=?', (name, phone, description.strip(), *assets, shipping_fee,courier.strip(),mid))
             db.commit()
             return self.reply({'ok': True})
         if path == '/api/agents' and method == 'POST':
@@ -442,6 +464,19 @@ class Handler(BaseHTTPRequestHandler):
             db.execute('INSERT INTO agents(merchant_id,name,code,rate) VALUES(?,?,?,?)', (mid, name, code, rate))
             db.commit()
             return self.reply({'ok': True}, 201)
+        if path == '/api/orders/ship' and method == 'POST':
+            oid=integer(data,'id',1,2**53)
+            carrier=text_field(data,'carrier',100);tracking=text_field(data,'tracking',100)
+            db.execute('BEGIN IMMEDIATE')
+            order=db.execute('SELECT * FROM orders WHERE id=? AND merchant_id=?',(oid,mid)).fetchone()
+            if not order:return self.reply({'error':'找不到订单'},404)
+            if order['status']!='paid':return self.reply({'error':'仅已付款订单可以登记发货'},409)
+            if order['fulfillment_status']=='shipped':
+                if order['carrier']==carrier and order['tracking']==tracking:return self.reply({'ok':True})
+                return self.reply({'error':'此订单已登记发货，请核实原运单记录'},409)
+            db.execute("UPDATE orders SET fulfillment_status='shipped',carrier=?,tracking=?,shipped_at=datetime('now') WHERE id=?",(carrier,tracking,oid))
+            db.execute('INSERT INTO audit_log(merchant_id,actor,action,object_id) VALUES(?,?,?,?)',(mid,str(member['id']) if member else 'owner','order.ship',oid))
+            db.commit();return self.reply({'ok':True})
         if path == '/api/orders/detail' and method == 'GET':
             query = parse_qs(urlparse(self.path).query)
             oid = int(query.get('id', ['0'])[0])
@@ -476,7 +511,7 @@ class Handler(BaseHTTPRequestHandler):
         # Write lock prevents concurrent checkouts from overselling inventory.
         db.execute('BEGIN IMMEDIATE')
         slug = text_field(data, 'slug', 60)
-        store = db.execute("SELECT id FROM merchants WHERE slug=? AND status='active'", (slug,)).fetchone()
+        store = db.execute("SELECT * FROM merchants WHERE slug=? AND status='active'", (slug,)).fetchone()
         if not store:
             raise ValueError('店铺不存在')
         mid = store['id']
@@ -498,34 +533,21 @@ class Handler(BaseHTTPRequestHandler):
             raise ValueError('邮箱格式无效')
         phone = text_field(data, 'phone', 40)
         address = text_field(data, 'address', 500)
-        items = data.get('items')
-        if not isinstance(items, list) or not 1 <= len(items) <= 100:
-            raise ValueError('请选择商品')
-        lines, seen, total = [], set(), 0
-        for item in items:
-            if not isinstance(item, dict):
-                raise ValueError('商品格式无效')
-            pid = integer(item, 'id', 1, 2**53)
-            qty = integer(item, 'quantity', 1, 1000)
-            if pid in seen:
-                raise ValueError('商品重复')
-            seen.add(pid)
-            product = db.execute('SELECT * FROM products WHERE id=? AND merchant_id=?', (pid, mid)).fetchone()
-            if not product or not product['published'] or product['stock'] < qty:
-                raise ValueError('商品不存在或库存不足')
-            total += product['price'] * qty
-            lines.append((product, qty))
+        lines,subtotal=cart_items(db,mid,data.get('items'))
+        shipping=store['shipping_fee']
+        state,postcode,city=destination(data,required=shipping>0)
+        total=subtotal+shipping
         code = data.get('agent', '')
         if not isinstance(code, str) or len(code) > 100:
             raise ValueError('代理代码无效')
         agent = db.execute('SELECT id,rate FROM agents WHERE code=? AND merchant_id=?', (code, mid)).fetchone() if code else None
         if code and not agent:
             raise ValueError('代理链接无效')
-        commission = (total * agent['rate'] + 50) // 100 if agent else 0
+        commission = (subtotal * agent['rate'] + 50) // 100 if agent else 0
         reference = 'EZ-' + secrets.token_hex(5).upper()
         oid = db.execute('INSERT INTO orders(merchant_id,reference,customer,email,phone,address,total,agent_id,commission) VALUES(?,?,?,?,?,?,?,?,?)', (mid, reference, customer, email, phone, address, total, agent['id'] if agent else None, commission)).lastrowid
         token = secrets.token_urlsafe(32)
-        db.execute('UPDATE orders SET note=?,checkout_key=?,access_token=? WHERE id=?', (note, checkout_key, token, oid))
+        db.execute('UPDATE orders SET note=?,checkout_key=?,access_token=?,subtotal=?,shipping=?,state=?,postcode=?,city=? WHERE id=?', (note, checkout_key, token,subtotal,shipping,state,postcode,city,oid))
         for p, qty in lines:
             db.execute('INSERT INTO order_items(order_id,product_id,name,price,quantity) VALUES(?,?,?,?,?)', (oid, p['id'], p['name'], p['price'], qty))
             db.execute('UPDATE products SET stock=stock-?,version=version+1 WHERE id=? AND merchant_id=?', (qty, p['id'], mid))

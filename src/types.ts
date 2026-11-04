@@ -10,6 +10,8 @@ export interface Merchant {
   role?: string;
   is_admin?: number;
   member_name?: string;
+  shipping_fee?: number;
+  courier?: string;
 }
 export interface Product {
   id: number;
@@ -41,6 +43,14 @@ export interface Order {
   note?: string;
   shipping?: number;
   discount?: number;
+  subtotal?: number;
+  state?: string;
+  postcode?: string;
+  city?: string;
+  fulfillment_status?: "unfulfilled" | "shipped";
+  carrier?: string;
+  tracking?: string;
+  shipped_at?: string;
 }
 export interface Agent {
   id: number;

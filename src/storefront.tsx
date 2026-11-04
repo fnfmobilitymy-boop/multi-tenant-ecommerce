@@ -17,6 +17,7 @@ import { api, money, statusLabel } from "./api";
 import { getCart, putCart, setQuantity } from "./cart";
 import type { CartLine, Merchant, OrderResult, Product } from "./types";
 import { Brand, Empty, ErrorBox, Loading } from "./ui";
+import { MALAYSIA_STATES, type ShippingQuote } from "./delivery";
 interface StoreData {
   store: Merchant;
   products: Product[];
@@ -34,6 +35,9 @@ export function Storefront() {
     [busy, setBusy] = useState(false),
     [feedback, setFeedback] = useState(""),
     [result, setResult] = useState<OrderResult | null>(null);
+  const [quote, setQuote] = useState<ShippingQuote | null>(null),
+    [quoteError, setQuoteError] = useState(""),
+    [quoteLoading, setQuoteLoading] = useState(false);
   const base = "/shop/" + encodeURIComponent(slug),
     kind = location.pathname.endsWith("/cart")
       ? "cart"
@@ -107,9 +111,36 @@ export function Storefront() {
     invalid = lines.some(
       (i) => !i.product || i.quantity > (i.product?.stock || 0),
     );
+  useEffect(() => {
+    let current = true;
+    setQuote(null);
+    setQuoteError("");
+    if (!data || !cart.length || !["cart", "checkout"].includes(kind)) {
+      setQuoteLoading(false);
+      return;
+    }
+    setQuoteLoading(true);
+    api<ShippingQuote>("shipping-quote", { slug, items: cart })
+      .then((q) => {
+        if (current) setQuote(q);
+      })
+      .catch((e) => {
+        if (current) setQuoteError(e.message);
+      })
+      .finally(() => {
+        if (current) setQuoteLoading(false);
+      });
+    return () => {
+      current = false;
+    };
+  }, [data, cart, slug, kind]);
   async function checkout(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (busy) return;
+    if (!quote || quoteLoading) {
+      setError("订单金额尚未确认，请等待邮费更新后再提交。");
+      return;
+    }
     setError("");
     if (!cart.length || invalid) {
       setError("请先检查购物车的商品和库存");
@@ -529,6 +560,53 @@ export function Storefront() {
                           autoComplete="street-address"
                         />
                       </label>
+                      <div className="form-grid">
+                        <label>
+                          城市
+                          <input
+                            name="city"
+                            required
+                            maxLength={100}
+                            autoComplete="address-level2"
+                          />
+                        </label>
+                        <label>
+                          邮编
+                          <input
+                            name="postcode"
+                            inputMode="numeric"
+                            pattern="[0-9]{5}"
+                            minLength={5}
+                            maxLength={5}
+                            required
+                            autoComplete="postal-code"
+                            placeholder="5 位邮编"
+                          />
+                        </label>
+                        <label>
+                          州属
+                          <select
+                            name="state"
+                            aria-label="州属"
+                            required
+                            defaultValue=""
+                            autoComplete="address-level1"
+                          >
+                            <option value="" disabled>
+                              请选择州属
+                            </option>
+                            {MALAYSIA_STATES.map((s) => (
+                              <option key={s} value={s}>
+                                {s}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                      </div>
+                      <input type="hidden" name="country" value="MY" />
+                      <p className="muted" style={{ marginTop: 15 }}>
+                        配送范围：马来西亚。请确认收货地址、州属和邮编正确。
+                      </p>
                       <label>
                         订单备注
                         <textarea
@@ -574,8 +652,14 @@ export function Storefront() {
                     <span>{money(total)}</span>
                   </div>
                   <div className="summary-line">
-                    <span>运费</span>
-                    <span>{money(0)}</span>
+                    <span>邮费</span>
+                    <span>
+                      {quote
+                        ? money(quote.shipping)
+                        : quoteLoading
+                          ? "计算中…"
+                          : "待确认"}
+                    </span>
                   </div>
                   <div className="summary-line">
                     <span>折扣</span>
@@ -583,7 +667,7 @@ export function Storefront() {
                   </div>
                   <div className="summary-total">
                     <strong>应付总额</strong>
-                    <strong>{money(total)}</strong>
+                    <strong>{quote ? money(quote.total) : "待确认"}</strong>
                   </div>
                   {kind === "cart" ? (
                     <Link
@@ -596,14 +680,19 @@ export function Storefront() {
                     <button
                       className="button full"
                       form="checkout-form"
-                      disabled={busy || invalid}
+                      disabled={busy || invalid || !quote || quoteLoading}
                     >
                       {busy ? "正在提交…" : "确认提交订单"}{" "}
                       <ArrowRight size={17} />
                     </button>
                   )}
+                  <ErrorBox error={quoteError} />
                   <p className="fine-print">
-                    最终金额及库存由商家服务器重新核算。当前商店未配置额外运费及折扣。
+                    邮费由商家自行设定，金额和库存由后端核算。当前不提供快递自动报价。
+                  </p>
+                  <p className="fine-print">
+                    快递公司：{data.store.courier || "商家自行安排"}
+                    ，以实际发货记录为准。
                   </p>
                 </aside>
               </div>
@@ -643,6 +732,30 @@ export function Storefront() {
                   <strong>{money(i.price * i.quantity)}</strong>
                 </div>
               ))}
+              <div className="summary-line">
+                <span>商品小计</span>
+                <span>
+                  {money(
+                    result.order.subtotal ??
+                      result.items.reduce(
+                        (s, i) => s + i.price * i.quantity,
+                        0,
+                      ),
+                  )}
+                </span>
+              </div>
+              <div className="summary-line">
+                <span>邮费</span>
+                <span>{money(result.order.shipping || 0)}</span>
+              </div>
+              {result.order.fulfillment_status === "shipped" && (
+                <div className="soft-note">
+                  <strong>商家已登记发货</strong>
+                  <p>快递公司：{result.order.carrier}</p>
+                  <p>运单号：{result.order.tracking}</p>
+                  <small>运送进度请向对应快递公司查询。</small>
+                </div>
+              )}
               <div className="summary-total">
                 <strong>总金额</strong>
                 <strong>{money(result.order.total)}</strong>
