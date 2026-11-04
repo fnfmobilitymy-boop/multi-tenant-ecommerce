@@ -140,3 +140,16 @@ Supabase：代码位于 `supabase/functions/send-notifications/`。在项目安�
 - Supabase 项目：先确认已有数据并审查迁移，再应用所需增量迁移及 Auth/邮件配置。
 
 不要使用 service_role/secret key 作为前端 anon key，不要把数据库密码提交到 GitHub。当前未获取项目管理权限，未远程执行迁移或部署任何正式环境。
+
+## 验证邮件跳到 localhost 的修复
+
+注册、团队邀请及重发验证邮件都会显式提交 `emailRedirectTo`，值为当前网站 origin 加 Vite 的应用 base 路径（包括 GitHub Pages 的仓库路径）。回跳不会包含当前订单或邀请查询凭证。登录界面提供「重新发送验证邮件」；新链接通过用户点击该按钮获取，不会自动给客户发送邮件。
+
+Supabase 仍须允许该回跳网址。项目管理员需在 Authentication → URL Configuration 中设置实际 Site URL，并将同一应用根网址加入 Redirect URLs。匿名前端 key 无权修改 Auth 管理配置，应用不能绕过这项限制。旧邮件的链接不会随代码变更而更新。GitHub Pages 发布工作流是手动的，代码 push 后需发布新构建才会更新线上界面。
+
+CI 额外构建隔离的邮件验证页面，所有远端请求均被测试拦截，无需真实 Supabase 项目，也不会发送邮件。手动验证可执行：
+
+```sh
+VITE_SUPABASE_URL=https://auth-test.supabase.co VITE_SUPABASE_ANON_KEY=browser-test-public-key npm run build -- --outDir=auth-test-dist
+EZSHOP_AUTH_TEST_DIST=auth-test-dist python tests/auth_browser.py
+```

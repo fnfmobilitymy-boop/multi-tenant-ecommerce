@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { authRedirectUrl } from "./auth-redirect";
 export async function supabaseApi<T>(
   client: SupabaseClient,
   path: string,
@@ -14,7 +15,10 @@ export async function supabaseApi<T>(
     const { data: auth, error } = await client.auth.signUp({
       email: String(payload.email),
       password: String(payload.password),
-      options: { data: { invite_token: payload.token } },
+      options: {
+        emailRedirectTo: authRedirectUrl(),
+        data: { invite_token: payload.token },
+      },
     });
     if (error) throw error;
     if (!auth.session)
@@ -32,11 +36,23 @@ export async function supabaseApi<T>(
     const { data: auth, error } = await client.auth.signUp({
       email: String(payload.email),
       password: String(payload.password),
-      options: { data: { name: payload.name, slug: payload.slug } },
+      options: {
+        emailRedirectTo: authRedirectUrl(),
+        data: { name: payload.name, slug: payload.slug },
+      },
     });
     if (error) throw error;
     if (!auth.session)
       throw new Error("账号已创建，请先通过邮件验证，再返回登录。");
+    return { ok: true } as T;
+  }
+  if (route === "resend-confirmation") {
+    const { error } = await client.auth.resend({
+      type: "signup",
+      email: String(payload.email),
+      options: { emailRedirectTo: authRedirectUrl() },
+    });
+    if (error) throw error;
     return { ok: true } as T;
   }
   if (route === "login") {

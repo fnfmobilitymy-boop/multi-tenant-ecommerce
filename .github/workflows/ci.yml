@@ -35,6 +35,15 @@ jobs:
           python -m playwright install --with-deps chromium
       - name: 商家与顾客端完整流程
         run: python tests/browser.py
+      - name: 隔离构建验证邮件界面
+        env:
+          VITE_SUPABASE_URL: https://auth-test.supabase.co
+          VITE_SUPABASE_ANON_KEY: browser-test-public-key
+        run: npm run build -- --outDir=auth-test-dist
+      - name: 验证邮件回跳（所有远端请求均拦截）
+        env:
+          EZSHOP_AUTH_TEST_DIST: auth-test-dist
+        run: python tests/auth_browser.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:

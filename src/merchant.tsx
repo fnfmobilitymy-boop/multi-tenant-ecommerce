@@ -19,7 +19,7 @@ import {
   Copy,
   BarChart3,
 } from "lucide-react";
-import { api, money, statusLabel, dateLabel } from "./api";
+import { api, money, statusLabel, dateLabel, supabase } from "./api";
 import type { Dashboard, Product, Order, OrderResult } from "./types";
 import { Brand, Empty, ErrorBox, Loading, Modal } from "./ui";
 import { Team, Platform, Affiliate, Notifications } from "./management";
@@ -251,8 +251,42 @@ export function MerchantApp() {
                 {register ? "立即登录" : "免费注册"}
               </button>
             </div>
+            {supabase && (
+              <button
+                className="text-button full"
+                type="button"
+                disabled={busy}
+                onClick={async (e) => {
+                  const input =
+                    e.currentTarget.form?.querySelector<HTMLInputElement>(
+                      'input[name="email"]',
+                    );
+                  if (!input?.reportValidity()) return;
+                  setBusy(true);
+                  setError("");
+                  setNotice("");
+                  try {
+                    await api("resend-confirmation", { email: input.value });
+                    setNotice("验证邮件请求已提交，请检查收件箱和垃圾邮件。");
+                  } catch (error) {
+                    setError((error as Error).message);
+                  } finally {
+                    setBusy(false);
+                  }
+                }}
+              >
+                重新发送验证邮件
+              </button>
+            )}
+            {notice && (
+              <p role="status" className="success">
+                {notice}
+              </p>
+            )}
             <div className="soft-note">
-              本地开发模式 · 当前通过商家手动确认收款
+              {supabase
+                ? "请先完成邮箱验证，再登录商家后台。当前由商家核实收款。"
+                : "本地开发模式 · 当前通过商家手动确认收款"}
             </div>
           </form>
         </section>
