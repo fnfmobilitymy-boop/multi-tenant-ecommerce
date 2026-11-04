@@ -1,3 +1,4 @@
+from content import translations,public_content,snapshot
 """EzShop local development prototype. Python 3.12+, no third-party dependencies."""
 import os, json, sqlite3, secrets, hashlib, hmac, re, time, mimetypes
 from pathlib import Path
@@ -47,6 +48,9 @@ def init():
             ('orders', 'shipped_at', 'TEXT'),
             ('merchants', 'logo', "TEXT NOT NULL DEFAULT ''"),
             ('merchants', 'banner', "TEXT NOT NULL DEFAULT ''"),
+            ('products','content_translations',"TEXT NOT NULL DEFAULT '{}'"),
+            ('merchants','content_translations',"TEXT NOT NULL DEFAULT '{}'"),
+            ('order_items','content_translations',"TEXT NOT NULL DEFAULT '{}'"),
             ('products', 'variant', "TEXT NOT NULL DEFAULT ''"),
             ('products', 'featured', 'INTEGER NOT NULL DEFAULT 0'),
             ('merchants', 'phone', "TEXT NOT NULL DEFAULT ''"),
@@ -63,6 +67,7 @@ def init():
             ('orders', 'refund_reference', "TEXT NOT NULL DEFAULT ''"),
             ('orders', 'refunded_at', 'TEXT'),
             ('orders', 'stock_returned', 'INTEGER NOT NULL DEFAULT 0'),
+            ('orders','locale',"TEXT NOT NULL DEFAULT 'zh'"),
             ('orders', 'note', "TEXT NOT NULL DEFAULT ''"),
             ('orders', 'checkout_key', 'TEXT'),
             ('orders', 'access_token', 'TEXT'),
@@ -100,7 +105,7 @@ def product_extras(data):
     featured = data.get('featured', 0)
     if type(featured) is not int or featured not in (0, 1):
         raise ValueError('热门商品状态无效')
-    return (*result, published, featured)
+    return (*result, published, featured, json.dumps(translations(data.get('content_translations',{}),'product'),ensure_ascii=False))
 
 def password_hash(password, salt=None):
     salt = salt or secrets.token_hex(16)
@@ -125,7 +130,7 @@ class Handler(BaseHTTPRequestHandler):
         pass
 
     def reply(self, data, status=200, cookie=None):
-        body = json.dumps(data, ensure_ascii=False).encode()
+        body = json.dumps(public_content(data), ensure_ascii=False).encode()
         self.send_response(status)
         self.send_header('Content-Type', 'application/json; charset=utf-8')
         self.send_header('Content-Length', str(len(body)))
@@ -276,11 +281,11 @@ class Handler(BaseHTTPRequestHandler):
             return self.reply({'ok': True}, cookie='ezshop_session=' + token + '; HttpOnly; SameSite=Lax; Path=/; Max-Age=86400')
         if path == '/api/store' and method == 'GET':
             slug = parse_qs(urlparse(self.path).query).get('slug', [''])[0]
-            merchant = db.execute("SELECT id,name,slug,phone,description,logo,banner,shipping_fee,courier FROM merchants WHERE slug=? AND status='active'", (slug,)).fetchone()
+            merchant = db.execute("SELECT id,name,slug,phone,description,logo,banner,shipping_fee,courier,content_translations FROM merchants WHERE slug=? AND status='active'", (slug,)).fetchone()
             if not merchant:
                 return self.reply({'error': '找不到这家店铺'}, 404)
-            products = [dict(p) for p in db.execute('SELECT id,name,price,stock,emoji,description,category,image,featured,variant FROM products WHERE merchant_id=? AND published=1 ORDER BY id DESC', (merchant['id'],))]
-            return self.reply({'store': {**{k: merchant[k] for k in ('name', 'slug', 'phone', 'description','shipping_fee','courier')}, **{k:merchant[k] for k in ('logo','banner') if merchant[k]}}, 'products': products})
+            products = [dict(p) for p in db.execute('SELECT id,name,price,stock,emoji,description,category,image,featured,variant,content_translations FROM products WHERE merchant_id=? AND published=1 ORDER BY id DESC', (merchant['id'],))]
+            return self.reply({'store': {**{k: merchant[k] for k in ('name', 'slug', 'phone', 'description','shipping_fee','courier','content_translations')}, **{k:merchant[k] for k in ('logo','banner') if merchant[k]}}, 'products': products})
         if path == '/api/order-result' and method == 'POST':
             reference = text_field(data, 'reference', 50)
             token = text_field(data, 'token', 100)
@@ -290,7 +295,7 @@ class Handler(BaseHTTPRequestHandler):
             store = db.execute('SELECT id,name,slug,phone,description FROM merchants WHERE id=?', (order['merchant_id'],)).fetchone()
             if data.get('slug') != store['slug']:
                 return self.reply({'error': '订单不存在或访问凭证无效'}, 404)
-            items = [dict(i) for i in db.execute('SELECT name,price,quantity FROM order_items WHERE order_id=?', (order['id'],))]
+            items = [dict(i) for i in db.execute('SELECT name,price,quantity,content_translations FROM order_items WHERE order_id=?', (order['id'],))]
             safe = {key: order[key] for key in ('reference','total','status','created','subtotal','shipping','discount','fulfillment_status','carrier','tracking','shipped_at')}
             return self.reply({'order': safe, 'items': items, 'store': dict(store)})
         if path == '/api/shipping-quote' and method == 'POST':
@@ -303,7 +308,7 @@ class Handler(BaseHTTPRequestHandler):
             return self.checkout(db, data)
         cookie = self.headers.get('Cookie', '')
         token = next((p.strip().split('=', 1)[1] for p in cookie.split(';') if p.strip().startswith('ezshop_session=')), '')
-        merchant = db.execute('SELECT m.id,m.name,m.slug,m.email,m.phone,m.description,m.logo,m.banner,m.shipping_fee,m.courier,m.is_admin,m.plan,m.status,s.member_id FROM merchants m JOIN sessions s ON s.merchant_id=m.id WHERE s.token=? AND s.expires>?', (token, int(time.time()))).fetchone()
+        merchant = db.execute('SELECT m.id,m.name,m.slug,m.email,m.phone,m.description,m.logo,m.banner,m.content_translations,m.shipping_fee,m.courier,m.is_admin,m.plan,m.status,s.member_id FROM merchants m JOIN sessions s ON s.merchant_id=m.id WHERE s.token=? AND s.expires>?', (token, int(time.time()))).fetchone()
         if not merchant:
             return self.reply({'error': '请先登录'}, 401)
         mid = merchant['id']
@@ -357,6 +362,7 @@ class Handler(BaseHTTPRequestHandler):
             for a in agents:
                 a.pop('invite_token', None)
             return self.reply({'merchant': safe_merchant, 'products': products, 'orders': orders, 'agents': agents})
+        if path=='/api/content-translate' and method=='POST':return self.reply({'error':'自动翻译服务尚未配置或暂时不可用，请手动填写译文。'},503)
         allowed = role=='owner' or (role in ('manager','inventory') and path.startswith('/api/products')) or (role in ('manager','orders') and path.startswith('/api/orders/'))
         if not allowed:
             return self.reply({'error': '当前角色没有此操作权限'}, 403)
@@ -418,7 +424,7 @@ class Handler(BaseHTTPRequestHandler):
             price = integer(data, 'price', 1, 100000000)
             stock = integer(data, 'stock', 0, 1000000)
             emoji = text_field(data, 'emoji', 12)
-            db.execute('INSERT INTO products(merchant_id,name,price,stock,emoji,description,category,image,variant,published,featured) VALUES(?,?,?,?,?,?,?,?,?,?,?)', (mid, name, price, stock, emoji, *product_extras(data)))
+            db.execute('INSERT INTO products(merchant_id,name,price,stock,emoji,description,category,image,variant,published,featured,content_translations) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)', (mid, name, price, stock, emoji, *product_extras(data)))
             db.commit()
             return self.reply({'ok': True}, 201)
         if path == '/api/products/update' and method == 'POST':
@@ -429,13 +435,14 @@ class Handler(BaseHTTPRequestHandler):
             stock = integer(data, 'stock', 0, 1000000)
             emoji = text_field(data, 'emoji', 12)
             db.execute('BEGIN IMMEDIATE')
-            product = db.execute('SELECT version,variant FROM products WHERE id=? AND merchant_id=?', (pid, mid)).fetchone()
+            product = db.execute('SELECT version,variant,content_translations FROM products WHERE id=? AND merchant_id=?', (pid, mid)).fetchone()
             if not product:
                 return self.reply({'error': '找不到商品'}, 404)
             if product['version'] != version:
                 return self.reply({'error': '商品或库存已更新，请关闭窗口并刷新页面后重新编辑'}, 409)
             if 'variant' not in data:data={**data,'variant':product['variant']}
-            db.execute('UPDATE products SET name=?,price=?,stock=?,emoji=?,description=?,category=?,image=?,variant=?,published=?,featured=?,version=version+1 WHERE id=? AND merchant_id=? AND version=?', (name, price, stock, emoji, *product_extras(data), pid, mid, version))
+            if 'content_translations' not in data:data={**data,'content_translations':json.loads(product['content_translations'])}
+            db.execute('UPDATE products SET name=?,price=?,stock=?,emoji=?,description=?,category=?,image=?,variant=?,published=?,featured=?,content_translations=?,version=version+1 WHERE id=? AND merchant_id=? AND version=?', (name, price, stock, emoji, *product_extras(data), pid, mid, version))
             db.commit()
             return self.reply({'ok': True})
         if path == '/api/settings' and method == 'POST':
@@ -456,7 +463,8 @@ class Handler(BaseHTTPRequestHandler):
             courier=data.get('courier',merchant['courier'])
             if type(shipping_fee) is not int or not 0<=shipping_fee<=1000000:raise ValueError('邮费须为 0 到 RM 10,000 之间的金额')
             if not isinstance(courier,str) or len(courier)>100:raise ValueError('快递公司名称不能超过 100 字')
-            db.execute('UPDATE merchants SET name=?,phone=?,description=?,logo=?,banner=?,shipping_fee=?,courier=? WHERE id=?', (name, phone, description.strip(), *assets, shipping_fee,courier.strip(),mid))
+            versions=translations(data.get('content_translations',json.loads(merchant['content_translations'])),'store')
+            db.execute('UPDATE merchants SET name=?,phone=?,description=?,logo=?,banner=?,shipping_fee=?,courier=?,content_translations=? WHERE id=?', (name, phone, description.strip(), *assets, shipping_fee,courier.strip(),json.dumps(versions,ensure_ascii=False),mid))
             db.commit()
             return self.reply({'ok': True})
         if path == '/api/agents' and method == 'POST':
@@ -485,7 +493,7 @@ class Handler(BaseHTTPRequestHandler):
             order = db.execute('SELECT o.*, a.name agent_name FROM orders o LEFT JOIN agents a ON a.id=o.agent_id WHERE o.id=? AND o.merchant_id=?', (oid, mid)).fetchone()
             if not order:
                 return self.reply({'error': '找不到订单'}, 404)
-            items = [dict(i) for i in db.execute('SELECT name,price,quantity FROM order_items WHERE order_id=? ORDER BY id', (oid,))]
+            items = [dict(i) for i in db.execute('SELECT name,price,quantity,content_translations FROM order_items WHERE order_id=? ORDER BY id', (oid,))]
             return self.reply({'order': public_order(order), 'items': items})
         if path in ('/api/orders/paid', '/api/orders/cancel') and method == 'POST':
             oid = integer(data, 'id', 1, 2**53)
@@ -546,12 +554,14 @@ class Handler(BaseHTTPRequestHandler):
         if code and not agent:
             raise ValueError('代理链接无效')
         commission = (subtotal * agent['rate'] + 50) // 100 if agent else 0
+        language=data.get('locale','zh')
+        if language not in ('zh','en','ms','th','km','vi'):raise ValueError('语言无效')
         reference = 'EZ-' + secrets.token_hex(5).upper()
         oid = db.execute('INSERT INTO orders(merchant_id,reference,customer,email,phone,address,total,agent_id,commission) VALUES(?,?,?,?,?,?,?,?,?)', (mid, reference, customer, email, phone, address, total, agent['id'] if agent else None, commission)).lastrowid
         token = secrets.token_urlsafe(32)
-        db.execute('UPDATE orders SET note=?,checkout_key=?,access_token=?,subtotal=?,shipping=?,state=?,postcode=?,city=? WHERE id=?', (note, checkout_key, token,subtotal,shipping,state,postcode,city,oid))
+        db.execute('UPDATE orders SET note=?,checkout_key=?,access_token=?,subtotal=?,shipping=?,state=?,postcode=?,city=?,locale=? WHERE id=?', (note, checkout_key, token,subtotal,shipping,state,postcode,city,language,oid))
         for p, qty in lines:
-            db.execute('INSERT INTO order_items(order_id,product_id,name,price,quantity) VALUES(?,?,?,?,?)', (oid, p['id'], p['name']+(' · '+p['variant'] if p['variant'] else ''), p['price'], qty))
+            db.execute('INSERT INTO order_items(order_id,product_id,name,price,quantity,content_translations) VALUES(?,?,?,?,?,?)', (oid, p['id'], p['name']+(' · '+p['variant'] if p['variant'] else ''), p['price'], qty,json.dumps(snapshot(p),ensure_ascii=False)))
             db.execute('UPDATE products SET stock=stock-?,version=version+1 WHERE id=? AND merchant_id=?', (qty, p['id'], mid))
         db.commit()
         return self.reply({'reference': reference, 'total': total, 'status': 'pending', 'access_token': token, 'message': '订单已提交。请联系商家确认付款方式；本原型尚未接入线上支付。'}, 201)

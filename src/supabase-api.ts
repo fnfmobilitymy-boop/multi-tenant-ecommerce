@@ -5,6 +5,15 @@ export async function supabaseApi<T>(
   path: string,
   data?: unknown,
 ): Promise<T> {
+  if (path === "content-translate") {
+    const { data: result, error } = await client.functions.invoke(
+      "translate-content",
+      { body: data as Record<string, unknown> },
+    );
+    if (error)
+      throw new Error("自动翻译服务尚未配置或暂时不可用，请手动填写译文。");
+    return result as T;
+  }
   const url = new URL(path, "https://ezshop.local/");
   let route = url.pathname.slice(1);
   let payload: Record<string, unknown> = {

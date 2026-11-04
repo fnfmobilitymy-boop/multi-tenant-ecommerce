@@ -18,7 +18,7 @@ try:
         options={'headless':True,'args':['--no-sandbox']}
         if os.environ.get('EZSHOP_CHROMIUM'):options['executable_path']=os.environ['EZSHOP_CHROMIUM']
         browser=p.chromium.launch(**options)
-        context=browser.new_context()
+        context=browser.new_context(locale='zh-CN',)
         def intercept(route):
             request=route.request;url=urlparse(request.url)
             if url.hostname=='127.0.0.1':return route.continue_()

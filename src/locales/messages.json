@@ -3589,5 +3589,82 @@
     "ไม่พบร้านค้า",
     "រកមិនឃើញហាង",
     "Không tìm thấy cửa hàng"
+  ],
+  "顾客内容的多语言版本": [
+    "Multilingual customer content",
+    "Kandungan pelanggan berbilang bahasa",
+    "เนื้อหาหลายภาษาสำหรับลูกค้า",
+    "មាតិកាច្រើនភាសាសម្រាប់អតិថិជន",
+    "Nội dung đa ngôn ngữ cho khách hàng"
+  ],
+  "顾客选择语言后显示对应内容；未填写的内容显示原文。": [
+    "Customers see content in their chosen language. Missing translations use the original text.",
+    "Pelanggan melihat kandungan mengikut bahasa pilihan. Terjemahan yang tiada menggunakan teks asal.",
+    "ลูกค้าเห็นเนื้อหาตามภาษาที่เลือก หากยังไม่มีคำแปลจะแสดงต้นฉบับ",
+    "អតិថិជនឃើញមាតិកាតាមភាសាដែលបានជ្រើស។ បើខ្វះការបកប្រែ នឹងបង្ហាញអត្ថបទដើម។",
+    "Khách xem nội dung theo ngôn ngữ đã chọn. Phần chưa dịch sẽ hiển thị bản gốc."
+  ],
+  "内容语言": [
+    "Content language",
+    "Bahasa kandungan",
+    "ภาษาเนื้อหา",
+    "ភាសាមាតិកា",
+    "Ngôn ngữ nội dung"
+  ],
+  "正在生成译文…": [
+    "Generating translations…",
+    "Menjana terjemahan…",
+    "กำลังสร้างคำแปล…",
+    "កំពុងបង្កើតការបកប្រែ…",
+    "Đang tạo bản dịch…"
+  ],
+  "自动生成缺少的译文": [
+    "Generate missing translations",
+    "Jana terjemahan yang tiada",
+    "สร้างคำแปลที่ยังไม่มี",
+    "បង្កើតការបកប្រែដែលខ្វះ",
+    "Tạo các bản dịch còn thiếu"
+  ],
+  "自动生成需要已配置的翻译服务；不会覆盖已填写的译文，保存前请核对。": [
+    "Requires a configured translation service. Existing translations are preserved. Review drafts before saving.",
+    "Memerlukan perkhidmatan terjemahan yang dikonfigurasi. Terjemahan sedia ada dikekalkan. Semak sebelum menyimpan.",
+    "ต้องตั้งค่าบริการแปลภาษาก่อน จะไม่เขียนทับคำแปลเดิม โปรดตรวจสอบก่อนบันทึก",
+    "ត្រូវកំណត់សេវាបកប្រែជាមុន។ ការបកប្រែដែលមាននឹងរក្សាទុក។ ពិនិត្យសេចក្ដីព្រាងមុនរក្សាទុក។",
+    "Cần cấu hình dịch vụ dịch thuật. Giữ nguyên bản dịch đã nhập. Hãy kiểm tra bản nháp trước khi lưu."
+  ],
+  "请先填写原文名称和介绍。": [
+    "Enter the original name and description first.",
+    "Isi nama dan penerangan asal dahulu.",
+    "กรอกชื่อและรายละเอียดต้นฉบับก่อน",
+    "បញ្ចូលឈ្មោះ និងការពិពណ៌នាដើមជាមុន។",
+    "Nhập tên và mô tả gốc trước."
+  ],
+  "译文草稿已生成，请核对后保存。": [
+    "Translation drafts generated. Review them before saving.",
+    "Draf terjemahan dijana. Semak sebelum menyimpan.",
+    "สร้างคำแปลฉบับร่างแล้ว โปรดตรวจสอบก่อนบันทึก",
+    "បានបង្កើតសេចក្ដីព្រាងបកប្រែ។ ពិនិត្យមុនរក្សាទុក។",
+    "Đã tạo bản dịch nháp. Hãy kiểm tra trước khi lưu."
+  ],
+  "自动翻译服务尚未配置或暂时不可用，请手动填写译文。": [
+    "Automatic translation is not configured or unavailable. Enter translations manually.",
+    "Terjemahan automatik belum dikonfigurasi atau tidak tersedia. Isi terjemahan secara manual.",
+    "ยังไม่ได้ตั้งค่าหรือใช้บริการแปลอัตโนมัติไม่ได้ โปรดกรอกคำแปลเอง",
+    "សេវាបកប្រែស្វ័យប្រវត្តិមិនទាន់កំណត់ ឬមិនអាចប្រើបាន។ បញ្ចូលការបកប្រែដោយដៃ។",
+    "Chưa cấu hình hoặc chưa thể dùng dịch tự động. Vui lòng nhập bản dịch thủ công."
+  ],
+  "多语言内容格式无效": [
+    "Invalid multilingual content. Check the text and length.",
+    "Kandungan berbilang bahasa tidak sah. Semak teks dan panjangnya.",
+    "เนื้อหาหลายภาษาไม่ถูกต้อง โปรดตรวจสอบข้อความและความยาว",
+    "មាតិកាច្រើនភាសាមិនត្រឹមត្រូវ។ ពិនិត្យអត្ថបទ និងប្រវែង។",
+    "Nội dung đa ngôn ngữ không hợp lệ. Kiểm tra văn bản và độ dài."
+  ],
+  "多语言内容尚未启用，请联系平台管理员。": [
+    "Multilingual content is not enabled. Contact the platform administrator.",
+    "Kandungan berbilang bahasa belum aktif. Hubungi pentadbir platform.",
+    "ยังไม่เปิดเนื้อหาหลายภาษา โปรดติดต่อผู้ดูแลแพลตฟอร์ม",
+    "មិនទាន់បើកមាតិកាច្រើនភាសា។ ទាក់ទងអ្នកគ្រប់គ្រងវេទិកា។",
+    "Chưa bật nội dung đa ngôn ngữ. Hãy liên hệ quản trị viên."
   ]
 }

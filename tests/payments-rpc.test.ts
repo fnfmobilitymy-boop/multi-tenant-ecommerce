@@ -1,72 +1,486 @@
-import {PGlite} from '@electric-sql/pglite';import {readFileSync,readdirSync} from 'node:fs';import {beforeAll,afterAll,it,expect,describe} from 'vitest';
-const db=new PGlite();const owner='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',other='bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb';let mid:number,pid:number;
-async function user(id:string){await db.query("select set_config('request.jwt.claim.sub',$1,false)",[id])}
-async function call(name:string,route:string,payload:unknown={}){return (await db.query<{body:any}>(`select public.${name}($1,$2::jsonb) body`,[route,JSON.stringify(payload)])).rows[0].body}
-const main=(route:string,payload:unknown={})=>call('ezshop_api',route,payload),pay=(route:string,payload:unknown={})=>call('ezshop_payment_api',route,payload);
-async function service<T>(fn:()=>Promise<T>){await db.query("select set_config('request.jwt.claim.role','service_role',false)");try{return await fn()}finally{await db.query("select set_config('request.jwt.claim.role','',false)")}}
-beforeAll(async()=>{
- await db.exec(`create role anon;create role authenticated;create role service_role;create schema auth;create schema extensions;create table auth.users(id uuid primary key,email text,raw_user_meta_data jsonb);create function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid $$;create schema storage;create table storage.buckets(id text primary key,name text,public boolean,file_size_limit bigint,allowed_mime_types text[]);create table storage.objects(id uuid primary key default gen_random_uuid(),bucket_id text references storage.buckets(id),name text);alter table storage.objects enable row level security;create function storage.foldername(name text) returns text[] language sql immutable as $$ select string_to_array(regexp_replace(name,'/[^/]*$',''),'/') $$;grant usage on schema auth,storage to anon,authenticated;grant select,insert,update,delete on storage.objects to authenticated;`);
- for(const file of readdirSync('supabase/migrations').filter(f=>f.endsWith('.sql')).sort())await db.exec(readFileSync('supabase/migrations/'+file,'utf8'));
- await db.query('insert into auth.users values($1,$2,$3),($4,$5,$6)',[owner,'pay@example.test',JSON.stringify({name:'Pay Store',slug:'pay-store'}),other,'other@example.test',JSON.stringify({name:'Other',slug:'other-store'})]);
- await user(owner);mid=(await main('dashboard')).merchant.id;await main('products',{name:'Product',price:1000,stock:100,published:1});pid=(await main('dashboard')).products[0].id;await user(other);await main('dashboard');
-},30000);afterAll(()=>db.close());
-async function order(suffix:string){await user('');return main('checkout',{slug:'pay-store',customer:'Buyer',email:'buyer@example.test',phone:'0123456789',address:'KL',items:[{id:pid,quantity:1}],checkout_key:'payment-order-key-'+suffix+'-123456789'})}
-describe('支付与订阅受控数据库接口',()=>{
- it('商家或匿名用户不能自行开通收款或伪造付款',async()=>{
-  await user(owner);await expect(pay('service/bind-account',{merchant_id:mid,account_id:'acct_fixture',role:'service_role'})).rejects.toThrow();await user('');await expect(pay('owner-status')).rejects.toThrow();await expect(pay('service/payment-completed',{event_id:'evt_fake'})).rejects.toThrow();expect((await pay('store-options',{slug:'pay-store'})).online_enabled).toBe(false);
- });
- it('服务端绑定 Connect 后，订单金额来自数据库且会话幂等',async()=>{
-  await service(()=>pay('service/bind-account',{merchant_id:mid,account_id:'acct_fixture'}));await service(()=>pay('service/account-status',{account_id:'acct_fixture',charges_enabled:true,payouts_enabled:true,details_submitted:true}));
-  const o=await order('valid');const claim=await service(()=>pay('service/order-claim',{reference:o.reference,token:o.access_token,amount:1}));expect(claim.amount).toBe(1000);expect((await service(()=>pay('service/order-claim',{reference:o.reference,token:o.access_token}))).id).toBe(claim.id);
-  await service(()=>pay('service/save-order-session',{attempt_id:claim.id,session_id:'cs_valid'}));
-  const event={event_id:'evt_valid',session_id:'cs_valid',account_id:'acct_fixture',amount:1000,currency:'myr',payment_intent:'pi_fixture'};
-  await service(()=>pay('service/payment-completed',event));expect((await service(()=>pay('service/payment-completed',event))).duplicate).toBe(true);
-  await user(owner);const d=await main('dashboard');expect(d.orders[0].status).toBe('paid');expect((await main('notifications')).jobs).toHaveLength(1);
-  await expect(pay('order-summary',{slug:'pay-store',reference:o.reference,token:'wrong'})).rejects.toThrow();
- });
- it('金额不符或订单已取消时进入核查，不能自动标记付款',async()=>{
-  const o=await order('mismatch');const claim=await service(()=>pay('service/order-claim',{reference:o.reference,token:o.access_token}));await service(()=>pay('service/save-order-session',{attempt_id:claim.id,session_id:'cs_wrong'}));
-  expect((await service(()=>pay('service/payment-completed',{event_id:'evt_wrong',session_id:'cs_wrong',account_id:'acct_fixture',amount:1,currency:'myr'}))).requires_review).toBe(true);
-  await expect(service(()=>pay('service/order-claim',{reference:o.reference,token:o.access_token}))).rejects.toThrow('核查');
-  await user(owner);expect((await main('dashboard')).orders[0].status).toBe('pending');const review=(await pay('owner-status')).reviews[0];
-  await user(other);await expect(pay('resolve-review',{id:review.id,resolution:'not permitted'})).rejects.toThrow();
-  await user(owner);await main('orders/cancel',{id:claim.order_id});
-  expect((await service(()=>pay('service/payment-completed',{event_id:'evt_after_cancel',session_id:'cs_wrong',account_id:'acct_fixture',amount:1000,currency:'myr'}))).requires_review).toBe(true);
-  await user('');expect((await pay('order-summary',{slug:'pay-store',reference:o.reference,token:o.access_token})).requires_review).toBe(true);
- });
- it('实际全额退款才回冲订单；重复回调不重复处理，部分退款需核查',async()=>{
-  const o=await order('refund');const claim=await service(()=>pay('service/order-claim',{reference:o.reference,token:o.access_token}));
-  await service(()=>pay('service/save-order-session',{attempt_id:claim.id,session_id:'cs_refund'}));
-  await service(()=>pay('service/payment-completed',{event_id:'evt_pay_refund',session_id:'cs_refund',account_id:'acct_fixture',amount:1000,currency:'myr',payment_intent:'pi_refund'}));
-  const refund={event_id:'evt_refund_partial',account_id:'acct_fixture',payment_intent:'pi_refund',kind:'refund',charge_id:'ch_refund',currency:'myr',amount:1000,refunded:200};
-  await service(()=>pay('service/charge-adjustment',refund));await user(owner);expect((await main('dashboard')).orders[0].status).toBe('paid');
-  const stockBefore=(await main('dashboard')).products[0].stock;
-  const full={...refund,event_id:'evt_refund_full',refunded:1000};await service(()=>pay('service/charge-adjustment',full));
-  expect((await main('dashboard')).orders[0].status).toBe('refunded');expect((await service(()=>pay('service/charge-adjustment',full))).duplicate).toBe(true);
-  expect((await main('dashboard')).products[0].stock).toBe(stockBefore); // Refund never claims returned goods.
- });
- it('订阅 Checkout 不等于已付费，真实已付账单才启用 Pro',async()=>{
-  await user(owner);await service(()=>pay('service/bind-customer',{merchant_id:mid,customer_id:'cus_fixture'}));const claim=await service(()=>pay('service/billing-claim',{merchant_id:mid,price_id:'price_pro'}));await service(()=>pay('service/save-billing-session',{attempt_id:claim.id,session_id:'cs_billing'}));expect((await main('dashboard')).merchant.plan).toBe('free');
-  const snapshot={merchant_id:mid,customer_id:'cus_fixture',subscription_id:'sub_fixture',price_id:'price_pro',status:'active',period_end:Math.floor(Date.now()/1000)+86400,invoice_paid:false,event_id:'evt_sub_unpaid',event_created:100};
-  await service(()=>pay('service/subscription-sync',snapshot));expect((await main('dashboard')).merchant.plan).toBe('free');
-  await service(()=>pay('service/subscription-sync',{...snapshot,event_id:'evt_sub_paid',event_created:101,invoice_paid:true}));expect((await main('dashboard')).merchant.plan).toBe('pro');
-  await service(()=>pay('service/subscription-sync',{...snapshot,event_id:'evt_sub_cancel',event_created:102,status:'canceled'}));expect((await main('dashboard')).merchant.plan).toBe('free');
-  expect((await service(()=>pay('service/subscription-sync',{...snapshot,event_id:'evt_old_paid',event_created:101,invoice_paid:true}))).outdated).toBe(true);expect((await main('dashboard')).merchant.plan).toBe('free');
-  const renewed=await service(()=>pay('service/billing-claim',{merchant_id:mid,price_id:'price_pro'}));expect(renewed.id).not.toBe(claim.id);
-  await expect(service(()=>pay('service/subscription-sync',{...snapshot,event_id:'evt_wrong_customer',customer_id:'cus_other'}))).rejects.toThrow();
- });
- it('规格来自数据库，订单保留成交规格，重试及其他商家不能改写',async()=>{
-  await user(owner);await main('products',{name:'Shirt',price:2500,stock:4,variant:'黑色 / M'});
-  let product=(await main('dashboard')).products[0];
-  await user('');expect((await main('store',{slug:'pay-store'})).products.find((p:any)=>p.id===product.id).variant).toBe('黑色 / M');
-  const request={slug:'pay-store',customer:'Buyer',email:'buyer@example.test',phone:'0123456789',address:'KL',checkout_key:'variant-order-key-1234567890',items:[{id:product.id,quantity:1}]};
-  const order=await main('checkout',request);
-  await user(owner);product=(await main('dashboard')).products[0];await main('products/update',{...product,variant:'白色 / L'});
-  await user(other);await expect(main('products/update',{...product,version:product.version+1,variant:'Wrong store'})).rejects.toThrow();
-  await user('');await main('checkout',request);
-  const result=await main('order-result',{slug:'pay-store',reference:order.reference,token:order.access_token});
-  expect(result.items[0].name).toBe('Shirt · 黑色 / M');
-  expect((await main('store',{slug:'pay-store'})).products.find((p:any)=>p.id===product.id).variant).toBe('白色 / L');
- });
+import { PGlite } from "@electric-sql/pglite";
+import { readFileSync, readdirSync } from "node:fs";
+import { beforeAll, afterAll, it, expect, describe } from "vitest";
+const db = new PGlite();
+const owner = "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+  other = "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb";
+let mid: number, pid: number;
+async function user(id: string) {
+  await db.query("select set_config('request.jwt.claim.sub',$1,false)", [id]);
+}
+async function call(name: string, route: string, payload: unknown = {}) {
+  return (
+    await db.query<{ body: any }>(`select public.${name}($1,$2::jsonb) body`, [
+      route,
+      JSON.stringify(payload),
+    ])
+  ).rows[0].body;
+}
+const main = (route: string, payload: unknown = {}) =>
+    call("ezshop_api", route, payload),
+  pay = (route: string, payload: unknown = {}) =>
+    call("ezshop_payment_api", route, payload);
+async function service<T>(fn: () => Promise<T>) {
+  await db.query(
+    "select set_config('request.jwt.claim.role','service_role',false)",
+  );
+  try {
+    return await fn();
+  } finally {
+    await db.query("select set_config('request.jwt.claim.role','',false)");
+  }
+}
+beforeAll(async () => {
+  await db.exec(
+    `create role anon;create role authenticated;create role service_role;create schema auth;create schema extensions;create table auth.users(id uuid primary key,email text,raw_user_meta_data jsonb);create function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid $$;create schema storage;create table storage.buckets(id text primary key,name text,public boolean,file_size_limit bigint,allowed_mime_types text[]);create table storage.objects(id uuid primary key default gen_random_uuid(),bucket_id text references storage.buckets(id),name text);alter table storage.objects enable row level security;create function storage.foldername(name text) returns text[] language sql immutable as $$ select string_to_array(regexp_replace(name,'/[^/]*$',''),'/') $$;grant usage on schema auth,storage to anon,authenticated;grant select,insert,update,delete on storage.objects to authenticated;`,
+  );
+  for (const file of readdirSync("supabase/migrations")
+    .filter((f) => f.endsWith(".sql"))
+    .sort())
+    await db.exec(readFileSync("supabase/migrations/" + file, "utf8"));
+  await db.query("insert into auth.users values($1,$2,$3),($4,$5,$6)", [
+    owner,
+    "pay@example.test",
+    JSON.stringify({ name: "Pay Store", slug: "pay-store" }),
+    other,
+    "other@example.test",
+    JSON.stringify({ name: "Other", slug: "other-store" }),
+  ]);
+  await user(owner);
+  mid = (await main("dashboard")).merchant.id;
+  await main("products", {
+    name: "Product",
+    price: 1000,
+    stock: 100,
+    published: 1,
+  });
+  pid = (await main("dashboard")).products[0].id;
+  await user(other);
+  await main("dashboard");
+}, 30000);
+afterAll(() => db.close());
+async function order(suffix: string) {
+  await user("");
+  return main("checkout", {
+    slug: "pay-store",
+    customer: "Buyer",
+    email: "buyer@example.test",
+    phone: "0123456789",
+    address: "KL",
+    items: [{ id: pid, quantity: 1 }],
+    checkout_key: "payment-order-key-" + suffix + "-123456789",
+  });
+}
+describe("支付与订阅受控数据库接口", () => {
+  it("商家或匿名用户不能自行开通收款或伪造付款", async () => {
+    await user(owner);
+    await expect(
+      pay("service/bind-account", {
+        merchant_id: mid,
+        account_id: "acct_fixture",
+        role: "service_role",
+      }),
+    ).rejects.toThrow();
+    await user("");
+    await expect(pay("owner-status")).rejects.toThrow();
+    await expect(
+      pay("service/payment-completed", { event_id: "evt_fake" }),
+    ).rejects.toThrow();
+    expect(
+      (await pay("store-options", { slug: "pay-store" })).online_enabled,
+    ).toBe(false);
+  });
+  it("服务端绑定 Connect 后，订单金额来自数据库且会话幂等", async () => {
+    await service(() =>
+      pay("service/bind-account", {
+        merchant_id: mid,
+        account_id: "acct_fixture",
+      }),
+    );
+    await service(() =>
+      pay("service/account-status", {
+        account_id: "acct_fixture",
+        charges_enabled: true,
+        payouts_enabled: true,
+        details_submitted: true,
+      }),
+    );
+    const o = await order("valid");
+    const claim = await service(() =>
+      pay("service/order-claim", {
+        reference: o.reference,
+        token: o.access_token,
+        amount: 1,
+      }),
+    );
+    expect(claim.amount).toBe(1000);
+    expect(
+      (
+        await service(() =>
+          pay("service/order-claim", {
+            reference: o.reference,
+            token: o.access_token,
+          }),
+        )
+      ).id,
+    ).toBe(claim.id);
+    await service(() =>
+      pay("service/save-order-session", {
+        attempt_id: claim.id,
+        session_id: "cs_valid",
+      }),
+    );
+    const event = {
+      event_id: "evt_valid",
+      session_id: "cs_valid",
+      account_id: "acct_fixture",
+      amount: 1000,
+      currency: "myr",
+      payment_intent: "pi_fixture",
+    };
+    await service(() => pay("service/payment-completed", event));
+    expect(
+      (await service(() => pay("service/payment-completed", event))).duplicate,
+    ).toBe(true);
+    await user(owner);
+    const d = await main("dashboard");
+    expect(d.orders[0].status).toBe("paid");
+    expect((await main("notifications")).jobs).toHaveLength(1);
+    await expect(
+      pay("order-summary", {
+        slug: "pay-store",
+        reference: o.reference,
+        token: "wrong",
+      }),
+    ).rejects.toThrow();
+  });
+  it("金额不符或订单已取消时进入核查，不能自动标记付款", async () => {
+    const o = await order("mismatch");
+    const claim = await service(() =>
+      pay("service/order-claim", {
+        reference: o.reference,
+        token: o.access_token,
+      }),
+    );
+    await service(() =>
+      pay("service/save-order-session", {
+        attempt_id: claim.id,
+        session_id: "cs_wrong",
+      }),
+    );
+    expect(
+      (
+        await service(() =>
+          pay("service/payment-completed", {
+            event_id: "evt_wrong",
+            session_id: "cs_wrong",
+            account_id: "acct_fixture",
+            amount: 1,
+            currency: "myr",
+          }),
+        )
+      ).requires_review,
+    ).toBe(true);
+    await expect(
+      service(() =>
+        pay("service/order-claim", {
+          reference: o.reference,
+          token: o.access_token,
+        }),
+      ),
+    ).rejects.toThrow("核查");
+    await user(owner);
+    expect((await main("dashboard")).orders[0].status).toBe("pending");
+    const review = (await pay("owner-status")).reviews[0];
+    await user(other);
+    await expect(
+      pay("resolve-review", { id: review.id, resolution: "not permitted" }),
+    ).rejects.toThrow();
+    await user(owner);
+    await main("orders/cancel", { id: claim.order_id });
+    expect(
+      (
+        await service(() =>
+          pay("service/payment-completed", {
+            event_id: "evt_after_cancel",
+            session_id: "cs_wrong",
+            account_id: "acct_fixture",
+            amount: 1000,
+            currency: "myr",
+          }),
+        )
+      ).requires_review,
+    ).toBe(true);
+    await user("");
+    expect(
+      (
+        await pay("order-summary", {
+          slug: "pay-store",
+          reference: o.reference,
+          token: o.access_token,
+        })
+      ).requires_review,
+    ).toBe(true);
+  });
+  it("实际全额退款才回冲订单；重复回调不重复处理，部分退款需核查", async () => {
+    const o = await order("refund");
+    const claim = await service(() =>
+      pay("service/order-claim", {
+        reference: o.reference,
+        token: o.access_token,
+      }),
+    );
+    await service(() =>
+      pay("service/save-order-session", {
+        attempt_id: claim.id,
+        session_id: "cs_refund",
+      }),
+    );
+    await service(() =>
+      pay("service/payment-completed", {
+        event_id: "evt_pay_refund",
+        session_id: "cs_refund",
+        account_id: "acct_fixture",
+        amount: 1000,
+        currency: "myr",
+        payment_intent: "pi_refund",
+      }),
+    );
+    const refund = {
+      event_id: "evt_refund_partial",
+      account_id: "acct_fixture",
+      payment_intent: "pi_refund",
+      kind: "refund",
+      charge_id: "ch_refund",
+      currency: "myr",
+      amount: 1000,
+      refunded: 200,
+    };
+    await service(() => pay("service/charge-adjustment", refund));
+    await user(owner);
+    expect((await main("dashboard")).orders[0].status).toBe("paid");
+    const stockBefore = (await main("dashboard")).products[0].stock;
+    const full = { ...refund, event_id: "evt_refund_full", refunded: 1000 };
+    await service(() => pay("service/charge-adjustment", full));
+    expect((await main("dashboard")).orders[0].status).toBe("refunded");
+    expect(
+      (await service(() => pay("service/charge-adjustment", full))).duplicate,
+    ).toBe(true);
+    expect((await main("dashboard")).products[0].stock).toBe(stockBefore); // Refund never claims returned goods.
+  });
+  it("订阅 Checkout 不等于已付费，真实已付账单才启用 Pro", async () => {
+    await user(owner);
+    await service(() =>
+      pay("service/bind-customer", {
+        merchant_id: mid,
+        customer_id: "cus_fixture",
+      }),
+    );
+    const claim = await service(() =>
+      pay("service/billing-claim", { merchant_id: mid, price_id: "price_pro" }),
+    );
+    await service(() =>
+      pay("service/save-billing-session", {
+        attempt_id: claim.id,
+        session_id: "cs_billing",
+      }),
+    );
+    expect((await main("dashboard")).merchant.plan).toBe("free");
+    const snapshot = {
+      merchant_id: mid,
+      customer_id: "cus_fixture",
+      subscription_id: "sub_fixture",
+      price_id: "price_pro",
+      status: "active",
+      period_end: Math.floor(Date.now() / 1000) + 86400,
+      invoice_paid: false,
+      event_id: "evt_sub_unpaid",
+      event_created: 100,
+    };
+    await service(() => pay("service/subscription-sync", snapshot));
+    expect((await main("dashboard")).merchant.plan).toBe("free");
+    await service(() =>
+      pay("service/subscription-sync", {
+        ...snapshot,
+        event_id: "evt_sub_paid",
+        event_created: 101,
+        invoice_paid: true,
+      }),
+    );
+    expect((await main("dashboard")).merchant.plan).toBe("pro");
+    await service(() =>
+      pay("service/subscription-sync", {
+        ...snapshot,
+        event_id: "evt_sub_cancel",
+        event_created: 102,
+        status: "canceled",
+      }),
+    );
+    expect((await main("dashboard")).merchant.plan).toBe("free");
+    expect(
+      (
+        await service(() =>
+          pay("service/subscription-sync", {
+            ...snapshot,
+            event_id: "evt_old_paid",
+            event_created: 101,
+            invoice_paid: true,
+          }),
+        )
+      ).outdated,
+    ).toBe(true);
+    expect((await main("dashboard")).merchant.plan).toBe("free");
+    const renewed = await service(() =>
+      pay("service/billing-claim", { merchant_id: mid, price_id: "price_pro" }),
+    );
+    expect(renewed.id).not.toBe(claim.id);
+    await expect(
+      service(() =>
+        pay("service/subscription-sync", {
+          ...snapshot,
+          event_id: "evt_wrong_customer",
+          customer_id: "cus_other",
+        }),
+      ),
+    ).rejects.toThrow();
+  });
+  it("规格来自数据库，订单保留成交规格，重试及其他商家不能改写", async () => {
+    await user(owner);
+    await main("products", {
+      name: "Shirt",
+      price: 2500,
+      stock: 4,
+      variant: "黑色 / M",
+    });
+    let product = (await main("dashboard")).products[0];
+    await user("");
+    expect(
+      (await main("store", { slug: "pay-store" })).products.find(
+        (p: any) => p.id === product.id,
+      ).variant,
+    ).toBe("黑色 / M");
+    const request = {
+      slug: "pay-store",
+      customer: "Buyer",
+      email: "buyer@example.test",
+      phone: "0123456789",
+      address: "KL",
+      checkout_key: "variant-order-key-1234567890",
+      items: [{ id: product.id, quantity: 1 }],
+    };
+    const order = await main("checkout", request);
+    await user(owner);
+    product = (await main("dashboard")).products[0];
+    await main("products/update", { ...product, variant: "白色 / L" });
+    await user(other);
+    await expect(
+      main("products/update", {
+        ...product,
+        version: product.version + 1,
+        variant: "Wrong store",
+      }),
+    ).rejects.toThrow();
+    await user("");
+    await main("checkout", request);
+    const result = await main("order-result", {
+      slug: "pay-store",
+      reference: order.reference,
+      token: order.access_token,
+    });
+    expect(result.items[0].name).toBe("Shirt · 黑色 / M");
+    expect(
+      (await main("store", { slug: "pay-store" })).products.find(
+        (p: any) => p.id === product.id,
+      ).variant,
+    ).toBe("白色 / L");
+  });
 
+  it("多语言商品按商家授权保存，订单快照和联系资料不因切换或编辑改变", async () => {
+    await user(owner);
+    const versions = {
+      en: {
+        name: "English Shirt",
+        description: "English description",
+        variant: "Black / M",
+      },
+      vi: { name: "Áo đẹp", description: "Mô tả", variant: "Đen / M" },
+    };
+    await main("products", {
+      name: "原文商品",
+      price: 1500,
+      stock: 8,
+      variant: "黑色 / M",
+      content_translations: versions,
+    });
+    let product = (await main("dashboard")).products[0];
+    expect(product.content_translations.en.name).toBe("English Shirt");
+    await expect(
+      main("products", {
+        name: "Invalid",
+        price: 100,
+        stock: 1,
+        content_translations: { en: { price: "1" } },
+      }),
+    ).rejects.toThrow("多语言");
+    await user(other);
+    await expect(
+      main("products/update", {
+        ...product,
+        content_translations: { en: { name: "foreign edit" } },
+      }),
+    ).rejects.toThrow();
+    await user("");
+    const visible = await main("store", { slug: "pay-store" });
+    expect(visible.products[0].content_translations.vi.name).toBe("Áo đẹp");
+    const request = {
+      slug: "pay-store",
+      customer: "สมชาย",
+      phone: "0123456789",
+      email: "buyer@example.test",
+      address: "Địa chỉ gốc 123",
+      locale: "vi",
+      checkout_key: "translated-checkout-key-123456789",
+      items: [{ id: product.id, quantity: 1 }],
+    };
+    const order = await main("checkout", request);
+    await user(owner);
+    product = (await main("dashboard")).products[0];
+    await main("products/update", {
+      ...product,
+      content_translations: { vi: { name: "Changed later" } },
+    });
+    const stored = (await main("dashboard")).orders[0];
+    expect(stored.customer).toBe("สมชาย");
+    expect(stored.address).toBe("Địa chỉ gốc 123");
+    expect(stored.locale).toBe("vi");
+    expect(stored.total).toBe(1500);
+    await user("");
+    await main("checkout", { ...request, locale: "en" });
+    const result = await main("order-result", {
+      slug: "pay-store",
+      reference: order.reference,
+      token: order.access_token,
+    });
+    expect(result.items[0].content_translations.vi.name).toBe("Áo đẹp");
+    expect(result.items[0].content_translations.en.name).toBe("English Shirt");
+  });
+  it("外部翻译额度只属于当前商家，匿名和超额请求无法通过", async () => {
+    await user("");
+    await expect(
+      db.query("select public.ezshop_translation_access($1,$2)", [
+        "product",
+        1,
+      ]),
+    ).rejects.toThrow();
+    await user(owner);
+    const claim = () =>
+      db.query("select public.ezshop_translation_access($1,$2)", [
+        "product",
+        5000,
+      ]);
+    for (let i = 0; i < 12; i++) await claim();
+    await expect(claim()).rejects.toThrow("上限");
+    await user(other);
+    await expect(claim()).resolves.toBeTruthy();
+  });
 });

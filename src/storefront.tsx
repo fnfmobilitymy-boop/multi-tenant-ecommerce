@@ -1,5 +1,6 @@
+import { contentField, localizedContent, localizedItem } from "./content";
 import { useI18n } from "./i18n";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   ArrowLeft,
@@ -29,7 +30,7 @@ export function Storefront() {
   const { slug = "", productId } = useParams(),
     location = useLocation(),
     navigate = useNavigate();
-  const [data, setData] = useState<StoreData | null>(null),
+  const [rawData, setData] = useState<StoreData | null>(null),
     [error, setError] = useState(""),
     [query, setQuery] = useState(""),
     [category, setCategory] = useState("全部商品"),
@@ -41,6 +42,16 @@ export function Storefront() {
   const [quote, setQuote] = useState<ShippingQuote | null>(null),
     [quoteError, setQuoteError] = useState(""),
     [quoteLoading, setQuoteLoading] = useState(false);
+  const data = useMemo(
+    () =>
+      rawData
+        ? {
+            store: localizedContent(rawData.store, locale),
+            products: rawData.products.map((p) => localizedContent(p, locale)),
+          }
+        : null,
+    [rawData, locale],
+  );
   const [onlineEnabled, setOnlineEnabled] = useState(false);
   useEffect(() => {
     let active = true;
@@ -184,6 +195,7 @@ export function Storefront() {
         agent: sessionStorage.getItem("ezshop:agent:" + slug) || "",
         checkout_key: key,
         payment_method: "manual",
+        locale,
       });
       sessionStorage.setItem("ezshop:order:" + o.reference, o.access_token);
       sessionStorage.removeItem(keyName);
@@ -226,7 +238,7 @@ export function Storefront() {
         <small>
           {p.category === "全部商品"
             ? t("全部商品")
-            : p.category || t("精选商品")}
+            : contentField(p, "category", locale) || t("精选商品")}
         </small>
         <h3>{p.name}</h3>
         <div className="row between">
@@ -341,7 +353,15 @@ export function Storefront() {
                   className={category === c ? "chip active" : "chip"}
                   onClick={() => setCategory(c)}
                 >
-                  {c === "全部商品" ? t(c) : c}
+                  {c === "全部商品"
+                    ? t(c)
+                    : contentField(
+                        data.products.find((p) => p.category === c) || {
+                          category: c,
+                        },
+                        "category",
+                        locale,
+                      )}
                 </button>
               ))}
             </div>
@@ -371,7 +391,8 @@ export function Storefront() {
                   <span className="eyebrow">
                     {current.category === "全部商品"
                       ? t("全部商品")
-                      : current.category || t("精选商品")}
+                      : contentField(current, "category", locale) ||
+                        t("精选商品")}
                   </span>
                   <h1>{current.name}</h1>
                   <div className="detail-price">
@@ -788,7 +809,7 @@ export function Storefront() {
               {result.items.map((i, n) => (
                 <div className="summary-line" key={n}>
                   <span>
-                    {i.name} × {i.quantity}
+                    {localizedItem(i, locale).name} × {i.quantity}
                   </span>
                   <strong>{money(i.price * i.quantity, locale)}</strong>
                 </div>

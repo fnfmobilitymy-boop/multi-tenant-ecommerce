@@ -29,7 +29,7 @@ jobs:
         with:
           deno-version: v2.9.6
       - name: 支付服务类型与依赖校验
-        run: deno check --no-config --lock=supabase/functions/deno.lock --frozen supabase/functions/payments/index.ts supabase/functions/stripe-webhook/index.ts
+        run: deno check --no-config --lock=supabase/functions/deno.lock --frozen supabase/functions/payments/index.ts supabase/functions/stripe-webhook/index.ts supabase/functions/translate-content/index.ts
       - name: 购物车及 PostgreSQL 权限测试
         run: |
           npm test
@@ -48,6 +48,7 @@ jobs:
         run: |
           VITE_SUPABASE_URL= VITE_SUPABASE_ANON_KEY= npm run build -- --outDir=local-test-dist
           python tests/i18n_browser.py
+          python tests/content_browser.py
       - name: 隔离构建验证邮件界面
         env:
           VITE_SUPABASE_URL: https://auth-test.supabase.co

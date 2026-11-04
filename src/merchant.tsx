@@ -1,3 +1,4 @@
+import { ContentEditor } from "./content-editor";
 import { I18nProvider, LanguageToolbar, useI18n } from "./i18n";
 import { useEffect, useState } from "react";
 import { Payouts } from "./payouts";
@@ -125,10 +126,17 @@ function MerchantPage({
     setBusy(true);
     setError("");
     const form = Object.fromEntries(new FormData(e.currentTarget));
+    const versions =
+      form.content_translations === undefined
+        ? {}
+        : {
+            content_translations: JSON.parse(String(form.content_translations)),
+          };
     try {
       if (modal === "product")
         await api(editing ? "products/update" : "products", {
           ...form,
+          ...versions,
           price: Math.round(Number(form.price) * 100),
           stock: Number(form.stock),
           category: String(form.category || "全部商品"),
@@ -143,6 +151,7 @@ function MerchantPage({
           throw new Error("店铺配送设置尚未启用，请联系平台管理员完成设置。");
         await api("settings", {
           ...form,
+          ...versions,
           shipping_fee:
             form.shipping_fee === undefined
               ? data?.merchant.shipping_fee || 0
@@ -845,6 +854,17 @@ function MerchantPage({
                     defaultValue={data.merchant.description}
                   />
                 </label>
+                {data.merchant.content_translations !== undefined ? (
+                  <ContentEditor
+                    kind="store"
+                    initial={data.merchant.content_translations}
+                    onBusy={imageUploading}
+                  />
+                ) : (
+                  <div className="soft-note">
+                    {t("多语言内容尚未启用，请联系平台管理员。")}
+                  </div>
+                )}
                 <ImageUpload
                   name="logo"
                   label={t("商家 Logo")}
@@ -1034,6 +1054,17 @@ function MerchantPage({
                     placeholder={t("全部商品")}
                   />
                 </label>
+                {data.merchant.content_translations !== undefined ? (
+                  <ContentEditor
+                    kind="product"
+                    initial={editing?.content_translations}
+                    onBusy={imageUploading}
+                  />
+                ) : (
+                  <div className="soft-note">
+                    {t("多语言内容尚未启用，请联系平台管理员。")}
+                  </div>
+                )}
                 <ImageUpload
                   name="image"
                   label={t("商品图片")}

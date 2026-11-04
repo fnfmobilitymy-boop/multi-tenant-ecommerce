@@ -17,7 +17,7 @@ with tempfile.TemporaryDirectory() as temp:
             if os.environ.get('EZSHOP_CHROMIUM'):options['executable_path']=os.environ['EZSHOP_CHROMIUM']
             browser=p.chromium.launch(**options)
             def isolated_context(**kwargs):
-                context=browser.new_context(**kwargs)
+                context=browser.new_context(locale='zh-CN',**kwargs)
                 # Never let integration fixtures register accounts or send mail
                 # against an accidentally configured live Supabase build.
                 context.route('**/*',lambda route:route.continue_() if urlparse(route.request.url).hostname=='127.0.0.1' else route.abort())
@@ -49,7 +49,7 @@ with tempfile.TemporaryDirectory() as temp:
             merchant.wait_for_function("document.querySelector('input[name=logo]').value.startsWith('/media/')")
             merchant.get_by_label('商店 Banner选择图片',exact=True).set_input_files(root/'tests/fixtures/shop-image.png')
             merchant.wait_for_function("document.querySelector('input[name=banner]').value.startsWith('/media/')")
-            merchant.get_by_label('店铺简介').fill('新鲜手作，分享每一份美好。')
+            merchant.get_by_label('店铺简介',exact=True).fill('新鲜手作，分享每一份美好。')
             merchant.get_by_label('公开 WhatsApp 联系电话').fill('+60123456789')
             merchant.get_by_label('每单邮费（MYR）').fill('8.00')
             merchant.get_by_label('常用快递公司',exact=True).fill('Ninja Van')

@@ -7,3 +7,7 @@ verify_jwt = false
 verify_jwt = false
 [functions.stripe-webhook]
 verify_jwt = false
+
+# 仅商家可生成公开内容翻译；函数内验证 Auth、角色与日用量，顾客只读取已保存的译文。
+[functions.translate-content]
+verify_jwt = false

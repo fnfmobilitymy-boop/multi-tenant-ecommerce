@@ -1,4 +1,6 @@
+import type { ContentTranslations } from "./content";
 export interface Merchant {
+  content_translations?: ContentTranslations;
   id: number;
   name: string;
   slug: string;
@@ -14,6 +16,7 @@ export interface Merchant {
   courier?: string;
 }
 export interface Product {
+  content_translations?: ContentTranslations;
   id: number;
   merchant_id?: number;
   name: string;
@@ -68,6 +71,7 @@ export interface Dashboard {
   agents: Agent[];
 }
 export interface Item {
+  content_translations?: ContentTranslations;
   name: string;
   price: number;
   quantity: number;

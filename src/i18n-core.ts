@@ -18,6 +18,17 @@ export function normalizeLocale(value: unknown, audience: Audience): Locale {
     ? (value as Locale)
     : "zh";
 }
+export function browserLocale(
+  languages: readonly string[],
+  audience: Audience,
+): Locale {
+  for (const language of languages) {
+    const code = language.toLowerCase().split(/[-_]/)[0];
+    if (allowedLanguages(audience).some((entry) => entry.code === code))
+      return code as Locale;
+  }
+  return "en";
+}
 export function intlLocale(locale: Locale) {
   return LANGUAGES.find((l) => l.code === locale)!.intl;
 }

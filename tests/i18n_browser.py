@@ -14,7 +14,7 @@ with tempfile.TemporaryDirectory() as directory:
         with sync_playwright() as p:
             options={'headless':True,'args':['--no-sandbox']}
             if os.environ.get('EZSHOP_CHROMIUM'):options['executable_path']=os.environ['EZSHOP_CHROMIUM']
-            browser=p.chromium.launch(**options);context=browser.new_context();errors=[]
+            browser=p.chromium.launch(**options);context=browser.new_context(locale='zh-CN',);errors=[]
             context.route('**/*',lambda route:route.continue_() if urlparse(route.request.url).hostname=='127.0.0.1' else route.abort())
             page=context.new_page();page.on('pageerror',lambda e:errors.append(str(e)))
             for attempt in range(80):

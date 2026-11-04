@@ -8,6 +8,7 @@ import {
 import { Globe } from "lucide-react";
 import {
   allowedLanguages,
+  browserLocale,
   normalizeLocale,
   translate,
   translateError,
@@ -20,13 +21,15 @@ const memory = new Map<Audience, Locale>();
 function read(audience: Audience): Locale {
   if (memory.has(audience)) return memory.get(audience)!;
   try {
-    return normalizeLocale(
-      localStorage.getItem("ezshop:language:" + audience),
-      audience,
-    );
+    const stored = localStorage.getItem("ezshop:language:" + audience);
+    if (stored) return normalizeLocale(stored, audience);
   } catch {
-    return "zh";
+    /* Browser preference also works without storage. */
   }
+  return browserLocale(
+    navigator.languages?.length ? navigator.languages : [navigator.language],
+    audience,
+  );
 }
 function write(audience: Audience, locale: Locale) {
   const value = normalizeLocale(locale, audience);
