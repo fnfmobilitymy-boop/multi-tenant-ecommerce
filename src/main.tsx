@@ -1,6 +1,7 @@
+import { I18nProvider, LanguageToolbar, useI18n } from "./i18n";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { MerchantApp } from "./merchant";
 import { Storefront } from "./storefront";
 import { Join } from "./management";
@@ -10,14 +11,25 @@ import {
   RecoveryListener,
 } from "./account-recovery";
 import "./style.css";
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <BrowserRouter
-      basename={import.meta.env.BASE_URL.replace(/\/$/, "") || "/"}
+function AppRoutes() {
+  const location = useLocation();
+  if (location.pathname === "/") return <MerchantApp />;
+  return (
+    <I18nProvider
+      audience={
+        location.pathname.startsWith("/shop/") ? "customer" : "merchant"
+      }
     >
-      <RecoveryListener />
+      <LanguageToolbar />
+      <LocalizedRoutes />
+    </I18nProvider>
+  );
+}
+function LocalizedRoutes() {
+  const { t } = useI18n();
+  return (
+    <>
       <Routes>
-        <Route path="/" element={<MerchantApp />} />
         <Route path="/join" element={<Join />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
@@ -30,12 +42,22 @@ createRoot(document.getElementById("root")!).render(
           path="*"
           element={
             <div className="empty">
-              <h1>找不到页面</h1>
-              <a href={import.meta.env.BASE_URL}>返回 EZShop</a>
+              <h1>{t("找不到页面")}</h1>
+              <a href={import.meta.env.BASE_URL}>{t("返回 EZShop")}</a>
             </div>
           }
         />
       </Routes>
+    </>
+  );
+}
+createRoot(document.getElementById("root")!).render(
+  <StrictMode>
+    <BrowserRouter
+      basename={import.meta.env.BASE_URL.replace(/\/$/, "") || "/"}
+    >
+      <RecoveryListener />
+      <AppRoutes />
     </BrowserRouter>
   </StrictMode>,
 );

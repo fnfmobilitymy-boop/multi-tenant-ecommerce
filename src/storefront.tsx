@@ -1,3 +1,4 @@
+import { useI18n } from "./i18n";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import {
@@ -14,7 +15,7 @@ import {
   Package,
 } from "lucide-react";
 import { api, money, statusLabel, supabase } from "./api";
-import {OrderPayment} from "./payments";
+import { OrderPayment } from "./payments";
 import { getCart, putCart, setQuantity } from "./cart";
 import type { CartLine, Merchant, OrderResult, Product } from "./types";
 import { Brand, Empty, ErrorBox, Loading } from "./ui";
@@ -24,6 +25,7 @@ interface StoreData {
   products: Product[];
 }
 export function Storefront() {
+  const { t, locale, errorText } = useI18n();
   const { slug = "", productId } = useParams(),
     location = useLocation(),
     navigate = useNavigate();
@@ -39,8 +41,22 @@ export function Storefront() {
   const [quote, setQuote] = useState<ShippingQuote | null>(null),
     [quoteError, setQuoteError] = useState(""),
     [quoteLoading, setQuoteLoading] = useState(false);
-  const [onlineEnabled,setOnlineEnabled]=useState(false);
-  useEffect(()=>{let active=true;setOnlineEnabled(false);if(supabase)api<{online_enabled:boolean}>("payments/store-options",{slug}).then(r=>{if(active)setOnlineEnabled(r.online_enabled)}).catch(()=>{});return()=>{active=false}},[slug]);
+  const [onlineEnabled, setOnlineEnabled] = useState(false);
+  useEffect(() => {
+    let active = true;
+    setOnlineEnabled(false);
+    if (supabase)
+      api<{
+        online_enabled: boolean;
+      }>("payments/store-options", { slug })
+        .then((r) => {
+          if (active) setOnlineEnabled(r.online_enabled);
+        })
+        .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, [slug]);
   const base = "/shop/" + encodeURIComponent(slug),
     kind = location.pathname.endsWith("/cart")
       ? "cart"
@@ -158,17 +174,17 @@ export function Storefront() {
         key = crypto.randomUUID();
         sessionStorage.setItem(keyName, key);
       }
-      const o = await api<{ reference: string; access_token: string }>(
-        "checkout",
-        {
-          ...form,
-          slug,
-          items: cart,
-          agent: sessionStorage.getItem("ezshop:agent:" + slug) || "",
-          checkout_key: key,
-          payment_method: "manual",
-        },
-      );
+      const o = await api<{
+        reference: string;
+        access_token: string;
+      }>("checkout", {
+        ...form,
+        slug,
+        items: cart,
+        agent: sessionStorage.getItem("ezshop:agent:" + slug) || "",
+        checkout_key: key,
+        payment_method: "manual",
+      });
       sessionStorage.setItem("ezshop:order:" + o.reference, o.access_token);
       sessionStorage.removeItem(keyName);
       putCart(slug, []);
@@ -204,13 +220,17 @@ export function Storefront() {
         ) : (
           <span>{p.emoji}</span>
         )}
-        {!p.stock && <span className="sold-out">暂时售罄</span>}
+        {!p.stock && <span className="sold-out">{t("暂时售罄")}</span>}
       </div>
       <div className="product-info">
-        <small>{p.category || "精选商品"}</small>
+        <small>
+          {p.category === "全部商品"
+            ? t("全部商品")
+            : p.category || t("精选商品")}
+        </small>
         <h3>{p.name}</h3>
         <div className="row between">
-          <strong className="purple">{money(p.price)}</strong>
+          <strong className="purple">{money(p.price, locale)}</strong>
           <span className="round-arrow">
             <ArrowRight size={17} />
           </span>
@@ -225,7 +245,11 @@ export function Storefront() {
         <Link to={base} className="store-name">
           {data.store.name}
         </Link>
-        <Link className="cart-link" to={base + "/cart"} aria-label="购物车">
+        <Link
+          className="cart-link"
+          to={base + "/cart"}
+          aria-label={t("购物车")}
+        >
           <ShoppingBag size={21} />
           <span>{cart.reduce((s, i) => s + i.quantity, 0)}</span>
         </Link>
@@ -234,14 +258,16 @@ export function Storefront() {
         <ErrorBox error={error} />
         {feedback && (
           <div className="success" role="status">
-            {feedback} · <Link to={base + "/cart"}>查看购物车 →</Link>
+            {t(feedback)} · <Link to={base + "/cart"}>{t("查看购物车 →")}</Link>
           </div>
         )}
         {kind === "home" && (
           <>
             <section className="store-hero">
               <div>
-                <span className="eyebrow">CURATED WITH CARE · MALAYSIA</span>
+                <span className="eyebrow">
+                  {t("CURATED WITH CARE · MALAYSIA")}
+                </span>
                 <div className="row">
                   {data.store.logo && (
                     <img
@@ -254,10 +280,11 @@ export function Storefront() {
                 </div>
                 <p>
                   {data.store.description ||
-                    "好物值得分享，生活值得认真。发现属于你的日常精选。"}
+                    t("好物值得分享，生活值得认真。发现属于你的日常精选。")}
                 </p>
                 <a href="#products" className="button">
-                  探索商品 <ArrowRight size={17} />
+                  {t("探索商品")}
+                  <ArrowRight size={17} />
                 </a>
               </div>
               <div className="hero-art">
@@ -270,19 +297,19 @@ export function Storefront() {
                 ) : (
                   <ShoppingBag size={110} strokeWidth={1} />
                 )}
-                <span className="hero-pill">为你挑选的好物 ✦</span>
+                <span className="hero-pill">{t("为你挑选的好物 ✦")}</span>
               </div>
             </section>
             <div className="store-benefits">
-              <span>✦ 马来西亚本地商家</span>
-              <span>◇ 订单清晰可查</span>
-              <span>♡ 用心经营，安心选购</span>
+              <span>{t("✦ 马来西亚本地商家")}</span>
+              <span>{t("◇ 订单清晰可查")}</span>
+              <span>{t("♡ 用心经营，安心选购")}</span>
             </div>
             {!query &&
               category === "全部商品" &&
               data.products.some((p) => p.featured) && (
                 <section style={{ marginTop: 35 }}>
-                  <h2 className="section-title">热门精选</h2>
+                  <h2 className="section-title">{t("热门精选")}</h2>
                   <div className="products-grid">
                     {data.products
                       .filter((p) => p.featured)
@@ -293,15 +320,15 @@ export function Storefront() {
               )}
             <section className="section-heading" id="products">
               <div>
-                <span className="eyebrow">FIND YOUR FAVORITES</span>
-                <h2>店铺商品</h2>
-                <p>发现好物，从这里开始。</p>
+                <span className="eyebrow">{t("FIND YOUR FAVORITES")}</span>
+                <h2>{t("店铺商品")}</h2>
+                <p>{t("发现好物，从这里开始。")}</p>
               </div>
               <label className="search">
                 <Search size={17} />
                 <input
-                  aria-label="搜索商品"
-                  placeholder="搜索心仪的商品…"
+                  aria-label={t("搜索商品")}
+                  placeholder={t("搜索心仪的商品…")}
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                 />
@@ -314,14 +341,14 @@ export function Storefront() {
                   className={category === c ? "chip active" : "chip"}
                   onClick={() => setCategory(c)}
                 >
-                  {c}
+                  {c === "全部商品" ? t(c) : c}
                 </button>
               ))}
             </div>
             {shown.length ? (
               <div className="products-grid">{shown.map(productCard)}</div>
             ) : (
-              <Empty>没有找到商品，试试其他关键词或分类。</Empty>
+              <Empty>{t("没有找到商品，试试其他关键词或分类。")}</Empty>
             )}
           </>
         )}
@@ -330,7 +357,7 @@ export function Storefront() {
             <>
               <Link className="back-link" to={base}>
                 <ArrowLeft size={16} />
-                返回店铺
+                {t("返回店铺")}
               </Link>
               <div className="product-detail">
                 <div className="product-image large">
@@ -342,32 +369,39 @@ export function Storefront() {
                 </div>
                 <div>
                   <span className="eyebrow">
-                    {current.category || "精选商品"}
+                    {current.category === "全部商品"
+                      ? t("全部商品")
+                      : current.category || t("精选商品")}
                   </span>
                   <h1>{current.name}</h1>
-                  <div className="detail-price">{money(current.price)}</div>
+                  <div className="detail-price">
+                    {money(current.price, locale)}
+                  </div>
                   <p className="description">
                     {current.description ||
-                      "商家尚未提供商品介绍。如有疑问，欢迎联系商家。"}
+                      t("商家尚未提供商品介绍。如有疑问，欢迎联系商家。")}
                   </p>
                   <div className="stock-line">
                     <span
                       className={current.stock ? "stock-dot" : "stock-dot out"}
                     />
                     {current.stock
-                      ? "现货 · 可售 " + current.stock + " 件"
-                      : "暂时售罄"}
+                      ? t("现货 \u00B7 可售 ") + current.stock + t(" 件")
+                      : t("暂时售罄")}
                   </div>
-                  <p className="muted">规格：{current.variant || "单一规格"}</p>
+                  <p className="muted">
+                    {t("规格：")}
+                    {current.variant || t("单一规格")}
+                  </p>
                   <div className="quantity">
                     <button
                       onClick={() => setQty(Math.max(1, quantity - 1))}
-                      aria-label="减少数量"
+                      aria-label={t("减少数量")}
                     >
                       <Minus size={15} />
                     </button>
                     <input
-                      aria-label="购买数量"
+                      aria-label={t("购买数量")}
                       type="number"
                       min="1"
                       max={Math.min(1000, current.stock)}
@@ -393,7 +427,7 @@ export function Storefront() {
                           ),
                         )
                       }
-                      aria-label="增加数量"
+                      aria-label={t("增加数量")}
                     >
                       <Plus size={15} />
                     </button>
@@ -405,24 +439,27 @@ export function Storefront() {
                       onClick={() => add(current)}
                     >
                       <ShoppingCart size={18} />
-                      加入购物车
+                      {t("加入购物车")}
                     </button>
                     <button
                       className="button"
                       disabled={!current.stock}
                       onClick={() => add(current, true)}
                     >
-                      立即购买 <ArrowRight size={17} />
+                      {t("立即购买")}
+                      <ArrowRight size={17} />
                     </button>
                   </div>
                   <div className="soft-note">
-                    提交订单后请联系商家安排付款。付款状态以商家核实记录为准。
+                    {t(
+                      "提交订单后请联系商家安排付款。付款状态以商家核实记录为准。",
+                    )}
                   </div>
                 </div>
               </div>
               {data.products.length > 1 && (
                 <>
-                  <h2 className="section-title">你可能也喜欢</h2>
+                  <h2 className="section-title">{t("你可能也喜欢")}</h2>
                   <div className="products-grid">
                     {data.products
                       .filter((p) => p.id !== current.id)
@@ -433,22 +470,25 @@ export function Storefront() {
               )}
             </>
           ) : (
-            <Empty>此商品不存在、尚未发布或不属于当前店铺。</Empty>
+            <Empty>{t("此商品不存在、尚未发布或不属于当前店铺。")}</Empty>
           ))}
         {(kind === "cart" || kind === "checkout") && (
           <>
             <Link className="back-link" to={base}>
               <ArrowLeft size={16} />
-              继续选购
+              {t("继续选购")}
             </Link>
-            <h1>{kind === "cart" ? "我的购物车" : "确认订单"}</h1>
-            <p>当前店铺：{data.store.name}</p>
+            <h1>{kind === "cart" ? t("我的购物车") : t("确认订单")}</h1>
+            <p>
+              {t("当前店铺：")}
+              {data.store.name}
+            </p>
             {!cart.length ? (
               <Empty>
                 <ShoppingBag size={35} />
-                <p>购物车还是空的，去发现一些好物吧。</p>
+                <p>{t("购物车还是空的，去发现一些好物吧。")}</p>
                 <Link className="button" to={base}>
-                  去逛逛
+                  {t("去逛逛")}
                 </Link>
               </Empty>
             ) : (
@@ -462,27 +502,29 @@ export function Storefront() {
                             {i.product?.emoji || "📦"}
                           </span>
                           <div className="grow">
-                            <h3>{i.product?.name || "商品已下架"}</h3>
+                            <h3>{i.product?.name || t("商品已下架")}</h3>
                             <p>
                               {i.product
-                                ? money(i.product.price)
-                                : "请移除此商品"}
+                                ? money(i.product.price, locale)
+                                : t("请移除此商品")}
                             </p>
                             {i.product && i.quantity > i.product.stock && (
                               <p className="error">
-                                库存仅剩 {i.product.stock} 件
+                                {t("库存仅剩")}
+                                {i.product.stock}
+                                {t("件")}
                               </p>
                             )}
                           </div>
                           <div className="quantity">
                             <button
-                              aria-label="减少数量"
+                              aria-label={t("减少数量")}
                               onClick={() => update(i.id, i.quantity - 1)}
                             >
                               <Minus size={14} />
                             </button>
                             <input
-                              aria-label="商品数量"
+                              aria-label={t("商品数量")}
                               type="number"
                               min="1"
                               max={Math.min(1000, i.product?.stock || 1)}
@@ -498,7 +540,7 @@ export function Storefront() {
                               }
                             />
                             <button
-                              aria-label="增加数量"
+                              aria-label={t("增加数量")}
                               disabled={i.quantity >= (i.product?.stock || 0)}
                               onClick={() => update(i.id, i.quantity + 1)}
                             >
@@ -507,7 +549,7 @@ export function Storefront() {
                           </div>
                           <button
                             className="icon-button"
-                            aria-label="删除商品"
+                            aria-label={t("删除商品")}
                             onClick={() => update(i.id, 0)}
                           >
                             <Trash2 size={17} />
@@ -521,10 +563,10 @@ export function Storefront() {
                       className="card checkout-form"
                       onSubmit={checkout}
                     >
-                      <h2>联系及收货资料</h2>
+                      <h2>{t("联系及收货资料")}</h2>
                       <div className="form-grid">
                         <label>
-                          姓名
+                          {t("姓名")}
                           <input
                             name="customer"
                             required
@@ -533,7 +575,7 @@ export function Storefront() {
                           />
                         </label>
                         <label>
-                          Email
+                          {t("Email")}
                           <input
                             type="email"
                             name="email"
@@ -543,7 +585,7 @@ export function Storefront() {
                           />
                         </label>
                         <label>
-                          手机号码
+                          {t("手机号码")}
                           <input
                             type="tel"
                             name="phone"
@@ -554,7 +596,7 @@ export function Storefront() {
                         </label>
                       </div>
                       <label>
-                        收货地址
+                        {t("收货地址")}
                         <textarea
                           name="address"
                           required
@@ -565,7 +607,7 @@ export function Storefront() {
                       </label>
                       <div className="form-grid">
                         <label>
-                          城市
+                          {t("城市")}
                           <input
                             name="city"
                             required
@@ -574,7 +616,7 @@ export function Storefront() {
                           />
                         </label>
                         <label>
-                          邮编
+                          {t("邮编")}
                           <input
                             name="postcode"
                             inputMode="numeric"
@@ -583,20 +625,20 @@ export function Storefront() {
                             maxLength={5}
                             required
                             autoComplete="postal-code"
-                            placeholder="5 位邮编"
+                            placeholder={t("5 位邮编")}
                           />
                         </label>
                         <label>
-                          州属
+                          {t("州属")}
                           <select
                             name="state"
-                            aria-label="州属"
+                            aria-label={t("州属")}
                             required
                             defaultValue=""
                             autoComplete="address-level1"
                           >
                             <option value="" disabled>
-                              请选择州属
+                              {t("请选择州属")}
                             </option>
                             {MALAYSIA_STATES.map((s) => (
                               <option key={s} value={s}>
@@ -608,18 +650,20 @@ export function Storefront() {
                       </div>
                       <input type="hidden" name="country" value="MY" />
                       <p className="muted" style={{ marginTop: 15 }}>
-                        配送范围：马来西亚。请确认收货地址、州属和邮编正确。
+                        {t(
+                          "配送范围：马来西亚。请确认收货地址、州属和邮编正确。",
+                        )}
                       </p>
                       <label>
-                        订单备注
+                        {t("订单备注")}
                         <textarea
                           name="note"
                           maxLength={1000}
                           rows={2}
-                          placeholder="有什么需要商家留意的吗？"
+                          placeholder={t("有什么需要商家留意的吗？")}
                         />
                       </label>
-                      <h2>付款方式</h2>
+                      <h2>{t("付款方式")}</h2>
                       <div className="payment-option">
                         <input
                           type="radio"
@@ -627,57 +671,65 @@ export function Storefront() {
                           value="manual"
                           defaultChecked
                         />{" "}
-                        联系商家付款 · 由商家核实到账
+                        {t("联系商家付款 \u00B7 由商家核实到账")}
                       </div>
                       <p className="muted">
-                        {onlineEnabled?"提交订单后，可在结果页进入安全付款页面，或联系商家安排付款。":"当前由商家核实收款，提交订单不会自动扣款。"}
+                        {onlineEnabled
+                          ? t(
+                              "提交订单后，可在结果页进入安全付款页面，或联系商家安排付款。",
+                            )
+                          : t("当前由商家核实收款，提交订单不会自动扣款。")}
                       </p>
                     </form>
                   )}
                 </section>
                 <aside className="card summary">
-                  <h2>订单摘要</h2>
+                  <h2>{t("订单摘要")}</h2>
                   {lines.map((i) => (
                     <div key={i.id} className="summary-line">
                       <span>
-                        {i.product?.name || "已下架商品"} × {i.quantity}
+                        {i.product?.name || t("已下架商品")} × {i.quantity}
                         <small>
-                          {i.product ? money(i.product.price) : "—"} / 件
+                          {i.product ? money(i.product.price, locale) : "—"}
+                          {t("/ 件")}
                         </small>
                       </span>
                       <strong>
-                        {money((i.product?.price || 0) * i.quantity)}
+                        {money((i.product?.price || 0) * i.quantity, locale)}
                       </strong>
                     </div>
                   ))}
                   <div className="summary-line">
-                    <span>商品小计</span>
-                    <span>{money(total)}</span>
+                    <span>{t("商品小计")}</span>
+                    <span>{money(total, locale)}</span>
                   </div>
                   <div className="summary-line">
-                    <span>邮费</span>
+                    <span>{t("邮费")}</span>
                     <span>
                       {quote
-                        ? money(quote.shipping)
+                        ? money(quote.shipping, locale)
                         : quoteLoading
-                          ? "计算中…"
-                          : "待确认"}
+                          ? t("计算中…")
+                          : t("待确认")}
                     </span>
                   </div>
                   <div className="summary-line">
-                    <span>折扣</span>
-                    <span>{money(0)}</span>
+                    <span>{t("折扣")}</span>
+                    <span>{money(0, locale)}</span>
                   </div>
                   <div className="summary-total">
-                    <strong>应付总额</strong>
-                    <strong>{quote ? money(quote.total) : "待确认"}</strong>
+                    <strong>{t("应付总额")}</strong>
+                    <strong>
+                      {quote ? money(quote.total, locale) : t("待确认")}
+                    </strong>
                   </div>
                   {kind === "cart" ? (
                     <Link
                       className={"button full " + (invalid ? "disabled" : "")}
                       to={invalid ? base + "/cart" : base + "/checkout"}
                     >
-                      前往结账 <ArrowRight size={17} />
+                      {t("前往结账")}
+                      <ArrowRight size={17} />
                     </Link>
                   ) : (
                     <button
@@ -685,17 +737,20 @@ export function Storefront() {
                       form="checkout-form"
                       disabled={busy || invalid || !quote || quoteLoading}
                     >
-                      {busy ? "正在提交…" : "确认提交订单"}{" "}
+                      {busy ? t("正在提交…") : t("确认提交订单")}{" "}
                       <ArrowRight size={17} />
                     </button>
                   )}
                   <ErrorBox error={quoteError} />
                   <p className="fine-print">
-                    邮费由商家自行设定，金额和库存由后端核算。当前不提供快递自动报价。
+                    {t(
+                      "邮费由商家自行设定，金额和库存由后端核算。当前不提供快递自动报价。",
+                    )}
                   </p>
                   <p className="fine-print">
-                    快递公司：{data.store.courier || "商家自行安排"}
-                    ，以实际发货记录为准。
+                    {t("快递公司：")}
+                    {data.store.courier || t("商家自行安排")}
+                    {t("，以实际发货记录为准。")}
                   </p>
                 </aside>
               </div>
@@ -706,37 +761,40 @@ export function Storefront() {
           (result ? (
             <section className="card result">
               <CheckCircle2 size={48} className="purple" />
-              <span className="eyebrow">ORDER RECEIVED</span>
+              <span className="eyebrow">{t("ORDER RECEIVED")}</span>
               <h1>
                 {result.order.status === "refunded"
-                  ? "订单已退款"
+                  ? t("订单已退款")
                   : result.order.status === "cancelled"
-                    ? "订单已取消"
-                    : "订单已创建"}
+                    ? t("订单已取消")
+                    : t("订单已创建")}
               </h1>
-              <p>订单编号 {result.order.reference}</p>
+              <p>
+                {t("订单编号")}
+                {result.order.reference}
+              </p>
               <div className={"badge " + result.order.status}>
-                {statusLabel(result.order.status)}
+                {t(statusLabel(result.order.status))}
               </div>
               <p className="soft-note">
                 {result.order.status === "refunded"
-                  ? "商家已登记完成全额退款。请核对实际到账。"
+                  ? t("商家已登记完成全额退款。请核对实际到账。")
                   : result.order.status === "paid"
-                    ? "商家已确认收款。"
+                    ? t("商家已确认收款。")
                     : result.order.status === "cancelled"
-                      ? "此订单已取消，请勿继续付款。"
-                      : "订单已保存，尚未确认收款。请联系商家安排付款。"}
+                      ? t("此订单已取消，请勿继续付款。")
+                      : t("订单已保存，尚未确认收款。请联系商家安排付款。")}
               </p>
               {result.items.map((i, n) => (
                 <div className="summary-line" key={n}>
                   <span>
                     {i.name} × {i.quantity}
                   </span>
-                  <strong>{money(i.price * i.quantity)}</strong>
+                  <strong>{money(i.price * i.quantity, locale)}</strong>
                 </div>
               ))}
               <div className="summary-line">
-                <span>商品小计</span>
+                <span>{t("商品小计")}</span>
                 <span>
                   {money(
                     result.order.subtotal ??
@@ -744,28 +802,59 @@ export function Storefront() {
                         (s, i) => s + i.price * i.quantity,
                         0,
                       ),
+                    locale,
                   )}
                 </span>
               </div>
               <div className="summary-line">
-                <span>邮费</span>
-                <span>{money(result.order.shipping || 0)}</span>
+                <span>{t("邮费")}</span>
+                <span>{money(result.order.shipping || 0, locale)}</span>
               </div>
               {result.order.fulfillment_status === "shipped" && (
                 <div className="soft-note">
-                  <strong>商家已登记发货</strong>
-                  <p>快递公司：{result.order.carrier}</p>
-                  <p>运单号：{result.order.tracking}</p>
-                  <small>运送进度请向对应快递公司查询。</small>
+                  <strong>{t("商家已登记发货")}</strong>
+                  <p>
+                    {t("快递公司：")}
+                    {result.order.carrier}
+                  </p>
+                  <p>
+                    {t("运单号：")}
+                    {result.order.tracking}
+                  </p>
+                  <small>{t("运送进度请向对应快递公司查询。")}</small>
                 </div>
               )}
               <div className="summary-total">
-                <strong>总金额</strong>
-                <strong>{money(result.order.total)}</strong>
+                <strong>{t("总金额")}</strong>
+                <strong>{money(result.order.total, locale)}</strong>
               </div>
-              <OrderPayment slug={slug} reference={result.order.reference} token={sessionStorage.getItem('ezshop:order:'+result.order.reference)||''} status={result.order.status} onRefresh={async()=>{const fresh=await api<OrderResult>('order-result',{slug,reference:result.order.reference,token:sessionStorage.getItem('ezshop:order:'+result.order.reference)||''});setResult(current=>current?.order.reference===fresh.order.reference?fresh:current)}}/>
+              <OrderPayment
+                slug={slug}
+                reference={result.order.reference}
+                token={
+                  sessionStorage.getItem(
+                    "ezshop:order:" + result.order.reference,
+                  ) || ""
+                }
+                status={result.order.status}
+                onRefresh={async () => {
+                  const fresh = await api<OrderResult>("order-result", {
+                    slug,
+                    reference: result.order.reference,
+                    token:
+                      sessionStorage.getItem(
+                        "ezshop:order:" + result.order.reference,
+                      ) || "",
+                  });
+                  setResult((current) =>
+                    current?.order.reference === fresh.order.reference
+                      ? fresh
+                      : current,
+                  );
+                }}
+              />
               <Link className="button secondary" to={base}>
-                返回店铺
+                {t("返回店铺")}
               </Link>
             </section>
           ) : (
@@ -779,7 +868,7 @@ export function Storefront() {
           <p>{data.store.description}</p>
         </div>
         <div>
-          <h3>联系商家</h3>
+          <h3>{t("联系商家")}</h3>
           {data.store.phone ? (
             <a
               href={"https://wa.me/" + data.store.phone.replace(/\D/g, "")}
@@ -789,12 +878,12 @@ export function Storefront() {
               <Phone size={16} /> WhatsApp · {data.store.phone}
             </a>
           ) : (
-            <p>商家尚未提供公开联系电话</p>
+            <p>{t("商家尚未提供公开联系电话")}</p>
           )}
-          <p>交易币种 MYR · 马来西亚</p>
+          <p>{t("交易币种 MYR \u00B7 马来西亚")}</p>
         </div>
         <div className="footer-bottom">
-          Powered by EZShop · 让每一笔生意更简单
+          {t("Powered by EZShop \u00B7 让每一笔生意更简单")}
         </div>
       </footer>
     </div>

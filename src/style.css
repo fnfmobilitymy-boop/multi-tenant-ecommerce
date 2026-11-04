@@ -1,5 +1,9 @@
 @import "tailwindcss";
 @import "@fontsource/racing-sans-one/latin-400.css";
+@import "@fontsource/noto-sans-thai/thai-400.css";
+@import "@fontsource/noto-sans-thai/thai-600.css";
+@import "@fontsource/noto-sans-khmer/khmer-400.css";
+@import "@fontsource/noto-sans-khmer/khmer-600.css";
 @theme {
   --color-brand: #7654df;
   --font-sans:
@@ -1730,4 +1734,124 @@ tr:last-child td {
   min-height: 100px;
 }
 
-.payment-panel{padding:27px}.payment-panel h2{margin:17px 0 12px}.payment-panel p{font-size:12px;line-height:1.9;margin:12px 0}.payment-panel .row{flex-wrap:wrap;margin:20px 0}.payment-panel small{display:block;line-height:1.8}
+.payment-panel {
+  padding: 27px;
+}
+.payment-panel h2 {
+  margin: 17px 0 12px;
+}
+.payment-panel p {
+  font-size: 12px;
+  line-height: 1.9;
+  margin: 12px 0;
+}
+.payment-panel .row {
+  flex-wrap: wrap;
+  margin: 20px 0;
+}
+.payment-panel small {
+  display: block;
+  line-height: 1.8;
+}
+
+/* Language names remain in their own script; shop content keeps its original language. */
+.language-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px 24px;
+  background: #fff;
+  border-bottom: 1px solid #eeeaf7;
+  position: relative;
+  z-index: 30;
+}
+.language-selector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: #655b80;
+  font-size: 13px;
+  font-weight: 500;
+  max-width: 100%;
+}
+.language-selector select {
+  width: auto;
+  min-width: 130px;
+  max-width: 190px;
+  margin: 0;
+  padding: 7px 28px 7px 10px;
+  min-height: 38px;
+  border: 1px solid #ded6ee;
+  border-radius: 8px;
+  background: #faf8ff;
+  color: #302440;
+}
+.localized-app:lang(th),
+.localized-app:lang(km) {
+  line-height: 1.8;
+}
+.localized-app:lang(th) :is(h1, h2, h3),
+.localized-app:lang(km) :is(h1, h2, h3) {
+  line-height: 1.6;
+  letter-spacing: normal;
+}
+.localized-app :is(button, a, label, th, td) {
+  overflow-wrap: anywhere;
+}
+.localized-app .brand {
+  overflow-wrap: normal;
+}
+@media (max-width: 650px) {
+  .language-toolbar {
+    padding: 8px 16px;
+  }
+  .language-selector {
+    font-size: 12px;
+  }
+  .language-selector select {
+    min-width: 120px;
+  }
+  .localized-app .page-heading {
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+  .localized-app .row {
+    flex-wrap: wrap;
+  }
+}
+
+.language-toolbar {
+  height: 58px;
+  box-sizing: border-box;
+}
+.localized-app .sidebar {
+  top: 58px;
+}
+.localized-app:lang(th) {
+  font-family: "Noto Sans Thai", var(--font-sans);
+}
+.localized-app:lang(km) {
+  font-family: "Noto Sans Khmer", var(--font-sans);
+}
+@media (min-width: 651px) {
+  .localized-app .dashboard-layout {
+    min-height: calc(100dvh - 58px);
+  }
+}
+
+@media (min-width: 651px) {
+  .localized-app .sidebar {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .localized-app .sidebar nav,
+  .localized-app .sidebar .brand {
+    flex-shrink: 0;
+  }
+}
+
+.localized-app:lang(th) :is(.eyebrow, .nav-caption),
+.localized-app:lang(km) :is(.eyebrow, .nav-caption) {
+  letter-spacing: normal;
+  text-transform: none;
+}

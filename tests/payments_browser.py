@@ -52,6 +52,9 @@ try:
         page.get_by_role('button',name='查看价格并订阅 Pro',exact=True).click()
         page.get_by_role('alert').filter(has_text='支付服务尚未配置').wait_for()
         assert 'subscription-checkout' in calls
+        page.locator('.language-selector select').select_option('en')
+        page.get_by_role('alert').filter(has_text='Payment service is not configured').wait_for()
+        page.get_by_role('heading',name='Payments & subscription',exact=True).wait_for()
         page.evaluate("sessionStorage.setItem('ezshop:order:EZ-TEST','test-order-access-token')")
         page.goto(base+'/shop/test-store/order-result?ref=EZ-TEST&payment_return=1')
         page.get_by_text('订单已保存，尚未确认收款。请联系商家安排付款。',exact=True).wait_for()

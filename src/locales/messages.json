@@ -1,0 +1,3593 @@
+{
+  " 件": [
+    " units",
+    " unit",
+    " ชิ้น",
+    " ឯកតា",
+    " sản phẩm"
+  ],
+  " 方案": [
+    " Plan",
+    " Pelan",
+    " แพ็กเกจ",
+    " គម្រោង",
+    " Gói"
+  ],
+  " 状态": [
+    " Status",
+    " Status",
+    " สถานะ",
+    " ស្ថានភាព",
+    " Trạng thái"
+  ],
+  " 的方案或状态？这不会发起订阅扣款。": [
+    " plan or status? This will not charge a subscription.",
+    " pelan atau status? Ini tidak mengenakan caj langganan.",
+    " แพ็กเกจหรือสถานะ? การดำเนินการนี้จะไม่เรียกเก็บค่าสมาชิก",
+    " គម្រោង ឬស្ថានភាព? នេះមិនគិតថ្លៃជាវទេ។",
+    " gói hoặc trạng thái? Thao tác này không thu phí đăng ký."
+  ],
+  " 笔订单等待付款": [
+    " orders awaiting payment",
+    " pesanan menunggu bayaran",
+    " คำสั่งซื้อรอชำระเงิน",
+    " ការបញ្ជាទិញកំពុងរង់ចាំការទូទាត់",
+    " đơn hàng chờ thanh toán"
+  ],
+  "/ 件": [
+    "/ unit",
+    "/ unit",
+    "/ ชิ้น",
+    "/ ឯកតា",
+    "/ sản phẩm"
+  ],
+  "5 位邮编": [
+    "5-digit postcode",
+    "Poskod 5 digit",
+    "รหัสไปรษณีย์ 5 หลัก",
+    "លេខកូដប្រៃសណីយ៍ 5 ខ្ទង់",
+    "Mã bưu chính 5 chữ số"
+  ],
+  "EZShop 套餐与账单": [
+    "EZShop plans & billing",
+    "Pelan & bil EZShop",
+    "แพ็กเกจและใบเรียกเก็บเงิน EZShop",
+    "គម្រោង និងវិក្កយបត្រ EZShop",
+    "Gói và hóa đơn EZShop"
+  ],
+  "JPG、PNG、WebP · 最大 5 MB": [
+    "JPG, PNG, WebP · Up to 5 MB",
+    "JPG, PNG, WebP · Maksimum 5 MB",
+    "JPG, PNG, WebP · ไม่เกิน 5 MB",
+    "JPG, PNG, WebP · អតិបរមា 5 MB",
+    "JPG, PNG, WebP · Tối đa 5 MB"
+  ],
+  "Powered by EZShop · 让每一笔生意更简单": [
+    "Powered by EZShop · Simpler business",
+    "Dikuasakan oleh EZShop · Perniagaan lebih mudah",
+    "ขับเคลื่อนโดย EZShop · ค้าขายง่ายขึ้น",
+    "ដំណើរការដោយ EZShop · អាជីវកម្មកាន់តែងាយស្រួល",
+    "Vận hành bởi EZShop · Kinh doanh đơn giản hơn"
+  ],
+  "Pro（手动分配）": [
+    "Pro (assigned manually)",
+    "Pro (ditetapkan secara manual)",
+    "Pro (กำหนดด้วยตนเอง)",
+    "Pro (កំណត់ដោយដៃ)",
+    "Pro (cấp thủ công)"
+  ],
+  "· 你的专属推广工作台": [
+    "· Your affiliate workspace",
+    "· Ruang kerja ejen anda",
+    "· พื้นที่ทำงานตัวแทนของคุณ",
+    "· កន្លែងធ្វើការភ្នាក់ងាររបស់អ្នក",
+    "· Không gian làm việc của đại lý"
+  ],
+  "· 佣金": [
+    "· Commission",
+    "· Komisen",
+    "· ค่าคอมมิชชัน",
+    "· កម្រៃជើងសា",
+    "· Hoa hồng"
+  ],
+  "◇ 订单清晰可查": [
+    "◇ Track every order",
+    "◇ Jejak setiap pesanan",
+    "◇ ติดตามทุกคำสั่งซื้อ",
+    "◇ តាមដានរាល់ការបញ្ជាទិញ",
+    "◇ Theo dõi mọi đơn hàng"
+  ],
+  "♡ 用心经营，安心选购": [
+    "♡ Shop with confidence",
+    "♡ Membeli dengan yakin",
+    "♡ เลือกซื้ออย่างมั่นใจ",
+    "♡ ទិញដោយទំនុកចិត្ត",
+    "♡ Mua sắm an tâm"
+  ],
+  "✦ 马来西亚本地商家": [
+    "✦ Local Malaysian merchants",
+    "✦ Peniaga tempatan Malaysia",
+    "✦ ร้านค้าท้องถิ่นมาเลเซีย",
+    "✦ អាជីវករក្នុងស្រុកម៉ាឡេស៊ី",
+    "✦ Nhà bán hàng tại Malaysia"
+  ],
+  "上传中…": [
+    "Uploading…",
+    "Sedang memuat naik…",
+    "กำลังอัปโหลด…",
+    "កំពុងផ្ទុកឡើង…",
+    "Đang tải lên…"
+  ],
+  "下单时间（马来西亚）": [
+    "Order time (Malaysia)",
+    "Masa pesanan (Malaysia)",
+    "เวลาสั่งซื้อ (มาเลเซีย)",
+    "ពេលបញ្ជាទិញ (ម៉ាឡេស៊ី)",
+    "Thời gian đặt hàng (Malaysia)"
+  ],
+  "不同规格分别建立商品，各自设置价格及库存。": [
+    "Create each variant as a separate product with its own price and stock.",
+    "Cipta setiap variasi sebagai produk berasingan dengan harga dan stok sendiri.",
+    "สร้างแต่ละตัวเลือกเป็นสินค้าแยกกัน พร้อมราคาและสต็อกของตัวเอง",
+    "បង្កើតជម្រើសនីមួយៗជាផលិតផលដាច់ដោយឡែក ដោយមានតម្លៃ និងស្តុកផ្ទាល់ខ្លួន។",
+    "Tạo từng phân loại thành sản phẩm riêng với giá và tồn kho riêng."
+  ],
+  "不支持此支付操作。": [
+    "Unsupported payment action.",
+    "Tindakan pembayaran tidak disokong.",
+    "ไม่รองรับการดำเนินการชำระเงินนี้",
+    "មិនគាំទ្រសកម្មភាពទូទាត់នេះទេ។",
+    "Thao tác thanh toán không được hỗ trợ."
+  ],
+  "与伙伴一起拓展生意": [
+    "Grow with your partners",
+    "Berkembang bersama rakan niaga",
+    "เติบโตไปพร้อมกับพันธมิตร",
+    "រីកចម្រើនជាមួយដៃគូរបស់អ្នក",
+    "Phát triển cùng đối tác"
+  ],
+  "专属推广链接": [
+    "Your affiliate link",
+    "Pautan ejen anda",
+    "ลิงก์ตัวแทนของคุณ",
+    "តំណភ្នាក់ងាររបស់អ្នក",
+    "Liên kết đại lý của bạn"
+  ],
+  "两次输入的密码不一致。": [
+    "Passwords do not match.",
+    "Kata laluan tidak sepadan.",
+    "รหัสผ่านไม่ตรงกัน",
+    "ពាក្យសម្ងាត់មិនត្រូវគ្នា។",
+    "Mật khẩu không khớp."
+  ],
+  "为你挑选的好物 ✦": [
+    "Selected for you ✦",
+    "Pilihan untuk anda ✦",
+    "คัดสรรเพื่อคุณ ✦",
+    "ជ្រើសរើសសម្រាប់អ្នក ✦",
+    "Tuyển chọn cho bạn ✦"
+  ],
+  "为马来西亚商家而生 ✦": [
+    "Built for Malaysian merchants ✦",
+    "Dibina untuk peniaga Malaysia ✦",
+    "สร้างเพื่อผู้ค้ามาเลเซีย ✦",
+    "បង្កើតសម្រាប់អាជីវករម៉ាឡេស៊ី ✦",
+    "Dành cho nhà bán hàng Malaysia ✦"
+  ],
+  "交易币种 MYR · 马来西亚": [
+    "Currency MYR · Malaysia",
+    "Mata wang MYR · Malaysia",
+    "สกุลเงิน MYR · มาเลเซีย",
+    "រូបិយប័ណ្ណ MYR · ម៉ាឡេស៊ី",
+    "Tiền tệ MYR · Malaysia"
+  ],
+  "交易币种：MYR · 马来西亚令吉": [
+    "Currency: MYR · Malaysian ringgit",
+    "Mata wang: MYR · Ringgit Malaysia",
+    "สกุลเงิน: MYR · ริงกิตมาเลเซีย",
+    "រូបិយប័ណ្ណ៖ MYR · រីងហ្គីតម៉ាឡេស៊ី",
+    "Tiền tệ: MYR · Ringgit Malaysia"
+  ],
+  "仅你和商家所有者能查看此申请。申请金额会从可用余额预留。": [
+    "Only you and the store owner can view this request. The amount is reserved from your available balance.",
+    "Hanya anda dan pemilik kedai boleh melihat permohonan ini. Amaun akan dirizab daripada baki tersedia.",
+    "มีเพียงคุณและเจ้าของร้านที่ดูคำขอนี้ได้ จำนวนเงินจะถูกกันไว้จากยอดคงเหลือ",
+    "មានតែអ្នក និងម្ចាស់ហាងអាចមើលសំណើនេះ។ ចំនួនប្រាក់នឹងត្រូវរក្សាទុកពីសមតុល្យដែលអាចប្រើបាន។",
+    "Chỉ bạn và chủ cửa hàng xem được yêu cầu này. Số tiền sẽ được giữ từ số dư khả dụng."
+  ],
+  "仅你的归属订单": [
+    "Your attributed orders only",
+    "Pesanan di bawah anda sahaja",
+    "เฉพาะคำสั่งซื้อที่มาจากคุณ",
+    "តែការបញ្ជាទិញដែលបានមកពីអ្នក",
+    "Chỉ đơn hàng được ghi nhận cho bạn"
+  ],
+  "仅登记已在线下或支付平台实际完成的全额退款，不会发起退款转账。该订单的佣金将回冲，关联的待处理提现申请会被拒绝。": [
+    "Record only a full refund already completed externally. This will not transfer money. Commission is reversed and related pending withdrawals are rejected.",
+    "Rekod hanya bayaran balik penuh yang telah selesai di luar sistem. Tiada pemindahan wang. Komisen ditarik balik dan pengeluaran berkaitan yang belum selesai ditolak.",
+    "บันทึกเฉพาะการคืนเงินเต็มจำนวนที่ดำเนินการภายนอกแล้ว ระบบจะไม่โอนเงิน ค่าคอมมิชชันจะถูกหักคืนและคำขอถอนที่เกี่ยวข้องจะถูกปฏิเสธ",
+    "កត់ត្រាតែការសងប្រាក់ទាំងស្រុងដែលបានបញ្ចប់នៅខាងក្រៅ។ នេះមិនផ្ទេរប្រាក់ទេ។ កម្រៃជើងសានឹងត្រូវដកវិញ ហើយសំណើដកប្រាក់ពាក់ព័ន្ធដែលកំពុងរង់ចាំនឹងត្រូវបដិសេធ។",
+    "Chỉ ghi nhận hoàn tiền toàn bộ đã hoàn tất bên ngoài. Hệ thống không chuyển tiền. Hoa hồng bị thu hồi và yêu cầu rút tiền liên quan đang chờ sẽ bị từ chối."
+  ],
+  "仅统计已确认付款订单": [
+    "Confirmed paid orders only",
+    "Pesanan disahkan dibayar sahaja",
+    "เฉพาะคำสั่งซื้อที่ยืนยันชำระแล้ว",
+    "តែការបញ្ជាទិញដែលបានបញ្ជាក់ថាបានទូទាត់",
+    "Chỉ tính đơn đã xác nhận thanh toán"
+  ],
+  "从商品、订单到代理佣金，": [
+    "Products, orders and commissions,",
+    "Produk, pesanan dan komisen,",
+    "สินค้า คำสั่งซื้อ และค่าคอมมิชชัน",
+    "ផលិតផល ការបញ្ជាទិញ និងកម្រៃជើងសា",
+    "Sản phẩm, đơn hàng và hoa hồng,"
+  ],
+  "从简单开始。": [
+    "starts with simplicity.",
+    "bermula dengan mudah.",
+    "เริ่มต้นจากความเรียบง่าย",
+    "ចាប់ផ្ដើមពីភាពសាមញ្ញ។",
+    "bắt đầu từ sự đơn giản."
+  ],
+  "付款提醒": [
+    "Payment reminder",
+    "Peringatan bayaran",
+    "แจ้งเตือนการชำระเงิน",
+    "ការរំលឹកទូទាត់",
+    "Nhắc thanh toán"
+  ],
+  "付款收据": [
+    "Payment receipt",
+    "Resit pembayaran",
+    "ใบเสร็จรับเงิน",
+    "បង្កាន់ដៃទូទាត់",
+    "Biên nhận thanh toán"
+  ],
+  "付款方式": [
+    "Payment method",
+    "Kaedah pembayaran",
+    "วิธีชำระเงิน",
+    "វិធីទូទាត់",
+    "Phương thức thanh toán"
+  ],
+  "付款时订单状态已改变": [
+    "Order status changed during payment",
+    "Status pesanan berubah semasa pembayaran",
+    "สถานะคำสั่งซื้อเปลี่ยนระหว่างชำระเงิน",
+    "ស្ថានភាពបញ្ជាទិញបានផ្លាស់ប្ដូរអំឡុងការទូទាត់",
+    "Trạng thái đơn thay đổi trong lúc thanh toán"
+  ],
+  "付款核查记录": [
+    "Payment reviews",
+    "Semakan pembayaran",
+    "รายการตรวจสอบการชำระเงิน",
+    "កំណត់ត្រាត្រួតពិនិត្យការទូទាត់",
+    "Kiểm tra thanh toán"
+  ],
+  "付款状态": [
+    "Payment status",
+    "Status pembayaran",
+    "สถานะการชำระเงิน",
+    "ស្ថានភាពទូទាត់",
+    "Trạng thái thanh toán"
+  ],
+  "付款逾期": [
+    "Past due",
+    "Tertunggak",
+    "เกินกำหนดชำระ",
+    "ហួសកំណត់ទូទាត់",
+    "Quá hạn"
+  ],
+  "付款金额或币种不符": [
+    "Amount or currency mismatch",
+    "Amaun atau mata wang tidak sepadan",
+    "จำนวนเงินหรือสกุลเงินไม่ตรงกัน",
+    "ចំនួនប្រាក់ ឬរូបិយប័ណ្ណមិនត្រូវគ្នា",
+    "Số tiền hoặc tiền tệ không khớp"
+  ],
+  "付款需要商家核查，请勿重复付款。请联系商家处理。": [
+    "Payment needs review. Do not pay again. Contact the merchant.",
+    "Pembayaran perlu disemak. Jangan bayar semula. Hubungi peniaga.",
+    "การชำระเงินต้องได้รับการตรวจสอบ อย่าชำระซ้ำ โปรดติดต่อร้านค้า",
+    "ការទូទាត់ត្រូវការត្រួតពិនិត្យ។ កុំទូទាត់ម្ដងទៀត។ សូមទាក់ទងអាជីវករ។",
+    "Thanh toán cần được kiểm tra. Không thanh toán lại. Hãy liên hệ nhà bán hàng."
+  ],
+  "代理": [
+    "Agent",
+    "Ejen",
+    "ตัวแทน",
+    "ភ្នាក់ងារ",
+    "Đại lý"
+  ],
+  "代理与佣金": [
+    "Agents & commissions",
+    "Ejen & komisen",
+    "ตัวแทนและค่าคอมมิชชัน",
+    "ភ្នាក់ងារ និងកម្រៃជើងសា",
+    "Đại lý và hoa hồng"
+  ],
+  "代理佣金": [
+    "Agent commission",
+    "Komisen ejen",
+    "ค่าคอมมิชชันตัวแทน",
+    "កម្រៃជើងសាភ្នាក់ងារ",
+    "Hoa hồng đại lý"
+  ],
+  "代理佣金结算": [
+    "Agent payouts",
+    "Pembayaran komisen ejen",
+    "การจ่ายค่าคอมมิชชันตัวแทน",
+    "ការទូទាត់កម្រៃជើងសាភ្នាក់ងារ",
+    "Quyết toán hoa hồng đại lý"
+  ],
+  "代理名称": [
+    "Agent name",
+    "Nama ejen",
+    "ชื่อตัวแทน",
+    "ឈ្មោះភ្នាក់ងារ",
+    "Tên đại lý"
+  ],
+  "代理：": [
+    "Agent:",
+    "Ejen:",
+    "ตัวแทน:",
+    "ភ្នាក់ងារ៖",
+    "Đại lý:"
+  ],
+  "以商家实际核实到账记录为准": [
+    "Based on funds verified by the merchant",
+    "Berdasarkan dana yang disahkan peniaga",
+    "ตามยอดเงินที่ร้านค้าตรวจสอบแล้ว",
+    "ផ្អែកលើប្រាក់ដែលអាជីវករបានផ្ទៀងផ្ទាត់",
+    "Theo số tiền nhà bán hàng thực tế xác nhận"
+  ],
+  "件": [
+    "units",
+    "unit",
+    "ชิ้น",
+    "ឯកតា",
+    "sản phẩm"
+  ],
+  "价格（MYR）": [
+    "Price (MYR)",
+    "Harga (MYR)",
+    "ราคา (MYR)",
+    "តម្លៃ (MYR)",
+    "Giá (MYR)"
+  ],
+  "你可能也喜欢": [
+    "You may also like",
+    "Anda mungkin suka",
+    "คุณอาจชอบ",
+    "អ្នកក៏អាចចូលចិត្ត",
+    "Có thể bạn thích"
+  ],
+  "你好，": [
+    "Hello,",
+    "Hai,",
+    "สวัสดี",
+    "សួស្ដី",
+    "Xin chào,"
+  ],
+  "你的生意，你的节奏。": [
+    "Your business, your pace.",
+    "Perniagaan anda, rentak anda.",
+    "ธุรกิจของคุณ ในจังหวะของคุณ",
+    "អាជីវកម្មរបស់អ្នក តាមល្បឿនរបស់អ្នក។",
+    "Kinh doanh theo cách của bạn."
+  ],
+  "佣金": [
+    "Commission",
+    "Komisen",
+    "ค่าคอมมิชชัน",
+    "កម្រៃជើងសា",
+    "Hoa hồng"
+  ],
+  "佣金比例": [
+    "Commission rate",
+    "Kadar komisen",
+    "อัตราค่าคอมมิชชัน",
+    "អត្រាកម្រៃជើងសា",
+    "Tỷ lệ hoa hồng"
+  ],
+  "佣金比例（%）": [
+    "Commission rate (%)",
+    "Kadar komisen (%)",
+    "อัตราค่าคอมมิชชัน (%)",
+    "អត្រាកម្រៃជើងសា (%)",
+    "Tỷ lệ hoa hồng (%)"
+  ],
+  "佣金结算": [
+    "Commission payouts",
+    "Pembayaran komisen",
+    "การจ่ายค่าคอมมิชชัน",
+    "ការទូទាត់កម្រៃជើងសា",
+    "Quyết toán hoa hồng"
+  ],
+  "佣金金额表示已赚取，不表示已支付。请在下方提交提现申请并查看实际结算记录。": [
+    "Earned commission is not necessarily paid out. Submit a withdrawal request below and check the actual payout records.",
+    "Komisen diperoleh tidak semestinya telah dibayar. Mohon pengeluaran di bawah dan semak rekod pembayaran sebenar.",
+    "ค่าคอมมิชชันที่ได้รับยังไม่ใช่ยอดที่จ่ายแล้ว ส่งคำขอถอนด้านล่างและตรวจสอบรายการจ่ายจริง",
+    "កម្រៃជើងសាដែលរកបាន មិនមានន័យថាបានទូទាត់ទេ។ សូមស្នើដកប្រាក់ខាងក្រោម និងពិនិត្យកំណត់ត្រាទូទាត់ពិតប្រាកដ។",
+    "Hoa hồng đã kiếm không đồng nghĩa đã được chi trả. Gửi yêu cầu rút tiền bên dưới và xem lịch sử chi trả thực tế."
+  ],
+  "例如：Kedai Kita": [
+    "E.g. Kedai Kita",
+    "Contoh: Kedai Kita",
+    "เช่น Kedai Kita",
+    "ឧទាហរណ៍៖ Kedai Kita",
+    "Ví dụ: Kedai Kita"
+  ],
+  "例如：黑色 / M 或 500ml": [
+    "E.g. Black / M or 500ml",
+    "Contoh: Hitam / M atau 500ml",
+    "เช่น สีดำ / M หรือ 500ml",
+    "ឧទាហរណ៍៖ ខ្មៅ / M ឬ 500ml",
+    "Ví dụ: Đen / M hoặc 500ml"
+  ],
+  "保存": [
+    "Save",
+    "Simpan",
+    "บันทึก",
+    "រក្សាទុក",
+    "Lưu"
+  ],
+  "保存店铺资料": [
+    "Save store details",
+    "Simpan maklumat kedai",
+    "บันทึกข้อมูลร้านค้า",
+    "រក្សាទុកព័ត៌មានហាង",
+    "Lưu thông tin cửa hàng"
+  ],
+  "保存新密码": [
+    "Save new password",
+    "Simpan kata laluan baharu",
+    "บันทึกรหัสผ่านใหม่",
+    "រក្សាទុកពាក្យសម្ងាត់ថ្មី",
+    "Lưu mật khẩu mới"
+  ],
+  "保存核查记录": [
+    "Save review record",
+    "Simpan rekod semakan",
+    "บันทึกผลการตรวจสอบ",
+    "រក្សាទុកកំណត់ត្រាត្រួតពិនិត្យ",
+    "Lưu kết quả kiểm tra"
+  ],
+  "修改价格不影响已有订单；库存变动后请刷新再编辑。": [
+    "Price changes do not affect existing orders. Refresh before editing after stock changes.",
+    "Perubahan harga tidak menjejaskan pesanan sedia ada. Muat semula sebelum menyunting selepas stok berubah.",
+    "การเปลี่ยนราคาไม่กระทบคำสั่งซื้อเดิม หากสต็อกเปลี่ยน โปรดรีเฟรชก่อนแก้ไข",
+    "ការផ្លាស់ប្ដូរតម្លៃមិនប៉ះពាល់ការបញ្ជាទិញចាស់ទេ។ សូមផ្ទុកឡើងវិញមុនកែសម្រួលបន្ទាប់ពីស្តុកផ្លាស់ប្ដូរ។",
+    "Thay đổi giá không ảnh hưởng đơn cũ. Hãy tải lại trước khi sửa nếu tồn kho thay đổi."
+  ],
+  "先在「商品管理」添加商品、价格和库存。": [
+    "Add products, prices and stock in Products first.",
+    "Tambah produk, harga dan stok dalam Pengurusan Produk dahulu.",
+    "เพิ่มสินค้า ราคา และสต็อกในเมนูสินค้าก่อน",
+    "បន្ថែមផលិតផល តម្លៃ និងស្តុកក្នុងផ្នែកគ្រប់គ្រងផលិតផលជាមុន។",
+    "Thêm sản phẩm, giá và tồn kho trong mục Sản phẩm trước."
+  ],
+  "免费注册": [
+    "Sign up free",
+    "Daftar percuma",
+    "สมัครฟรี",
+    "ចុះឈ្មោះឥតគិតថ្លៃ",
+    "Đăng ký miễn phí"
+  ],
+  "全部商品": [
+    "All products",
+    "Semua produk",
+    "สินค้าทั้งหมด",
+    "ផលិតផលទាំងអស់",
+    "Tất cả sản phẩm"
+  ],
+  "全部状态": [
+    "All statuses",
+    "Semua status",
+    "ทุกสถานะ",
+    "ស្ថានភាពទាំងអស់",
+    "Tất cả trạng thái"
+  ],
+  "公开 WhatsApp 联系电话": [
+    "Public WhatsApp number",
+    "Nombor WhatsApp awam",
+    "หมายเลข WhatsApp สาธารณะ",
+    "លេខ WhatsApp សាធារណៈ",
+    "Số WhatsApp công khai"
+  ],
+  "关闭": [
+    "Close",
+    "Tutup",
+    "ปิด",
+    "បិទ",
+    "Đóng"
+  ],
+  "其他": [
+    "Other",
+    "Lain-lain",
+    "อื่น ๆ",
+    "ផ្សេងទៀត",
+    "Khác"
+  ],
+  "再次输入新密码": [
+    "Confirm new password",
+    "Sahkan kata laluan baharu",
+    "ยืนยันรหัสผ่านใหม่",
+    "បញ្ជាក់ពាក្យសម្ងាត់ថ្មី",
+    "Nhập lại mật khẩu mới"
+  ],
+  "减少数量": [
+    "Decrease quantity",
+    "Kurangkan kuantiti",
+    "ลดจำนวน",
+    "បន្ថយចំនួន",
+    "Giảm số lượng"
+  ],
+  "出现重复订阅": [
+    "Duplicate subscriptions detected",
+    "Langganan berganda dikesan",
+    "พบการสมัครซ้ำ",
+    "រកឃើញការជាវស្ទួន",
+    "Phát hiện đăng ký trùng"
+  ],
+  "分享店铺": [
+    "Share store",
+    "Kongsi kedai",
+    "แชร์ร้านค้า",
+    "ចែករំលែកហាង",
+    "Chia sẻ cửa hàng"
+  ],
+  "分享店铺链接，让顾客随时随地下单。": [
+    "Share your store link so customers can order anytime.",
+    "Kongsi pautan kedai supaya pelanggan boleh memesan bila-bila masa.",
+    "แชร์ลิงก์ร้านค้าให้ลูกค้าสั่งซื้อได้ทุกเวลา",
+    "ចែករំលែកតំណហាង ដើម្បីឱ្យអតិថិជនអាចបញ្ជាទិញគ្រប់ពេល។",
+    "Chia sẻ liên kết cửa hàng để khách đặt hàng bất cứ lúc nào."
+  ],
+  "分享推广链接，开始你的第一笔成交。": [
+    "Share your affiliate link to get your first sale.",
+    "Kongsi pautan ejen untuk jualan pertama anda.",
+    "แชร์ลิงก์ตัวแทนเพื่อเริ่มการขายครั้งแรก",
+    "ចែករំលែកតំណភ្នាក់ងារដើម្បីទទួលបានការលក់ដំបូង។",
+    "Chia sẻ liên kết đại lý để có đơn đầu tiên."
+  ],
+  "分类": [
+    "Category",
+    "Kategori",
+    "หมวดหมู่",
+    "ប្រភេទ",
+    "Danh mục"
+  ],
+  "列入热门精选": [
+    "Feature this product",
+    "Jadikan produk pilihan",
+    "แสดงเป็นสินค้าแนะนำ",
+    "កំណត់ជាផលិតផលពិសេស",
+    "Đánh dấu sản phẩm nổi bật"
+  ],
+  "创建你的店铺": [
+    "Create your store",
+    "Cipta kedai anda",
+    "สร้างร้านค้าของคุณ",
+    "បង្កើតហាងរបស់អ្នក",
+    "Tạo cửa hàng của bạn"
+  ],
+  "创建店铺": [
+    "Create store",
+    "Cipta kedai",
+    "สร้างร้านค้า",
+    "បង្កើតហាង",
+    "Tạo cửa hàng"
+  ],
+  "删除商品": [
+    "Remove item",
+    "Buang produk",
+    "ลบสินค้า",
+    "លុបផលិតផល",
+    "Xóa sản phẩm"
+  ],
+  "刷新": [
+    "Refresh",
+    "Muat semula",
+    "รีเฟรช",
+    "ផ្ទុកឡើងវិញ",
+    "Tải lại"
+  ],
+  "刷新订单与付款状态": [
+    "Refresh order & payment status",
+    "Muat semula status pesanan & bayaran",
+    "รีเฟรชสถานะคำสั่งซื้อและการชำระเงิน",
+    "ផ្ទុកស្ថានភាពបញ្ជាទិញ និងទូទាត់ឡើងវិញ",
+    "Tải lại trạng thái đơn và thanh toán"
+  ],
+  "刷新记录": [
+    "Refresh records",
+    "Muat semula rekod",
+    "รีเฟรชรายการ",
+    "ផ្ទុកកំណត់ត្រាឡើងវិញ",
+    "Tải lại lịch sử"
+  ],
+  "前往安全付款页": [
+    "Go to secure payment",
+    "Ke pembayaran selamat",
+    "ไปยังหน้าชำระเงินที่ปลอดภัย",
+    "ទៅការទូទាត់សុវត្ថិភាព",
+    "Đến trang thanh toán an toàn"
+  ],
+  "前往登录": [
+    "Go to login",
+    "Ke log masuk",
+    "ไปหน้าเข้าสู่ระบบ",
+    "ទៅចូលគណនី",
+    "Đến trang đăng nhập"
+  ],
+  "前往结账": [
+    "Checkout",
+    "Daftar keluar",
+    "ชำระเงิน",
+    "ទូទាត់ប្រាក់",
+    "Thanh toán"
+  ],
+  "加入 EZShop 团队": [
+    "Join the EZShop team",
+    "Sertai pasukan EZShop",
+    "เข้าร่วมทีม EZShop",
+    "ចូលរួមក្រុម EZShop",
+    "Tham gia nhóm EZShop"
+  ],
+  "加入后的数量超过当前可售库存": [
+    "Quantity exceeds available stock",
+    "Kuantiti melebihi stok tersedia",
+    "จำนวนเกินสต็อกที่มี",
+    "ចំនួនលើសស្តុកដែលមាន",
+    "Số lượng vượt tồn kho khả dụng"
+  ],
+  "加入购物车": [
+    "Add to cart",
+    "Tambah ke troli",
+    "เพิ่มลงตะกร้า",
+    "បន្ថែមក្នុងកន្ត្រក",
+    "Thêm vào giỏ hàng"
+  ],
+  "单一规格": [
+    "Single variant",
+    "Satu variasi",
+    "ตัวเลือกเดียว",
+    "ជម្រើសតែមួយ",
+    "Một phân loại"
+  ],
+  "卡支付及 FPX 以你的账户实际开通情况为准。平台不会收集银行卡密码。": [
+    "Card and FPX availability depends on your account approval. We never collect banking passwords.",
+    "Kad dan FPX bergantung pada kelulusan akaun anda. Kami tidak mengumpul kata laluan bank.",
+    "การใช้บัตรและ FPX ขึ้นอยู่กับการอนุมัติบัญชี ระบบไม่เก็บรหัสผ่านธนาคาร",
+    "កាត និង FPX អាស្រ័យលើការអនុម័តគណនីរបស់អ្នក។ យើងមិនប្រមូលពាក្យសម្ងាត់ធនាគារទេ។",
+    "Thẻ và FPX phụ thuộc phê duyệt tài khoản của bạn. Chúng tôi không thu thập mật khẩu ngân hàng."
+  ],
+  "原因": [
+    "Reason",
+    "Sebab",
+    "เหตุผล",
+    "មូលហេតុ",
+    "Lý do"
+  ],
+  "去逛逛": [
+    "Browse products",
+    "Lihat produk",
+    "เลือกซื้อสินค้า",
+    "មើលផលិតផល",
+    "Xem sản phẩm"
+  ],
+  "发布到顾客端店铺": [
+    "Publish to storefront",
+    "Terbitkan ke kedai",
+    "เผยแพร่หน้าร้าน",
+    "បង្ហាញនៅមុខហាង",
+    "Hiển thị trên cửa hàng"
+  ],
+  "发现好物，从这里开始。": [
+    "Discover something good.",
+    "Temui produk menarik.",
+    "ค้นพบสินค้าดี ๆ",
+    "ស្វែងរកផលិតផលល្អៗ។",
+    "Khám phá sản phẩm yêu thích."
+  ],
+  "发货记录已保存": [
+    "Shipment record saved",
+    "Rekod penghantaran disimpan",
+    "บันทึกข้อมูลการจัดส่งแล้ว",
+    "បានរក្សាទុកកំណត់ត្រាដឹកជញ្ជូន",
+    "Đã lưu thông tin giao hàng"
+  ],
+  "发送失败": [
+    "Sending failed",
+    "Penghantaran gagal",
+    "ส่งไม่สำเร็จ",
+    "ការផ្ញើបរាជ័យ",
+    "Gửi thất bại"
+  ],
+  "发送重设邮件": [
+    "Send reset email",
+    "Hantar e-mel tetapan semula",
+    "ส่งอีเมลรีเซ็ตรหัสผ่าน",
+    "ផ្ញើអ៊ីមែលកំណត់ឡើងវិញ",
+    "Gửi email đặt lại mật khẩu"
+  ],
+  "取消订单": [
+    "Cancel order",
+    "Batalkan pesanan",
+    "ยกเลิกคำสั่งซื้อ",
+    "បោះបង់ការបញ្ជាទិញ",
+    "Hủy đơn hàng"
+  ],
+  "可售库存": [
+    "Available stock",
+    "Stok tersedia",
+    "สต็อกที่ขายได้",
+    "ស្តុកដែលអាចលក់បាន",
+    "Tồn kho khả dụng"
+  ],
+  "可申请余额": [
+    "Available to withdraw",
+    "Baki boleh dikeluarkan",
+    "ยอดที่ถอนได้",
+    "សមតុល្យអាចដកបាន",
+    "Số dư có thể rút"
+  ],
+  "可选择或自行填写": [
+    "Select or enter your own",
+    "Pilih atau isi sendiri",
+    "เลือกหรือกรอกเอง",
+    "ជ្រើសរើស ឬបញ្ចូលដោយខ្លួនឯង",
+    "Chọn hoặc tự nhập"
+  ],
+  "商品介绍": [
+    "Product description",
+    "Penerangan produk",
+    "รายละเอียดสินค้า",
+    "ពិពណ៌នាផលិតផល",
+    "Mô tả sản phẩm"
+  ],
+  "商品名称": [
+    "Product name",
+    "Nama produk",
+    "ชื่อสินค้า",
+    "ឈ្មោះផលិតផល",
+    "Tên sản phẩm"
+  ],
+  "商品图片": [
+    "Product image",
+    "Gambar produk",
+    "รูปสินค้า",
+    "រូបភាពផលិតផល",
+    "Ảnh sản phẩm"
+  ],
+  "商品小计": [
+    "Subtotal",
+    "Subjumlah",
+    "ยอดรวมสินค้า",
+    "សរុបរង",
+    "Tạm tính"
+  ],
+  "商品已下架": [
+    "Product unavailable",
+    "Produk tidak tersedia",
+    "สินค้าหยุดจำหน่าย",
+    "ផលិតផលមិនមានលក់",
+    "Sản phẩm ngừng bán"
+  ],
+  "商品数量": [
+    "Quantity",
+    "Kuantiti",
+    "จำนวนสินค้า",
+    "ចំនួនផលិតផល",
+    "Số lượng"
+  ],
+  "商品款付给商家，平台服务费付给 EZShop。": [
+    "Product payments go to merchants; platform fees go to EZShop.",
+    "Bayaran produk kepada peniaga; yuran platform kepada EZShop.",
+    "ค่าสินค้าเข้าบัญชีร้านค้า ค่าบริการแพลตฟอร์มเข้าบัญชี EZShop",
+    "ប្រាក់ផលិតផលទៅអាជីវករ ថ្លៃវេទិកាទៅ EZShop។",
+    "Tiền hàng thuộc nhà bán hàng; phí nền tảng thuộc EZShop."
+  ],
+  "商品管理": [
+    "Products",
+    "Pengurusan produk",
+    "จัดการสินค้า",
+    "គ្រប់គ្រងផលិតផល",
+    "Quản lý sản phẩm"
+  ],
+  "商家": [
+    "Merchant",
+    "Peniaga",
+    "ร้านค้า",
+    "អាជីវករ",
+    "Nhà bán hàng"
+  ],
+  "商家 Logo": [
+    "Store logo",
+    "Logo kedai",
+    "โลโก้ร้านค้า",
+    "និមិត្តសញ្ញាហាង",
+    "Logo cửa hàng"
+  ],
+  "商家、方案及运营状态统一管理。": [
+    "Manage merchants, plans and store status.",
+    "Urus peniaga, pelan dan status kedai.",
+    "จัดการร้านค้า แพ็กเกจ และสถานะการดำเนินงาน",
+    "គ្រប់គ្រងអាជីវករ គម្រោង និងស្ថានភាពហាង។",
+    "Quản lý nhà bán hàng, gói và trạng thái hoạt động."
+  ],
+  "商家尚未提供公开联系电话": [
+    "No public contact number provided",
+    "Tiada nombor telefon awam diberikan",
+    "ร้านค้ายังไม่ระบุเบอร์ติดต่อสาธารณะ",
+    "មិនមានលេខទំនាក់ទំនងសាធារណៈ",
+    "Chưa có số điện thoại liên hệ công khai"
+  ],
+  "商家尚未提供商品介绍。如有疑问，欢迎联系商家。": [
+    "No description yet. Contact the merchant with any questions.",
+    "Belum ada penerangan. Hubungi peniaga jika ada soalan.",
+    "ยังไม่มีรายละเอียดสินค้า หากมีคำถามโปรดติดต่อร้านค้า",
+    "មិនទាន់មានការពិពណ៌នា។ សូមទាក់ទងអាជីវករបើមានសំណួរ។",
+    "Chưa có mô tả. Hãy liên hệ nhà bán hàng nếu có thắc mắc."
+  ],
+  "商家工作台": [
+    "Merchant dashboard",
+    "Papan pemuka peniaga",
+    "แดชบอร์ดร้านค้า",
+    "ផ្ទាំងគ្រប់គ្រងអាជីវករ",
+    "Bảng quản lý nhà bán hàng"
+  ],
+  "商家已登记发货": [
+    "Merchant recorded shipment",
+    "Peniaga merekod penghantaran",
+    "ร้านค้าบันทึกการจัดส่งแล้ว",
+    "អាជីវករបានកត់ត្រាការដឹកជញ្ជូន",
+    "Nhà bán hàng đã ghi nhận gửi hàng"
+  ],
+  "商家已登记完成全额退款。请核对实际到账。": [
+    "Merchant recorded a full refund. Please verify receipt of funds.",
+    "Peniaga merekod bayaran balik penuh. Sila semak wang diterima.",
+    "ร้านค้าบันทึกการคืนเงินเต็มจำนวนแล้ว โปรดตรวจสอบยอดเงินที่ได้รับ",
+    "អាជីវករបានកត់ត្រាការសងប្រាក់ទាំងស្រុង។ សូមផ្ទៀងផ្ទាត់ប្រាក់ដែលបានទទួល។",
+    "Nhà bán hàng đã ghi nhận hoàn tiền toàn bộ. Hãy kiểm tra tiền thực nhận."
+  ],
+  "商家已确认收款。": [
+    "Merchant confirmed payment.",
+    "Peniaga mengesahkan bayaran.",
+    "ร้านค้ายืนยันรับเงินแล้ว",
+    "អាជីវករបានបញ្ជាក់ការទូទាត់។",
+    "Nhà bán hàng đã xác nhận nhận tiền."
+  ],
+  "商家自行安排": [
+    "Arranged by merchant",
+    "Diatur oleh peniaga",
+    "ร้านค้าจัดส่งเอง",
+    "រៀបចំដោយអាជីវករ",
+    "Nhà bán hàng tự sắp xếp"
+  ],
+  "商家账号": [
+    "Merchant account",
+    "Akaun peniaga",
+    "บัญชีร้านค้า",
+    "គណនីអាជីវករ",
+    "Tài khoản nhà bán hàng"
+  ],
+  "商店 Banner": [
+    "Store banner",
+    "Sepanduk kedai",
+    "แบนเนอร์ร้านค้า",
+    "បដាហាង",
+    "Ảnh bìa cửa hàng"
+  ],
+  "团队与权限": [
+    "Team & permissions",
+    "Pasukan & kebenaran",
+    "ทีมและสิทธิ์การเข้าถึง",
+    "ក្រុម និងសិទ្ធិ",
+    "Nhóm và quyền truy cập"
+  ],
+  "团队账号已启用": [
+    "Team account enabled",
+    "Akaun pasukan diaktifkan",
+    "เปิดใช้บัญชีทีมแล้ว",
+    "គណនីក្រុមបានបើកដំណើរការ",
+    "Đã kích hoạt tài khoản nhóm"
+  ],
+  "图片上传失败，请检查登录状态及图片存储权限后重试。": [
+    "Upload failed. Check your login and storage permissions, then retry.",
+    "Muat naik gagal. Semak log masuk dan kebenaran storan, kemudian cuba lagi.",
+    "อัปโหลดไม่สำเร็จ โปรดตรวจสอบการเข้าสู่ระบบและสิทธิ์พื้นที่เก็บข้อมูลแล้วลองอีกครั้ง",
+    "ការផ្ទុកឡើងបរាជ័យ។ ពិនិត្យការចូលគណនី និងសិទ្ធិផ្ទុក រួចព្យាយាមម្ដងទៀត។",
+    "Tải ảnh thất bại. Kiểm tra đăng nhập và quyền lưu trữ rồi thử lại."
+  ],
+  "图片上传失败，请重试。": [
+    "Image upload failed. Please retry.",
+    "Muat naik gambar gagal. Sila cuba lagi.",
+    "อัปโหลดรูปไม่สำเร็จ โปรดลองอีกครั้ง",
+    "ការផ្ទុករូបភាពបរាជ័យ។ សូមព្យាយាមម្ដងទៀត។",
+    "Tải ảnh thất bại. Vui lòng thử lại."
+  ],
+  "图片不能超过 5 MB。": [
+    "Image must not exceed 5 MB.",
+    "Gambar tidak boleh melebihi 5 MB.",
+    "รูปต้องไม่เกิน 5 MB",
+    "រូបភាពមិនអាចលើស 5 MB ទេ។",
+    "Ảnh không được vượt quá 5 MB."
+  ],
+  "图片存储尚未初始化，请先完成图片上传配置。": [
+    "Image storage is not configured yet.",
+    "Storan gambar belum dikonfigurasi.",
+    "ยังไม่ได้ตั้งค่าพื้นที่เก็บรูปภาพ",
+    "មិនទាន់បានកំណត់ការផ្ទុករូបភាពទេ។",
+    "Chưa cấu hình kho lưu ảnh."
+  ],
+  "图片尺寸过大，请选择较小的图片。": [
+    "Image dimensions are too large. Choose a smaller image.",
+    "Dimensi gambar terlalu besar. Pilih gambar lebih kecil.",
+    "ขนาดรูปใหญ่เกินไป โปรดเลือกรูปที่เล็กลง",
+    "ទំហំរូបភាពធំពេក។ សូមជ្រើសរូបភាពតូចជាងនេះ។",
+    "Kích thước ảnh quá lớn. Hãy chọn ảnh nhỏ hơn."
+  ],
+  "图片文件为空，请重新选择。": [
+    "Image file is empty. Choose another file.",
+    "Fail gambar kosong. Pilih fail lain.",
+    "ไฟล์รูปว่างเปล่า โปรดเลือกไฟล์ใหม่",
+    "ឯកសាររូបភាពទទេ។ សូមជ្រើសឯកសារថ្មី។",
+    "Tệp ảnh rỗng. Hãy chọn tệp khác."
+  ],
+  "城市": [
+    "City",
+    "Bandar",
+    "เมือง",
+    "ទីក្រុង",
+    "Thành phố"
+  ],
+  "基本资料": [
+    "Basic details",
+    "Maklumat asas",
+    "ข้อมูลพื้นฐาน",
+    "ព័ត៌មានមូលដ្ឋាន",
+    "Thông tin cơ bản"
+  ],
+  "填写注册邮箱，我们会向已注册的账号发送重设密码链接。": [
+    "Enter your registered email to request a password reset link.",
+    "Masukkan e-mel berdaftar untuk meminta pautan tetapan semula kata laluan.",
+    "กรอกอีเมลที่ลงทะเบียนเพื่อขอลิงก์รีเซ็ตรหัสผ่าน",
+    "បញ្ចូលអ៊ីមែលដែលបានចុះឈ្មោះ ដើម្បីស្នើតំណកំណត់ពាក្យសម្ងាត់ឡើងវិញ។",
+    "Nhập email đã đăng ký để yêu cầu liên kết đặt lại mật khẩu."
+  ],
+  "增加数量": [
+    "Increase quantity",
+    "Tambah kuantiti",
+    "เพิ่มจำนวน",
+    "បង្កើនចំនួន",
+    "Tăng số lượng"
+  ],
+  "处理结果及实际参考号": [
+    "Resolution & actual reference",
+    "Penyelesaian & rujukan sebenar",
+    "ผลการดำเนินการและเลขอ้างอิงจริง",
+    "លទ្ធផលដោះស្រាយ និងលេខយោងពិតប្រាកដ",
+    "Kết quả xử lý và mã tham chiếu thực tế"
+  ],
+  "复制邀请链接": [
+    "Copy invitation link",
+    "Salin pautan jemputan",
+    "คัดลอกลิงก์เชิญ",
+    "ចម្លងតំណអញ្ជើញ",
+    "Sao chép liên kết mời"
+  ],
+  "复制链接，开始接收订单": [
+    "Copy link to start receiving orders",
+    "Salin pautan untuk menerima pesanan",
+    "คัดลอกลิงก์เพื่อเริ่มรับคำสั่งซื้อ",
+    "ចម្លងតំណដើម្បីចាប់ផ្ដើមទទួលការបញ្ជាទិញ",
+    "Sao chép liên kết để bắt đầu nhận đơn"
+  ],
+  "好物值得分享，生活值得认真。发现属于你的日常精选。": [
+    "Discover everyday favourites worth sharing.",
+    "Temui pilihan harian yang berbaloi dikongsi.",
+    "ค้นพบสินค้าคู่ใจที่น่าแบ่งปัน",
+    "ស្វែងរកផលិតផលប្រចាំថ្ងៃដែលគួរចែករំលែក។",
+    "Khám phá sản phẩm yêu thích đáng chia sẻ mỗi ngày."
+  ],
+  "好生意，": [
+    "Good business",
+    "Perniagaan yang baik",
+    "ธุรกิจที่ดี",
+    "អាជីវកម្មល្អ",
+    "Kinh doanh tốt"
+  ],
+  "姓名": [
+    "Name",
+    "Nama",
+    "ชื่อ",
+    "ឈ្មោះ",
+    "Họ tên"
+  ],
+  "实际可用支付方式以收款页面为准，返回本页不会自动当作付款成功。": [
+    "Available methods appear on the payment page. Returning here does not confirm payment.",
+    "Kaedah tersedia dipaparkan di halaman pembayaran. Kembali ke sini tidak mengesahkan bayaran.",
+    "วิธีที่ใช้ได้จะแสดงที่หน้าชำระเงิน การกลับมาหน้านี้ไม่ใช่การยืนยันว่าชำระแล้ว",
+    "វិធីដែលអាចប្រើបានបង្ហាញនៅទំព័រទូទាត់។ ការត្រឡប់មកទីនេះមិនបញ្ជាក់ថាបានទូទាត់ទេ។",
+    "Phương thức khả dụng hiển thị ở trang thanh toán. Quay lại đây không có nghĩa đã thanh toán."
+  ],
+  "实际快递公司": [
+    "Actual courier",
+    "Kurier sebenar",
+    "บริษัทขนส่งที่ใช้จริง",
+    "ក្រុមហ៊ុនដឹកជញ្ជូនពិតប្រាកដ",
+    "Đơn vị vận chuyển thực tế"
+  ],
+  "实际打款参考号": [
+    "Actual transfer reference",
+    "Rujukan pindahan sebenar",
+    "เลขอ้างอิงการโอนจริง",
+    "លេខយោងការផ្ទេរពិតប្រាកដ",
+    "Mã chuyển tiền thực tế"
+  ],
+  "实际退款参考号": [
+    "Actual refund reference",
+    "Rujukan bayaran balik sebenar",
+    "เลขอ้างอิงการคืนเงินจริง",
+    "លេខយោងការសងប្រាក់ពិតប្រាកដ",
+    "Mã hoàn tiền thực tế"
+  ],
+  "客服仅处理订单；库存专员仅管理商品；经理可管理商品和订单；代理只查看自己的推广业绩。": [
+    "Order staff handle orders; inventory staff manage products; managers handle both. Agents see only their own performance.",
+    "Staf pesanan mengurus pesanan; staf stok mengurus produk; pengurus mengurus kedua-duanya. Ejen hanya melihat prestasi sendiri.",
+    "ฝ่ายคำสั่งซื้อดูแลคำสั่งซื้อ ฝ่ายสต็อกดูแลสินค้า ผู้จัดการดูแลทั้งสองส่วน ตัวแทนเห็นเฉพาะผลงานตนเอง",
+    "បុគ្គលិកបញ្ជាទិញគ្រប់គ្រងការបញ្ជាទិញ បុគ្គលិកស្តុកគ្រប់គ្រងផលិតផល អ្នកគ្រប់គ្រងធ្វើទាំងពីរ។ ភ្នាក់ងារមើលតែសមិទ្ធផលរបស់ខ្លួន។",
+    "Nhân viên đơn hàng xử lý đơn; nhân viên kho quản lý sản phẩm; quản lý phụ trách cả hai. Đại lý chỉ xem thành tích của mình."
+  ],
+  "密码": [
+    "Password",
+    "Kata laluan",
+    "รหัสผ่าน",
+    "ពាក្យសម្ងាត់",
+    "Mật khẩu"
+  ],
+  "密码已更新，但退出会话未完成。请关闭此窗口后重新登录。": [
+    "Password updated, but sign-out is incomplete. Close this window and log in again.",
+    "Kata laluan dikemas kini, tetapi log keluar belum selesai. Tutup tetingkap ini dan log masuk semula.",
+    "เปลี่ยนรหัสผ่านแล้ว แต่ออกจากระบบไม่สำเร็จ โปรดปิดหน้าต่างนี้แล้วเข้าสู่ระบบใหม่",
+    "ពាក្យសម្ងាត់បានប្ដូរ ប៉ុន្តែមិនទាន់ចាកចេញពីគណនីបានទេ។ បិទបង្អួចនេះ រួចចូលម្តងទៀត។",
+    "Đã đổi mật khẩu nhưng chưa đăng xuất hoàn tất. Đóng cửa sổ này rồi đăng nhập lại."
+  ],
+  "密码已更新，请使用新密码登录。": [
+    "Password updated. Log in with your new password.",
+    "Kata laluan dikemas kini. Log masuk dengan kata laluan baharu.",
+    "เปลี่ยนรหัสผ่านแล้ว โปรดเข้าสู่ระบบด้วยรหัสผ่านใหม่",
+    "ពាក្យសម្ងាត់បានប្ដូរ។ សូមចូលដោយពាក្យសម្ងាត់ថ្មី។",
+    "Đã đổi mật khẩu. Hãy đăng nhập bằng mật khẩu mới."
+  ],
+  "对象": [
+    "Object",
+    "Objek",
+    "รายการ",
+    "វត្ថុ",
+    "Đối tượng"
+  ],
+  "尚待收款服务商确认": [
+    "Awaiting payment provider confirmation",
+    "Menunggu pengesahan penyedia bayaran",
+    "รอผู้ให้บริการชำระเงินยืนยัน",
+    "រង់ចាំការបញ្ជាក់ពីអ្នកផ្ដល់សេវាទូទាត់",
+    "Chờ nhà cung cấp thanh toán xác nhận"
+  ],
+  "尚无自动订阅": [
+    "No automatic subscription",
+    "Tiada langganan automatik",
+    "ยังไม่มีสมาชิกอัตโนมัติ",
+    "មិនមានការជាវស្វ័យប្រវត្តិ",
+    "Chưa có đăng ký tự động"
+  ],
+  "尚未开通收款": [
+    "Payments not enabled",
+    "Pembayaran belum diaktifkan",
+    "ยังไม่เปิดรับชำระเงิน",
+    "មិនទាន់បើកទទួលការទូទាត់",
+    "Chưa bật nhận thanh toán"
+  ],
+  "尝试次数": [
+    "Attempts",
+    "Percubaan",
+    "จำนวนครั้งที่ลอง",
+    "ចំនួនការព្យាយាម",
+    "Số lần thử"
+  ],
+  "州属": [
+    "State",
+    "Negeri",
+    "รัฐ",
+    "រដ្ឋ",
+    "Bang"
+  ],
+  "工作台": [
+    "Dashboard",
+    "Papan pemuka",
+    "แดชบอร์ด",
+    "ផ្ទាំងគ្រប់គ្រង",
+    "Bảng điều khiển"
+  ],
+  "已上传，保存后生效": [
+    "Uploaded. Save to apply.",
+    "Dimuat naik. Simpan untuk digunakan.",
+    "อัปโหลดแล้ว บันทึกเพื่อใช้งาน",
+    "បានផ្ទុកឡើង។ រក្សាទុកដើម្បីប្រើប្រាស់។",
+    "Đã tải lên. Lưu để áp dụng."
+  ],
+  "已下架商品": [
+    "Unpublished products",
+    "Produk tidak diterbitkan",
+    "สินค้าที่ยังไม่เผยแพร่",
+    "ផលិតផលមិនបានបង្ហាញ",
+    "Sản phẩm đã ẩn"
+  ],
+  "已付款": [
+    "Paid",
+    "Dibayar",
+    "ชำระแล้ว",
+    "បានទូទាត់",
+    "Đã thanh toán"
+  ],
+  "已付款订单累计佣金": [
+    "Total commission on paid orders",
+    "Jumlah komisen pesanan dibayar",
+    "ค่าคอมมิชชันรวมจากคำสั่งซื้อที่ชำระแล้ว",
+    "កម្រៃជើងសាសរុបពីការបញ្ជាទិញដែលបានទូទាត់",
+    "Tổng hoa hồng từ đơn đã thanh toán"
+  ],
+  "已加入购物车": [
+    "Added to cart",
+    "Ditambah ke troli",
+    "เพิ่มลงตะกร้าแล้ว",
+    "បានបន្ថែមក្នុងកន្ត្រក",
+    "Đã thêm vào giỏ hàng"
+  ],
+  "已发布": [
+    "Published",
+    "Diterbitkan",
+    "เผยแพร่แล้ว",
+    "បានបង្ហាញ",
+    "Đang hiển thị"
+  ],
+  "已取消": [
+    "Cancelled",
+    "Dibatalkan",
+    "ยกเลิกแล้ว",
+    "បានបោះបង់",
+    "Đã hủy"
+  ],
+  "已启用": [
+    "Active",
+    "Aktif",
+    "เปิดใช้งานแล้ว",
+    "សកម្ម",
+    "Đã kích hoạt"
+  ],
+  "已寄件，保存发货记录": [
+    "Parcel sent — save shipment",
+    "Bungkusan dihantar — simpan rekod",
+    "ส่งพัสดุแล้ว — บันทึกการจัดส่ง",
+    "បានផ្ញើកញ្ចប់ — រក្សាទុកកំណត់ត្រា",
+    "Đã gửi hàng — lưu thông tin"
+  ],
+  "已开通线上收款": [
+    "Online payments enabled",
+    "Pembayaran dalam talian aktif",
+    "เปิดรับชำระออนไลน์แล้ว",
+    "បានបើកទូទាត់អនឡាញ",
+    "Đã bật thanh toán trực tuyến"
+  ],
+  "已拒绝": [
+    "Rejected",
+    "Ditolak",
+    "ปฏิเสธแล้ว",
+    "បានបដិសេធ",
+    "Đã từ chối"
+  ],
+  "已收款销售额": [
+    "Paid sales",
+    "Jualan dibayar",
+    "ยอดขายที่รับเงินแล้ว",
+    "ការលក់ដែលបានទូទាត់",
+    "Doanh thu đã thu tiền"
+  ],
+  "已暂停": [
+    "Suspended",
+    "Digantung",
+    "ระงับแล้ว",
+    "បានផ្អាក",
+    "Đã tạm ngưng"
+  ],
+  "已有账号？": [
+    "Already have an account?",
+    "Sudah ada akaun?",
+    "มีบัญชีแล้ว?",
+    "មានគណនីរួចហើយ?",
+    "Đã có tài khoản?"
+  ],
+  "已核实，保存打款记录": [
+    "Verified — save payout record",
+    "Disahkan — simpan rekod bayaran",
+    "ตรวจสอบแล้ว — บันทึกการจ่ายเงิน",
+    "បានផ្ទៀងផ្ទាត់ — រក្សាទុកកំណត់ត្រាទូទាត់",
+    "Đã xác minh — lưu chi trả"
+  ],
+  "已核实，登记全额退款": [
+    "Verified — record full refund",
+    "Disahkan — rekod bayaran balik penuh",
+    "ตรวจสอบแล้ว — บันทึกคืนเงินเต็มจำนวน",
+    "បានផ្ទៀងផ្ទាត់ — កត់ត្រាសងប្រាក់ទាំងស្រុង",
+    "Đã xác minh — ghi nhận hoàn tiền toàn bộ"
+  ],
+  "已登记发货": [
+    "Shipment recorded",
+    "Penghantaran direkod",
+    "บันทึกจัดส่งแล้ว",
+    "បានកត់ត្រាដឹកជញ្ជូន",
+    "Đã ghi nhận gửi hàng"
+  ],
+  "已登记打款": [
+    "Payouts recorded",
+    "Bayaran direkod",
+    "ยอดจ่ายที่บันทึกแล้ว",
+    "ការទូទាត់ដែលបានកត់ត្រា",
+    "Đã ghi nhận chi trả"
+  ],
+  "已确认付款订单": [
+    "Confirmed paid orders",
+    "Pesanan disahkan dibayar",
+    "คำสั่งซื้อที่ยืนยันชำระแล้ว",
+    "ការបញ្ជាទិញដែលបានបញ្ជាក់ការទូទាត់",
+    "Đơn đã xác nhận thanh toán"
+  ],
+  "已确认收回商品，恢复库存": [
+    "Goods received back — restore stock",
+    "Barang dipulangkan — pulihkan stok",
+    "รับสินค้าคืนแล้ว — คืนสต็อก",
+    "បានទទួលទំនិញវិញ — បញ្ចូលស្តុកវិញ",
+    "Đã nhận lại hàng — hoàn tồn kho"
+  ],
+  "已确认收款": [
+    "Payment confirmed",
+    "Bayaran disahkan",
+    "ยืนยันรับเงินแล้ว",
+    "បានបញ្ជាក់ការទូទាត់",
+    "Đã xác nhận nhận tiền"
+  ],
+  "已确认销售额": [
+    "Confirmed sales",
+    "Jualan disahkan",
+    "ยอดขายที่ยืนยันแล้ว",
+    "ការលក់ដែលបានបញ្ជាក់",
+    "Doanh thu đã xác nhận"
+  ],
+  "已记录处理": [
+    "Resolution recorded",
+    "Penyelesaian direkod",
+    "บันทึกการดำเนินการแล้ว",
+    "បានកត់ត្រាការដោះស្រាយ",
+    "Đã ghi nhận xử lý"
+  ],
+  "已记录打款": [
+    "Payout recorded",
+    "Bayaran direkod",
+    "บันทึกการจ่ายเงินแล้ว",
+    "បានកត់ត្រាទូទាត់",
+    "Đã ghi nhận chi trả"
+  ],
+  "已赚佣金": [
+    "Earned commission",
+    "Komisen diperoleh",
+    "ค่าคอมมิชชันที่ได้รับ",
+    "កម្រៃជើងសាដែលរកបាន",
+    "Hoa hồng đã kiếm"
+  ],
+  "已跳过": [
+    "Skipped",
+    "Dilangkau",
+    "ข้ามแล้ว",
+    "បានរំលង",
+    "Đã bỏ qua"
+  ],
+  "已退款": [
+    "Refunded",
+    "Dibayar balik",
+    "คืนเงินแล้ว",
+    "បានសងប្រាក់",
+    "Đã hoàn tiền"
+  ],
+  "常用快递公司": [
+    "Preferred courier",
+    "Kurier pilihan",
+    "บริษัทขนส่งที่ใช้ประจำ",
+    "ក្រុមហ៊ុនដឹកជញ្ជូនដែលចូលចិត្ត",
+    "Đơn vị vận chuyển thường dùng"
+  ],
+  "平台管理": [
+    "Platform admin",
+    "Pentadbiran platform",
+    "จัดการแพลตฟอร์ม",
+    "គ្រប់គ្រងវេទិកា",
+    "Quản trị nền tảng"
+  ],
+  "库存": [
+    "Stock",
+    "Stok",
+    "สต็อก",
+    "ស្តុក",
+    "Tồn kho"
+  ],
+  "库存专员": [
+    "Inventory staff",
+    "Staf stok",
+    "พนักงานสต็อก",
+    "បុគ្គលិកស្តុក",
+    "Nhân viên kho"
+  ],
+  "库存仅剩": [
+    "Stock remaining:",
+    "Baki stok:",
+    "สต็อกคงเหลือ:",
+    "ស្តុកនៅសល់៖",
+    "Tồn kho còn:"
+  ],
+  "应付总额": [
+    "Total payable",
+    "Jumlah perlu dibayar",
+    "ยอดที่ต้องชำระ",
+    "សរុបត្រូវទូទាត់",
+    "Tổng phải trả"
+  ],
+  "店铺名称": [
+    "Store name",
+    "Nama kedai",
+    "ชื่อร้านค้า",
+    "ឈ្មោះហាង",
+    "Tên cửa hàng"
+  ],
+  "店铺商品": [
+    "Store products",
+    "Produk kedai",
+    "สินค้าในร้าน",
+    "ផលិតផលហាង",
+    "Sản phẩm cửa hàng"
+  ],
+  "店铺简介": [
+    "Store description",
+    "Penerangan kedai",
+    "แนะนำร้านค้า",
+    "ពិពណ៌នាហាង",
+    "Giới thiệu cửa hàng"
+  ],
+  "店铺线上收款": [
+    "Online store payments",
+    "Pembayaran kedai dalam talian",
+    "การรับชำระออนไลน์ของร้าน",
+    "ការទូទាត់ហាងអនឡាញ",
+    "Nhận thanh toán trực tuyến"
+  ],
+  "店铺经理": [
+    "Store manager",
+    "Pengurus kedai",
+    "ผู้จัดการร้าน",
+    "អ្នកគ្រប់គ្រងហាង",
+    "Quản lý cửa hàng"
+  ],
+  "店铺网址标识": [
+    "Store URL slug",
+    "Pengenal URL kedai",
+    "ชื่อย่อ URL ร้านค้า",
+    "ឈ្មោះសម្គាល់ URL ហាង",
+    "Định danh URL cửa hàng"
+  ],
+  "店铺网址：": [
+    "Store URL:",
+    "URL kedai:",
+    "URL ร้านค้า:",
+    "URL ហាង៖",
+    "URL cửa hàng:"
+  ],
+  "店铺设置": [
+    "Store settings",
+    "Tetapan kedai",
+    "ตั้งค่าร้านค้า",
+    "ការកំណត់ហាង",
+    "Cài đặt cửa hàng"
+  ],
+  "店铺配送设置尚未启用，请联系平台管理员完成设置。": [
+    "Delivery settings are not enabled. Contact the platform administrator.",
+    "Tetapan penghantaran belum aktif. Hubungi pentadbir platform.",
+    "ยังไม่เปิดการตั้งค่าจัดส่ง โปรดติดต่อผู้ดูแลแพลตฟอร์ม",
+    "ការកំណត់ដឹកជញ្ជូនមិនទាន់បើក។ សូមទាក់ទងអ្នកគ្រប់គ្រងវេទិកា។",
+    "Chưa bật cài đặt giao hàng. Hãy liên hệ quản trị viên nền tảng."
+  ],
+  "店铺链接已复制": [
+    "Store link copied",
+    "Pautan kedai disalin",
+    "คัดลอกลิงก์ร้านค้าแล้ว",
+    "បានចម្លងតំណហាង",
+    "Đã sao chép liên kết cửa hàng"
+  ],
+  "店铺链接：": [
+    "Store link:",
+    "Pautan kedai:",
+    "ลิงก์ร้านค้า:",
+    "តំណហាង៖",
+    "Liên kết cửa hàng:"
+  ],
+  "开一家属于你的线上商店。": [
+    "Open your own online store.",
+    "Buka kedai dalam talian anda sendiri.",
+    "เปิดร้านค้าออนไลน์ของคุณเอง",
+    "បើកហាងអនឡាញផ្ទាល់ខ្លួនរបស់អ្នក។",
+    "Mở cửa hàng trực tuyến của riêng bạn."
+  ],
+  "开通商家收款账户": [
+    "Set up merchant payments",
+    "Sediakan pembayaran peniaga",
+    "เปิดบัญชีรับชำระของร้านค้า",
+    "បើកគណនីទទួលប្រាក់អាជីវករ",
+    "Mở tài khoản nhận thanh toán"
+  ],
+  "开通过期": [
+    "Setup expired",
+    "Persediaan tamat tempoh",
+    "การเปิดใช้งานหมดอายุ",
+    "ការបើកដំណើរការផុតកំណត់",
+    "Thiết lập đã hết hạn"
+  ],
+  "当前使用商家手动收款，线上支付服务尚未启用。": [
+    "Manual payments are in use. Online payments are not enabled.",
+    "Bayaran manual digunakan. Pembayaran dalam talian belum aktif.",
+    "ขณะนี้ใช้การรับเงินด้วยตนเอง ยังไม่เปิดรับชำระออนไลน์",
+    "កំពុងប្រើការទទួលប្រាក់ដោយដៃ។ មិនទាន់បើកទូទាត់អនឡាញ។",
+    "Hiện nhận tiền thủ công. Chưa bật thanh toán trực tuyến."
+  ],
+  "当前商家设置": [
+    "Set by the merchant",
+    "Ditetapkan oleh peniaga",
+    "ร้านค้าเป็นผู้กำหนด",
+    "កំណត់ដោយអាជីវករ",
+    "Do nhà bán hàng thiết lập"
+  ],
+  "当前店铺：": [
+    "Current store:",
+    "Kedai semasa:",
+    "ร้านค้าปัจจุบัน:",
+    "ហាងបច្ចុប្បន្ន៖",
+    "Cửa hàng hiện tại:"
+  ],
+  "当前支持推广链接、订单归属与已付款佣金统计。代理可通过团队邀请独立登录，并在专属门户申请佣金提现。": [
+    "Affiliate links track attributed orders and paid commissions. Invite agents to sign in and request withdrawals in their own portal.",
+    "Pautan ejen menjejak pesanan dan komisen dibayar. Jemput ejen untuk log masuk dan memohon pengeluaran di portal sendiri.",
+    "ลิงก์ตัวแทนใช้ติดตามคำสั่งซื้อและค่าคอมมิชชันจากยอดชำระ เชิญตัวแทนเข้าสู่ระบบเพื่อขอถอนในพอร์ทัลของตน",
+    "តំណភ្នាក់ងារតាមដានការបញ្ជាទិញ និងកម្រៃជើងសាពីការទូទាត់។ អញ្ជើញភ្នាក់ងារចូល និងស្នើដកប្រាក់ក្នុងទំព័រផ្ទាល់ខ្លួន។",
+    "Liên kết đại lý ghi nhận đơn và hoa hồng từ đơn đã thanh toán. Mời đại lý đăng nhập cổng riêng để yêu cầu rút tiền."
+  ],
+  "当前方案：": [
+    "Current plan:",
+    "Pelan semasa:",
+    "แพ็กเกจปัจจุบัน:",
+    "គម្រោងបច្ចុប្បន្ន៖",
+    "Gói hiện tại:"
+  ],
+  "当前无法使用账号找回，请联系平台管理员。": [
+    "Account recovery is unavailable. Contact the platform administrator.",
+    "Pemulihan akaun tidak tersedia. Hubungi pentadbir platform.",
+    "ยังใช้การกู้คืนบัญชีไม่ได้ โปรดติดต่อผู้ดูแลแพลตฟอร์ม",
+    "មិនអាចស្ដារគណនីបានទេ។ សូមទាក់ទងអ្នកគ្រប់គ្រងវេទិកា។",
+    "Chưa thể khôi phục tài khoản. Hãy liên hệ quản trị viên nền tảng."
+  ],
+  "当前由商家核实收款，提交订单不会自动扣款。": [
+    "The merchant verifies payments. Submitting an order will not charge you automatically.",
+    "Peniaga mengesahkan bayaran. Menghantar pesanan tidak mengenakan caj automatik.",
+    "ร้านค้าจะตรวจสอบยอดเงิน การส่งคำสั่งซื้อจะไม่หักเงินอัตโนมัติ",
+    "អាជីវករផ្ទៀងផ្ទាត់ការទូទាត់។ ការផ្ញើបញ្ជាទិញមិនគិតប្រាក់ស្វ័យប្រវត្តិទេ។",
+    "Nhà bán hàng xác minh thanh toán. Gửi đơn không tự động trừ tiền."
+  ],
+  "待付款": [
+    "Pending payment",
+    "Menunggu bayaran",
+    "รอชำระเงิน",
+    "រង់ចាំទូទាត់",
+    "Chờ thanh toán"
+  ],
+  "待商家处理": [
+    "Awaiting merchant review",
+    "Menunggu semakan peniaga",
+    "รอร้านค้าดำเนินการ",
+    "រង់ចាំអាជីវករពិនិត្យ",
+    "Chờ nhà bán hàng xử lý"
+  ],
+  "待处理预留": [
+    "Reserved for pending requests",
+    "Rizab permohonan tertunda",
+    "ยอดกันไว้รอดำเนินการ",
+    "ប្រាក់រក្សាទុកសម្រាប់សំណើរង់ចាំ",
+    "Đang giữ cho yêu cầu chờ xử lý"
+  ],
+  "待完成付款": [
+    "Payment incomplete",
+    "Pembayaran belum selesai",
+    "รอชำระให้เสร็จสิ้น",
+    "ការទូទាត់មិនទាន់បញ្ចប់",
+    "Chưa hoàn tất thanh toán"
+  ],
+  "待收款金额": [
+    "Awaiting payment amount",
+    "Amaun menunggu bayaran",
+    "ยอดรอรับชำระ",
+    "ចំនួនរង់ចាំទូទាត់",
+    "Số tiền chờ thu"
+  ],
+  "待核实": [
+    "Needs verification",
+    "Perlu pengesahan",
+    "รอตรวจสอบ",
+    "ត្រូវការផ្ទៀងផ្ទាត់",
+    "Chờ xác minh"
+  ],
+  "待确认": [
+    "Pending confirmation",
+    "Menunggu pengesahan",
+    "รอยืนยัน",
+    "រង់ចាំបញ្ជាក់",
+    "Chờ xác nhận"
+  ],
+  "忘记密码？": [
+    "Forgot password?",
+    "Lupa kata laluan?",
+    "ลืมรหัสผ่าน?",
+    "ភ្លេចពាក្យសម្ងាត់?",
+    "Quên mật khẩu?"
+  ],
+  "快捷操作": [
+    "Quick actions",
+    "Tindakan pantas",
+    "ทางลัด",
+    "សកម្មភាពរហ័ស",
+    "Thao tác nhanh"
+  ],
+  "快递公司：": [
+    "Courier:",
+    "Kurier:",
+    "บริษัทขนส่ง:",
+    "ក្រុមហ៊ុនដឹកជញ្ជូន៖",
+    "Đơn vị vận chuyển:"
+  ],
+  "快递由你自行安排，实际公司及运单号可在发货时填写。系统不会自动报价或叫件。": [
+    "Arrange delivery yourself, then enter the courier and tracking number. No automatic quotes or pickup bookings.",
+    "Atur penghantaran sendiri, kemudian isi kurier dan nombor penjejakan. Tiada sebut harga atau tempahan kutipan automatik.",
+    "จัดส่งด้วยตนเองแล้วกรอกบริษัทขนส่งและเลขพัสดุ ระบบไม่เสนอราคาหรือจองรับพัสดุอัตโนมัติ",
+    "រៀបចំការដឹកជញ្ជូនដោយខ្លួនឯង រួចបញ្ចូលក្រុមហ៊ុន និងលេខតាមដាន។ មិនមានការគណនាតម្លៃ ឬកក់យកកញ្ចប់ស្វ័យប្រវត្តិទេ។",
+    "Tự sắp xếp giao hàng rồi nhập đơn vị vận chuyển và mã vận đơn. Không tự báo giá hoặc đặt lấy hàng."
+  ],
+  "总金额": [
+    "Total amount",
+    "Jumlah amaun",
+    "จำนวนเงินรวม",
+    "ចំនួនប្រាក់សរុប",
+    "Tổng tiền"
+  ],
+  "总销售额": [
+    "Total sales",
+    "Jumlah jualan",
+    "ยอดขายรวม",
+    "ការលក់សរុប",
+    "Tổng doanh thu"
+  ],
+  "成员": [
+    "Member",
+    "Ahli",
+    "สมาชิก",
+    "សមាជិក",
+    "Thành viên"
+  ],
+  "成员姓名": [
+    "Member name",
+    "Nama ahli",
+    "ชื่อสมาชิก",
+    "ឈ្មោះសមាជិក",
+    "Tên thành viên"
+  ],
+  "我的佣金结算": [
+    "My commission payouts",
+    "Pembayaran komisen saya",
+    "การรับค่าคอมมิชชันของฉัน",
+    "ការទូទាត់កម្រៃជើងសារបស់ខ្ញុំ",
+    "Quyết toán hoa hồng của tôi"
+  ],
+  "我的购物车": [
+    "My cart",
+    "Troli saya",
+    "ตะกร้าของฉัน",
+    "កន្ត្រករបស់ខ្ញុំ",
+    "Giỏ hàng của tôi"
+  ],
+  "手机号码": [
+    "Mobile number",
+    "Nombor telefon bimbit",
+    "หมายเลขโทรศัพท์",
+    "លេខទូរសព្ទ",
+    "Số điện thoại"
+  ],
+  "打印收款记录": [
+    "Print payment record",
+    "Cetak rekod pembayaran",
+    "พิมพ์บันทึกการรับเงิน",
+    "បោះពុម្ពកំណត់ត្រាទូទាត់",
+    "In phiếu thu"
+  ],
+  "打开专属店铺": [
+    "Open your store",
+    "Buka kedai anda",
+    "เปิดร้านค้าของคุณ",
+    "បើកហាងរបស់អ្នក",
+    "Mở cửa hàng của bạn"
+  ],
+  "打开推广店铺": [
+    "Open affiliate store",
+    "Buka kedai ejen",
+    "เปิดร้านค้าผ่านลิงก์ตัวแทน",
+    "បើកហាងតាមតំណភ្នាក់ងារ",
+    "Mở cửa hàng giới thiệu"
+  ],
+  "执行者": [
+    "Actor",
+    "Pelaksana",
+    "ผู้ดำเนินการ",
+    "អ្នកអនុវត្ត",
+    "Người thực hiện"
+  ],
+  "找不到页面": [
+    "Page not found",
+    "Halaman tidak ditemui",
+    "ไม่พบหน้าที่ต้องการ",
+    "រកមិនឃើញទំព័រ",
+    "Không tìm thấy trang"
+  ],
+  "找回密码": [
+    "Recover password",
+    "Pulihkan kata laluan",
+    "กู้คืนรหัสผ่าน",
+    "ស្ដារពាក្យសម្ងាត់",
+    "Khôi phục mật khẩu"
+  ],
+  "把下方店铺链接放到 TikTok、Facebook 直播简介、置顶留言或 WhatsApp。": [
+    "Share your store link in TikTok or Facebook live profiles, pinned comments or WhatsApp.",
+    "Kongsi pautan kedai dalam profil siaran langsung TikTok atau Facebook, komen disemat atau WhatsApp.",
+    "แชร์ลิงก์ร้านค้าในโปรไฟล์ไลฟ์ TikTok หรือ Facebook ความคิดเห็นปักหมุด หรือ WhatsApp",
+    "ចែករំលែកតំណហាងនៅក្នុងប្រវត្តិរូបផ្សាយផ្ទាល់ TikTok ឬ Facebook មតិខ្ទាស់ ឬ WhatsApp។",
+    "Chia sẻ liên kết cửa hàng trong tiểu sử livestream TikTok, Facebook, bình luận ghim hoặc WhatsApp."
+  ],
+  "把你的店铺故事，告诉每一位顾客。": [
+    "Tell every customer your store's story.",
+    "Ceritakan kisah kedai anda kepada pelanggan.",
+    "บอกเล่าเรื่องราวร้านค้าให้ลูกค้าทุกคน",
+    "ប្រាប់រឿងរ៉ាវហាងរបស់អ្នកដល់អតិថិជន។",
+    "Kể câu chuyện cửa hàng với khách hàng."
+  ],
+  "把好产品，带给更多顾客。": [
+    "Bring great products to more customers.",
+    "Bawa produk hebat kepada lebih ramai pelanggan.",
+    "ส่งต่อสินค้าดีให้ลูกค้ามากขึ้น",
+    "នាំផលិតផលល្អទៅកាន់អតិថិជនកាន់តែច្រើន។",
+    "Đưa sản phẩm tốt đến nhiều khách hàng hơn."
+  ],
+  "折扣": [
+    "Discount",
+    "Diskaun",
+    "ส่วนลด",
+    "បញ្ចុះតម្លៃ",
+    "Giảm giá"
+  ],
+  "拒绝": [
+    "Reject",
+    "Tolak",
+    "ปฏิเสธ",
+    "បដិសេធ",
+    "Từ chối"
+  ],
+  "拒绝原因": [
+    "Rejection reason",
+    "Sebab penolakan",
+    "เหตุผลที่ปฏิเสธ",
+    "មូលហេតុបដិសេធ",
+    "Lý do từ chối"
+  ],
+  "拒绝后将释放此申请预留的佣金余额。": [
+    "Rejection releases the commission reserved for this request.",
+    "Penolakan melepaskan komisen yang dirizab untuk permohonan ini.",
+    "การปฏิเสธจะปล่อยยอดค่าคอมมิชชันที่กันไว้สำหรับคำขอนี้",
+    "ការបដិសេធនឹងដោះលែងកម្រៃជើងសាដែលរក្សាទុកសម្រាប់សំណើនេះ។",
+    "Từ chối sẽ giải phóng hoa hồng đã giữ cho yêu cầu này."
+  ],
+  "拒绝提现申请": [
+    "Reject withdrawal request",
+    "Tolak permohonan pengeluaran",
+    "ปฏิเสธคำขอถอนเงิน",
+    "បដិសេធសំណើដកប្រាក់",
+    "Từ chối yêu cầu rút tiền"
+  ],
+  "指定邮箱": [
+    "Invited email",
+    "E-mel jemputan",
+    "อีเมลที่ได้รับเชิญ",
+    "អ៊ីមែលដែលបានអញ្ជើញ",
+    "Email được mời"
+  ],
+  "探索商品": [
+    "Explore products",
+    "Terokai produk",
+    "สำรวจสินค้า",
+    "ស្វែងរកផលិតផល",
+    "Khám phá sản phẩm"
+  ],
+  "接受邀请并启用账号": [
+    "Accept invitation & activate account",
+    "Terima jemputan & aktifkan akaun",
+    "รับคำเชิญและเปิดใช้บัญชี",
+    "ទទួលការអញ្ជើញ និងបើកគណនី",
+    "Chấp nhận lời mời và kích hoạt tài khoản"
+  ],
+  "推广订单": [
+    "Affiliate orders",
+    "Pesanan ejen",
+    "คำสั่งซื้อจากตัวแทน",
+    "ការបញ្ជាទិញភ្នាក់ងារ",
+    "Đơn hàng đại lý"
+  ],
+  "推广链接": [
+    "Affiliate link",
+    "Pautan ejen",
+    "ลิงก์ตัวแทน",
+    "តំណភ្នាក់ងារ",
+    "Liên kết đại lý"
+  ],
+  "提交申请": [
+    "Submit request",
+    "Hantar permohonan",
+    "ส่งคำขอ",
+    "ដាក់សំណើ",
+    "Gửi yêu cầu"
+  ],
+  "提交订单后请联系商家安排付款。付款状态以商家核实记录为准。": [
+    "Contact the merchant to pay after ordering. Payment status is based on their verification.",
+    "Hubungi peniaga untuk membayar selepas memesan. Status bayaran berdasarkan pengesahan peniaga.",
+    "ติดต่อร้านค้าเพื่อชำระหลังสั่งซื้อ สถานะการชำระเงินขึ้นอยู่กับการตรวจสอบของร้านค้า",
+    "ទាក់ទងអាជីវករដើម្បីទូទាត់បន្ទាប់ពីបញ្ជាទិញ។ ស្ថានភាពផ្អែកលើការផ្ទៀងផ្ទាត់របស់អាជីវករ។",
+    "Liên hệ nhà bán hàng để thanh toán sau khi đặt đơn. Trạng thái dựa trên xác nhận của nhà bán hàng."
+  ],
+  "提交订单后，可在结果页进入安全付款页面，或联系商家安排付款。": [
+    "After ordering, open secure payment on the result page or contact the merchant.",
+    "Selepas memesan, buka pembayaran selamat di halaman keputusan atau hubungi peniaga.",
+    "หลังสั่งซื้อ ไปยังหน้าชำระเงินที่ปลอดภัยจากหน้าผลลัพธ์ หรือติดต่อร้านค้า",
+    "បន្ទាប់ពីបញ្ជាទិញ សូមបើកការទូទាត់សុវត្ថិភាពនៅទំព័រលទ្ធផល ឬទាក់ទងអាជីវករ។",
+    "Sau khi đặt đơn, mở trang thanh toán an toàn từ trang kết quả hoặc liên hệ nhà bán hàng."
+  ],
+  "搜索商品": [
+    "Search products",
+    "Cari produk",
+    "ค้นหาสินค้า",
+    "ស្វែងរកផលិតផល",
+    "Tìm sản phẩm"
+  ],
+  "搜索商品名称…": [
+    "Search product names…",
+    "Cari nama produk…",
+    "ค้นหาชื่อสินค้า…",
+    "ស្វែងរកឈ្មោះផលិតផល…",
+    "Tìm tên sản phẩm…"
+  ],
+  "搜索心仪的商品…": [
+    "Search for something you love…",
+    "Cari produk kegemaran…",
+    "ค้นหาสินค้าที่ถูกใจ…",
+    "ស្វែងរកផលិតផលដែលអ្នកចូលចិត្ត…",
+    "Tìm sản phẩm yêu thích…"
+  ],
+  "撤销访问": [
+    "Revoke access",
+    "Tarik balik akses",
+    "เพิกถอนสิทธิ์",
+    "ដកសិទ្ធិចូលប្រើ",
+    "Thu hồi quyền truy cập"
+  ],
+  "操作": [
+    "Actions",
+    "Tindakan",
+    "การดำเนินการ",
+    "សកម្មភាព",
+    "Thao tác"
+  ],
+  "操作过于频繁，请稍后再试。": [
+    "Too many requests. Please try again later.",
+    "Terlalu banyak permintaan. Sila cuba kemudian.",
+    "ดำเนินการบ่อยเกินไป โปรดลองภายหลัง",
+    "សំណើញឹកញាប់ពេក។ សូមព្យាយាមពេលក្រោយ។",
+    "Quá nhiều yêu cầu. Vui lòng thử lại sau."
+  ],
+  "支付服务暂时不可用，请联系平台管理员。": [
+    "Payment service unavailable. Contact the platform administrator.",
+    "Perkhidmatan bayaran tidak tersedia. Hubungi pentadbir platform.",
+    "บริการชำระเงินยังใช้ไม่ได้ โปรดติดต่อผู้ดูแลแพลตฟอร์ม",
+    "សេវាទូទាត់មិនមាន។ សូមទាក់ទងអ្នកគ្រប់គ្រងវេទិកា។",
+    "Dịch vụ thanh toán chưa khả dụng. Hãy liên hệ quản trị viên."
+  ],
+  "支付模块尚未启用，或当前账号没有操作权限。": [
+    "Payment module is not enabled or you lack permission.",
+    "Modul pembayaran belum aktif atau anda tiada kebenaran.",
+    "ยังไม่เปิดโมดูลชำระเงิน หรือคุณไม่มีสิทธิ์",
+    "ម៉ូឌុលទូទាត់មិនទាន់បើក ឬអ្នកមិនមានសិទ្ធិ។",
+    "Chưa bật mô-đun thanh toán hoặc bạn không có quyền."
+  ],
+  "收件人": [
+    "Recipient",
+    "Penerima",
+    "ผู้รับ",
+    "អ្នកទទួល",
+    "Người nhận"
+  ],
+  "收据与付款提醒的处理记录。": [
+    "Receipt and payment reminder records.",
+    "Rekod resit dan peringatan bayaran.",
+    "รายการใบเสร็จและการแจ้งเตือนชำระเงิน",
+    "កំណត់ត្រាបង្កាន់ដៃ និងការរំលឹកទូទាត់។",
+    "Lịch sử biên nhận và nhắc thanh toán."
+  ],
+  "收款与订阅": [
+    "Payments & subscription",
+    "Pembayaran & langganan",
+    "รับชำระเงินและสมาชิก",
+    "ការទូទាត់ និងការជាវ",
+    "Thanh toán và đăng ký"
+  ],
+  "收款账户不匹配": [
+    "Payment account mismatch",
+    "Akaun pembayaran tidak sepadan",
+    "บัญชีรับเงินไม่ตรงกัน",
+    "គណនីទូទាត់មិនត្រូវគ្នា",
+    "Tài khoản nhận tiền không khớp"
+  ],
+  "收款资料": [
+    "Payment details",
+    "Maklumat bayaran",
+    "ข้อมูลการรับเงิน",
+    "ព័ត៌មានទូទាត់",
+    "Thông tin nhận tiền"
+  ],
+  "收款银行、账号及户名": [
+    "Bank, account number & account name",
+    "Bank, nombor akaun & nama pemilik",
+    "ธนาคาร เลขบัญชี และชื่อบัญชี",
+    "ធនាគារ លេខគណនី និងឈ្មោះគណនី",
+    "Ngân hàng, số tài khoản và tên chủ tài khoản"
+  ],
+  "收货地址": [
+    "Shipping address",
+    "Alamat penghantaran",
+    "ที่อยู่จัดส่ง",
+    "អាសយដ្ឋានដឹកជញ្ជូន",
+    "Địa chỉ nhận hàng"
+  ],
+  "新密码": [
+    "New password",
+    "Kata laluan baharu",
+    "รหัสผ่านใหม่",
+    "ពាក្យសម្ងាត់ថ្មី",
+    "Mật khẩu mới"
+  ],
+  "新密码需要 10 到 256 个字符。": [
+    "New password must be 10–256 characters.",
+    "Kata laluan baharu mesti 10–256 aksara.",
+    "รหัสผ่านใหม่ต้องมี 10–256 ตัวอักษร",
+    "ពាក្យសម្ងាត់ថ្មីត្រូវមាន 10–256 តួអក្សរ។",
+    "Mật khẩu mới phải có 10–256 ký tự."
+  ],
+  "新密码需要与原密码不同。": [
+    "New password must differ from the old one.",
+    "Kata laluan baharu mesti berbeza daripada yang lama.",
+    "รหัสผ่านใหม่ต้องต่างจากรหัสเดิม",
+    "ពាក្យសម្ងាត់ថ្មីត្រូវខុសពីពាក្យសម្ងាត់ចាស់។",
+    "Mật khẩu mới phải khác mật khẩu cũ."
+  ],
+  "方案": [
+    "Plan",
+    "Pelan",
+    "แพ็กเกจ",
+    "គម្រោង",
+    "Gói"
+  ],
+  "方案为平台手动分配标识，不代表订阅已收款。自动订阅计费与网关尚未开通。": [
+    "Manually assigned plans do not confirm subscription payment. Automatic billing requires a configured provider.",
+    "Pelan ditetapkan manual tidak mengesahkan bayaran langganan. Pengebilan automatik memerlukan penyedia dikonfigurasi.",
+    "แพ็กเกจที่กำหนดเองไม่ยืนยันการชำระค่าสมาชิก การเรียกเก็บอัตโนมัติต้องตั้งค่าผู้ให้บริการ",
+    "គម្រោងកំណត់ដោយដៃមិនបញ្ជាក់ការបង់ប្រាក់ជាវទេ។ ការគិតថ្លៃស្វ័យប្រវត្តិត្រូវការកំណត់អ្នកផ្ដល់សេវា។",
+    "Gói cấp thủ công không xác nhận đã trả phí. Thu phí tự động cần cấu hình nhà cung cấp."
+  ],
+  "无": [
+    "None",
+    "Tiada",
+    "ไม่มี",
+    "គ្មាន",
+    "Không có"
+  ],
+  "无图片时使用的图标": [
+    "Fallback icon",
+    "Ikon gantian",
+    "ไอคอนเมื่อไม่มีรูป",
+    "រូបតំណាងពេលគ្មានរូបភាព",
+    "Biểu tượng khi chưa có ảnh"
+  ],
+  "无法读取这张图片，请选择有效的 JPG、PNG 或 WebP 文件。": [
+    "Cannot read this image. Choose a valid JPG, PNG or WebP.",
+    "Gambar tidak boleh dibaca. Pilih JPG, PNG atau WebP yang sah.",
+    "อ่านรูปนี้ไม่ได้ โปรดเลือกไฟล์ JPG, PNG หรือ WebP ที่ถูกต้อง",
+    "មិនអាចអានរូបនេះបាន។ ជ្រើស JPG, PNG ឬ WebP ដែលត្រឹមត្រូវ។",
+    "Không đọc được ảnh. Hãy chọn JPG, PNG hoặc WebP hợp lệ."
+  ],
+  "时间": [
+    "Time",
+    "Masa",
+    "เวลา",
+    "ពេលវេលា",
+    "Thời gian"
+  ],
+  "暂停": [
+    "Suspend",
+    "Gantung",
+    "ระงับ",
+    "ផ្អាក",
+    "Tạm ngưng"
+  ],
+  "暂无代理佣金记录。": [
+    "No commission records yet.",
+    "Belum ada rekod komisen.",
+    "ยังไม่มีรายการค่าคอมมิชชัน",
+    "មិនទាន់មានកំណត់ត្រាកម្រៃជើងសា។",
+    "Chưa có lịch sử hoa hồng."
+  ],
+  "暂无提现申请。": [
+    "No withdrawal requests yet.",
+    "Belum ada permohonan pengeluaran.",
+    "ยังไม่มีคำขอถอนเงิน",
+    "មិនទាន់មានសំណើដកប្រាក់។",
+    "Chưa có yêu cầu rút tiền."
+  ],
+  "暂无订单。分享店铺链接，开始接收第一笔订单。": [
+    "No orders yet. Share your store link to receive your first order.",
+    "Belum ada pesanan. Kongsi pautan kedai untuk pesanan pertama.",
+    "ยังไม่มีคำสั่งซื้อ แชร์ลิงก์ร้านค้าเพื่อรับคำสั่งซื้อแรก",
+    "មិនទាន់មានការបញ្ជាទិញ។ ចែករំលែកតំណហាងដើម្បីទទួលការបញ្ជាទិញដំបូង។",
+    "Chưa có đơn hàng. Chia sẻ liên kết cửa hàng để nhận đơn đầu tiên."
+  ],
+  "暂无需要核查的付款。": [
+    "No payments need review.",
+    "Tiada bayaran perlu disemak.",
+    "ไม่มีรายการชำระเงินที่ต้องตรวจสอบ",
+    "មិនមានការទូទាត់ត្រូវត្រួតពិនិត្យ។",
+    "Không có thanh toán cần kiểm tra."
+  ],
+  "暂时售罄": [
+    "Sold out",
+    "Kehabisan stok",
+    "สินค้าหมด",
+    "អស់ស្តុក",
+    "Hết hàng"
+  ],
+  "暂时无法完成，请稍后重试。": [
+    "Unable to complete. Please try again later.",
+    "Tidak dapat diselesaikan. Sila cuba kemudian.",
+    "ดำเนินการไม่ได้ โปรดลองภายหลัง",
+    "មិនអាចបញ្ចប់បាន។ សូមព្យាយាមពេលក្រោយ។",
+    "Chưa thể hoàn tất. Vui lòng thử lại sau."
+  ],
+  "暂时没有通知记录。": [
+    "No notification records yet.",
+    "Belum ada rekod pemberitahuan.",
+    "ยังไม่มีรายการแจ้งเตือน",
+    "មិនទាន់មានកំណត់ត្រាជូនដំណឹង។",
+    "Chưa có lịch sử thông báo."
+  ],
+  "更换图片": [
+    "Replace image",
+    "Tukar gambar",
+    "เปลี่ยนรูป",
+    "ប្ដូររូបភាព",
+    "Đổi ảnh"
+  ],
+  "最多 50 条": [
+    "Up to 50 records",
+    "Sehingga 50 rekod",
+    "สูงสุด 50 รายการ",
+    "អតិបរមា 50 កំណត់ត្រា",
+    "Tối đa 50 bản ghi"
+  ],
+  "最终价格及扣款条款在安全订阅页面展示。未配置服务时不会扣费；手动分配 Pro 不代表订阅已付款。": [
+    "Final pricing and terms appear on secure checkout. Unconfigured services do not charge; manually assigned Pro does not mean paid.",
+    "Harga dan terma akhir dipaparkan di pembayaran selamat. Perkhidmatan belum dikonfigurasi tidak mengecaj; Pro manual tidak bermaksud telah dibayar.",
+    "ราคาและเงื่อนไขสุดท้ายแสดงที่หน้าชำระเงินปลอดภัย หากยังไม่ตั้งค่าบริการจะไม่เรียกเก็บ การกำหนด Pro เองไม่ใช่หลักฐานการชำระเงิน",
+    "តម្លៃ និងលក្ខខណ្ឌចុងក្រោយបង្ហាញនៅទំព័រទូទាត់សុវត្ថិភាព។ សេវាមិនទាន់កំណត់មិនគិតប្រាក់ទេ ហើយ Pro កំណត់ដោយដៃមិនមានន័យថាបានបង់ទេ។",
+    "Giá và điều khoản cuối cùng ở trang thanh toán an toàn. Chưa cấu hình sẽ không thu phí; cấp Pro thủ công không có nghĩa đã trả tiền."
+  ],
+  "最近操作记录": [
+    "Recent activity",
+    "Aktiviti terkini",
+    "ประวัติการดำเนินการล่าสุด",
+    "សកម្មភាពថ្មីៗ",
+    "Hoạt động gần đây"
+  ],
+  "最近订单": [
+    "Recent orders",
+    "Pesanan terkini",
+    "คำสั่งซื้อล่าสุด",
+    "ការបញ្ជាទិញថ្មីៗ",
+    "Đơn hàng gần đây"
+  ],
+  "有什么需要商家留意的吗？": [
+    "Anything the merchant should know?",
+    "Ada perkara yang perlu peniaga tahu?",
+    "มีอะไรที่ร้านค้าควรทราบไหม?",
+    "មានអ្វីដែលអាជីវករគួរដឹងទេ?",
+    "Bạn muốn nhắn gì với nhà bán hàng?"
+  ],
+  "有效订阅": [
+    "Active subscription",
+    "Langganan aktif",
+    "สมาชิกที่ใช้งานอยู่",
+    "ការជាវសកម្ម",
+    "Đăng ký đang hiệu lực"
+  ],
+  "服务商已接受": [
+    "Accepted by provider",
+    "Diterima penyedia",
+    "ผู้ให้บริการรับแล้ว",
+    "អ្នកផ្ដល់សេវាបានទទួល",
+    "Nhà cung cấp đã tiếp nhận"
+  ],
+  "未付款": [
+    "Unpaid",
+    "Belum dibayar",
+    "ยังไม่ชำระ",
+    "មិនទាន់ទូទាត់",
+    "Chưa thanh toán"
+  ],
+  "未发布": [
+    "Unpublished",
+    "Tidak diterbitkan",
+    "ยังไม่เผยแพร่",
+    "មិនបានបង្ហាញ",
+    "Chưa hiển thị"
+  ],
+  "本地开发模式 · 当前通过商家手动确认收款": [
+    "Local development · Merchant verifies payments manually",
+    "Pembangunan tempatan · Peniaga mengesahkan bayaran manual",
+    "โหมดพัฒนาในเครื่อง · ร้านค้าตรวจสอบการรับเงินเอง",
+    "ការអភិវឌ្ឍក្នុងម៉ាស៊ីន · អាជីវករផ្ទៀងផ្ទាត់ការទូទាត់ដោយដៃ",
+    "Chế độ phát triển cục bộ · Nhà bán hàng xác nhận thu tiền thủ công"
+  ],
+  "查看价格并订阅 Pro": [
+    "View price & subscribe to Pro",
+    "Lihat harga & langgan Pro",
+    "ดูราคาและสมัคร Pro",
+    "មើលតម្លៃ និងជាវ Pro",
+    "Xem giá và đăng ký Pro"
+  ],
+  "查看全部": [
+    "View all",
+    "Lihat semua",
+    "ดูทั้งหมด",
+    "មើលទាំងអស់",
+    "Xem tất cả"
+  ],
+  "查看我的店铺": [
+    "View my store",
+    "Lihat kedai saya",
+    "ดูร้านค้าของฉัน",
+    "មើលហាងរបស់ខ្ញុំ",
+    "Xem cửa hàng của tôi"
+  ],
+  "查看详情": [
+    "View details",
+    "Lihat butiran",
+    "ดูรายละเอียด",
+    "មើលព័ត៌មានលម្អិត",
+    "Xem chi tiết"
+  ],
+  "查看购物车 →": [
+    "View cart →",
+    "Lihat troli →",
+    "ดูตะกร้า →",
+    "មើលកន្ត្រក →",
+    "Xem giỏ hàng →"
+  ],
+  "检查状态": [
+    "Check status",
+    "Semak status",
+    "ตรวจสอบสถานะ",
+    "ពិនិត្យស្ថានភាព",
+    "Kiểm tra trạng thái"
+  ],
+  "欢迎回来 👋": [
+    "Welcome back 👋",
+    "Selamat kembali 👋",
+    "ยินดีต้อนรับกลับ 👋",
+    "សូមស្វាគមន៍មកវិញ 👋",
+    "Chào mừng trở lại 👋"
+  ],
+  "正在保存…": [
+    "Saving…",
+    "Sedang menyimpan…",
+    "กำลังบันทึก…",
+    "កំពុងរក្សាទុក…",
+    "Đang lưu…"
+  ],
+  "正在加载…": [
+    "Loading…",
+    "Sedang memuatkan…",
+    "กำลังโหลด…",
+    "កំពុងផ្ទុក…",
+    "Đang tải…"
+  ],
+  "正在发送": [
+    "Sending",
+    "Sedang menghantar",
+    "กำลังส่ง",
+    "កំពុងផ្ញើ",
+    "Đang gửi"
+  ],
+  "正在打开安全付款页…": [
+    "Opening secure payment…",
+    "Membuka pembayaran selamat…",
+    "กำลังเปิดหน้าชำระเงินปลอดภัย…",
+    "កំពុងបើកការទូទាត់សុវត្ថិភាព…",
+    "Đang mở trang thanh toán an toàn…"
+  ],
+  "正在提交…": [
+    "Submitting…",
+    "Sedang menghantar…",
+    "กำลังส่ง…",
+    "កំពុងដាក់ស្នើ…",
+    "Đang gửi…"
+  ],
+  "正在更新…": [
+    "Updating…",
+    "Sedang mengemas kini…",
+    "กำลังอัปเดต…",
+    "កំពុងធ្វើបច្ចុប្បន្នភាព…",
+    "Đang cập nhật…"
+  ],
+  "正常": [
+    "Active",
+    "Aktif",
+    "ปกติ",
+    "សកម្ម",
+    "Hoạt động"
+  ],
+  "此商品不存在、尚未发布或不属于当前店铺。": [
+    "This product does not exist, is unpublished or belongs to another store.",
+    "Produk tidak wujud, belum diterbitkan atau milik kedai lain.",
+    "ไม่พบสินค้านี้ ยังไม่เผยแพร่ หรือเป็นสินค้าร้านอื่น",
+    "ផលិតផលនេះមិនមាន មិនបានបង្ហាញ ឬជារបស់ហាងផ្សេង។",
+    "Sản phẩm không tồn tại, chưa hiển thị hoặc thuộc cửa hàng khác."
+  ],
+  "此订单已取消，请勿继续付款。": [
+    "This order is cancelled. Do not make further payments.",
+    "Pesanan dibatalkan. Jangan buat bayaran lagi.",
+    "คำสั่งซื้อนี้ถูกยกเลิกแล้ว โปรดอย่าชำระเงินต่อ",
+    "ការបញ្ជាទិញនេះបានបោះបង់។ កុំទូទាត់បន្ថែម។",
+    "Đơn này đã hủy. Không tiếp tục thanh toán."
+  ],
+  "每一步都井井有条。": [
+    "everything in order.",
+    "semuanya teratur.",
+    "จัดการทุกขั้นตอนอย่างลงตัว",
+    "គ្រប់យ៉ាងមានរបៀបរៀបរយ។",
+    "mọi thứ đều ngăn nắp."
+  ],
+  "每一笔订单，都是生意的新进展。": [
+    "Every order moves your business forward.",
+    "Setiap pesanan memajukan perniagaan anda.",
+    "ทุกคำสั่งซื้อพาธุรกิจคุณก้าวหน้า",
+    "រាល់ការបញ្ជាទិញនាំអាជីវកម្មអ្នកទៅមុខ។",
+    "Mỗi đơn hàng giúp kinh doanh tiến bước."
+  ],
+  "每单邮费（MYR）": [
+    "Shipping per order (MYR)",
+    "Pos setiap pesanan (MYR)",
+    "ค่าส่งต่อคำสั่งซื้อ (MYR)",
+    "ថ្លៃដឹកក្នុងមួយការបញ្ជាទិញ (MYR)",
+    "Phí giao mỗi đơn (MYR)"
+  ],
+  "每笔订单的进展，清楚掌握。": [
+    "Keep track of every order.",
+    "Pantau setiap pesanan.",
+    "ติดตามความคืบหน้าทุกคำสั่งซื้อ",
+    "តាមដានការបញ្ជាទិញនីមួយៗ។",
+    "Nắm rõ tiến trình từng đơn hàng."
+  ],
+  "没有找到商品，试试其他关键词或分类。": [
+    "No products found. Try another keyword or category.",
+    "Tiada produk ditemui. Cuba kata kunci atau kategori lain.",
+    "ไม่พบสินค้า ลองคำค้นหรือหมวดหมู่อื่น",
+    "រកមិនឃើញផលិតផល។ សាកល្បងពាក្យគន្លឹះ ឬប្រភេទផ្សេង។",
+    "Không tìm thấy sản phẩm. Thử từ khóa hoặc danh mục khác."
+  ],
+  "注册邮箱": [
+    "Registered email",
+    "E-mel berdaftar",
+    "อีเมลที่ลงทะเบียน",
+    "អ៊ីមែលដែលបានចុះឈ្មោះ",
+    "Email đã đăng ký"
+  ],
+  "添加代理": [
+    "Add agent",
+    "Tambah ejen",
+    "เพิ่มตัวแทน",
+    "បន្ថែមភ្នាក់ងារ",
+    "Thêm đại lý"
+  ],
+  "添加商品": [
+    "Add product",
+    "Tambah produk",
+    "เพิ่มสินค้า",
+    "បន្ថែមផលិតផល",
+    "Thêm sản phẩm"
+  ],
+  "添加新商品": [
+    "Add new product",
+    "Tambah produk baharu",
+    "เพิ่มสินค้าใหม่",
+    "បន្ថែមផលិតផលថ្មី",
+    "Thêm sản phẩm mới"
+  ],
+  "添加第一位代理，生成专属销售链接。": [
+    "Add your first agent to create a unique sales link.",
+    "Tambah ejen pertama untuk mencipta pautan jualan unik.",
+    "เพิ่มตัวแทนคนแรกเพื่อสร้างลิงก์ขายเฉพาะ",
+    "បន្ថែមភ្នាក់ងារដំបូង ដើម្បីបង្កើតតំណលក់ផ្ទាល់ខ្លួន។",
+    "Thêm đại lý đầu tiên để tạo liên kết bán hàng riêng."
+  ],
+  "添加销售代理": [
+    "Add sales agent",
+    "Tambah ejen jualan",
+    "เพิ่มตัวแทนขาย",
+    "បន្ថែមភ្នាក់ងារលក់",
+    "Thêm đại lý bán hàng"
+  ],
+  "热门精选": [
+    "Popular picks",
+    "Pilihan popular",
+    "สินค้ายอดนิยม",
+    "ផលិតផលពេញនិយម",
+    "Sản phẩm nổi bật"
+  ],
+  "状态": [
+    "Status",
+    "Status",
+    "สถานะ",
+    "ស្ថានភាព",
+    "Trạng thái"
+  ],
+  "状态 / 参考号": [
+    "Status / reference",
+    "Status / rujukan",
+    "สถานะ / เลขอ้างอิง",
+    "ស្ថានភាព / លេខយោង",
+    "Trạng thái / mã tham chiếu"
+  ],
+  "现货 · 可售 ": [
+    "In stock · Available: ",
+    "Ada stok · Tersedia: ",
+    "มีสินค้า · พร้อมขาย: ",
+    "មានស្តុក · អាចលក់បាន៖ ",
+    "Còn hàng · Khả dụng: "
+  ],
+  "生意总览": [
+    "Business overview",
+    "Gambaran perniagaan",
+    "ภาพรวมธุรกิจ",
+    "ទិដ្ឋភាពអាជីវកម្ម",
+    "Tổng quan kinh doanh"
+  ],
+  "生成安全邀请链接": [
+    "Create secure invitation link",
+    "Cipta pautan jemputan selamat",
+    "สร้างลิงก์เชิญที่ปลอดภัย",
+    "បង្កើតតំណអញ្ជើញសុវត្ថិភាព",
+    "Tạo liên kết mời an toàn"
+  ],
+  "由你自行设定，填 0 代表免邮。只影响新订单，邮费不计入代理佣金。": [
+    "Set your own fee; 0 means free shipping. Applies to new orders only and is excluded from commission.",
+    "Tetapkan caj sendiri; 0 bermaksud penghantaran percuma. Hanya untuk pesanan baharu dan tidak dikira komisen.",
+    "กำหนดค่าส่งเอง ใส่ 0 เพื่อส่งฟรี ใช้กับคำสั่งซื้อใหม่เท่านั้นและไม่นำไปคิดค่าคอมมิชชัน",
+    "កំណត់ថ្លៃដោយខ្លួនឯង 0 មានន័យថាដឹកឥតគិតថ្លៃ។ អនុវត្តតែលើការបញ្ជាទិញថ្មី និងមិនរាប់ក្នុងកម្រៃជើងសា។",
+    "Tự đặt phí; 0 là miễn phí giao hàng. Chỉ áp dụng đơn mới và không tính hoa hồng."
+  ],
+  "申请、余额及实际打款记录，清楚对账。": [
+    "Track requests, balances and actual payouts.",
+    "Jejak permohonan, baki dan bayaran sebenar.",
+    "ตรวจสอบคำขอ ยอดคงเหลือ และการจ่ายเงินจริง",
+    "តាមដានសំណើ សមតុល្យ និងការទូទាត់ពិតប្រាកដ។",
+    "Theo dõi yêu cầu, số dư và khoản chi thực tế."
+  ],
+  "申请佣金提现": [
+    "Request commission withdrawal",
+    "Mohon pengeluaran komisen",
+    "ขอถอนค่าคอมมิชชัน",
+    "ស្នើដកកម្រៃជើងសា",
+    "Yêu cầu rút hoa hồng"
+  ],
+  "申请提现": [
+    "Request withdrawal",
+    "Mohon pengeluaran",
+    "ขอถอนเงิน",
+    "ស្នើដកប្រាក់",
+    "Yêu cầu rút tiền"
+  ],
+  "申请时间": [
+    "Requested at",
+    "Masa permohonan",
+    "เวลายื่นคำขอ",
+    "ពេលដាក់សំណើ",
+    "Thời gian yêu cầu"
+  ],
+  "申请金额（MYR）": [
+    "Requested amount (MYR)",
+    "Amaun permohonan (MYR)",
+    "จำนวนเงินที่ขอ (MYR)",
+    "ចំនួនប្រាក់ស្នើសុំ (MYR)",
+    "Số tiền yêu cầu (MYR)"
+  ],
+  "登录工作台": [
+    "Log in to dashboard",
+    "Log masuk papan pemuka",
+    "เข้าสู่แดชบอร์ด",
+    "ចូលផ្ទាំងគ្រប់គ្រង",
+    "Đăng nhập trang quản lý"
+  ],
+  "登录工作台，看看今天的生意。": [
+    "Log in to see how business is doing today.",
+    "Log masuk untuk melihat perniagaan hari ini.",
+    "เข้าสู่ระบบเพื่อดูธุรกิจวันนี้",
+    "ចូលដើម្បីមើលអាជីវកម្មថ្ងៃនេះ។",
+    "Đăng nhập để xem tình hình kinh doanh hôm nay."
+  ],
+  "登记外部处理结果": [
+    "Record external resolution",
+    "Rekod penyelesaian luaran",
+    "บันทึกผลการดำเนินการภายนอก",
+    "កត់ត្រាលទ្ធផលដោះស្រាយខាងក្រៅ",
+    "Ghi nhận xử lý bên ngoài"
+  ],
+  "登记已完成的打款": [
+    "Record completed payout",
+    "Rekod bayaran selesai",
+    "บันทึกการจ่ายเงินที่เสร็จแล้ว",
+    "កត់ត្រាការទូទាត់ដែលបានបញ្ចប់",
+    "Ghi nhận khoản chi đã hoàn tất"
+  ],
+  "登记已完成退款": [
+    "Record completed refund",
+    "Rekod bayaran balik selesai",
+    "บันทึกการคืนเงินที่เสร็จแล้ว",
+    "កត់ត្រាការសងប្រាក់ដែលបានបញ្ចប់",
+    "Ghi nhận hoàn tiền đã hoàn tất"
+  ],
+  "登记已寄出的包裹": [
+    "Record dispatched parcel",
+    "Rekod bungkusan dihantar",
+    "บันทึกพัสดุที่ส่งแล้ว",
+    "កត់ត្រាកញ្ចប់ដែលបានផ្ញើ",
+    "Ghi nhận kiện hàng đã gửi"
+  ],
+  "登记已打款": [
+    "Record payout",
+    "Rekod pembayaran",
+    "บันทึกการจ่ายเงิน",
+    "កត់ត្រាទូទាត់",
+    "Ghi nhận chi trả"
+  ],
+  "目前不会自动导入社交平台的商品或订单；添加社交账号不等于接通平台订单。": [
+    "Social products and orders are not imported automatically. Adding a social account does not connect platform orders.",
+    "Produk dan pesanan sosial tidak diimport automatik. Menambah akaun sosial tidak menyambungkan pesanan platform.",
+    "ระบบไม่ได้นำเข้าสินค้าหรือคำสั่งซื้อจากโซเชียลอัตโนมัติ การเพิ่มบัญชีโซเชียลไม่ใช่การเชื่อมคำสั่งซื้อ",
+    "មិននាំចូលផលិតផល ឬការបញ្ជាទិញពីបណ្ដាញសង្គមស្វ័យប្រវត្តិទេ។ ការបន្ថែមគណនីសង្គមមិនភ្ជាប់ការបញ្ជាទិញវេទិកាទេ។",
+    "Không tự nhập sản phẩm hoặc đơn từ mạng xã hội. Thêm tài khoản xã hội không đồng nghĩa đã kết nối đơn hàng."
+  ],
+  "直播卖货，怎样用店铺接单？": [
+    "How do I take orders during live selling?",
+    "Bagaimana menerima pesanan semasa siaran langsung?",
+    "รับคำสั่งซื้อระหว่างไลฟ์ขายอย่างไร?",
+    "តើទទួលការបញ្ជាទិញពេលលក់ផ្សាយផ្ទាល់យ៉ាងដូចម្តេច?",
+    "Nhận đơn khi livestream như thế nào?"
+  ],
+  "确认修改商家 ": [
+    "Confirm changes for merchant ",
+    "Sahkan perubahan untuk peniaga ",
+    "ยืนยันการเปลี่ยนแปลงร้านค้า ",
+    "បញ្ជាក់ការផ្លាស់ប្ដូរសម្រាប់អាជីវករ ",
+    "Xác nhận thay đổi cho nhà bán hàng "
+  ],
+  "确认取消此未付款订单并恢复库存？": [
+    "Cancel this unpaid order and restore stock?",
+    "Batalkan pesanan belum dibayar dan pulihkan stok?",
+    "ยกเลิกคำสั่งซื้อที่ยังไม่ชำระและคืนสต็อก?",
+    "បោះបង់ការបញ្ជាទិញមិនទាន់ទូទាត់ និងបញ្ចូលស្តុកវិញ?",
+    "Hủy đơn chưa thanh toán và hoàn tồn kho?"
+  ],
+  "确认拒绝": [
+    "Confirm rejection",
+    "Sahkan penolakan",
+    "ยืนยันการปฏิเสธ",
+    "បញ្ជាក់ការបដិសេធ",
+    "Xác nhận từ chối"
+  ],
+  "确认提交订单": [
+    "Confirm order",
+    "Sahkan pesanan",
+    "ยืนยันคำสั่งซื้อ",
+    "បញ្ជាក់ការបញ្ជាទិញ",
+    "Xác nhận đặt hàng"
+  ],
+  "确认撤销此账号的访问权限？已登录会话也会失效。": [
+    "Revoke this account's access? Existing sessions will also lose access.",
+    "Tarik balik akses akaun ini? Sesi sedia ada juga akan kehilangan akses.",
+    "เพิกถอนสิทธิ์บัญชีนี้? เซสชันที่เข้าสู่ระบบแล้วจะเสียสิทธิ์ด้วย",
+    "ដកសិទ្ធិគណនីនេះ? វគ្គដែលបានចូលរួចនឹងបាត់សិទ្ធិដែរ។",
+    "Thu hồi quyền tài khoản này? Các phiên đã đăng nhập cũng mất quyền."
+  ],
+  "确认收款": [
+    "Confirm payment",
+    "Sahkan bayaran",
+    "ยืนยันรับเงิน",
+    "បញ្ជាក់ការទូទាត់",
+    "Xác nhận nhận tiền"
+  ],
+  "确认收款前请核对实际到账，当前尚未连接自动支付回调。": [
+    "Verify funds actually received before confirming payment. Do not rely solely on payment redirects.",
+    "Sahkan wang sebenar diterima sebelum mengesahkan bayaran. Jangan bergantung pada halaman kembali pembayaran sahaja.",
+    "ตรวจสอบเงินเข้าจริงก่อนยืนยันรับเงิน อย่าอาศัยเพียงการกลับจากหน้าชำระเงิน",
+    "ផ្ទៀងផ្ទាត់ប្រាក់ដែលបានទទួលពិត មុនបញ្ជាក់ទូទាត់។ កុំផ្អែកតែលើការត្រឡប់ពីទំព័រទូទាត់។",
+    "Kiểm tra tiền thực nhận trước khi xác nhận. Không chỉ dựa vào trang chuyển về sau thanh toán."
+  ],
+  "确认收款后会自动加入收据队列。未付款提醒需定时任务运行。只有配置邮件服务并启动发送任务后才会发出；「服务商已接受」不代表客户一定收到。": [
+    "Payment confirmation queues a receipt. Reminders need a scheduled task. Email requires a configured provider and worker; provider acceptance does not guarantee delivery.",
+    "Pengesahan bayaran memasukkan resit ke giliran. Peringatan memerlukan tugas berjadual. E-mel memerlukan penyedia dan pekerja; penerimaan penyedia tidak menjamin penghantaran.",
+    "ยืนยันรับเงินแล้วจะเข้าคิวใบเสร็จ การแจ้งเตือนต้องมีงานตามเวลา อีเมลต้องตั้งค่าบริการและงานส่ง ผู้ให้บริการรับไม่ได้แปลว่าลูกค้าได้รับแล้ว",
+    "ការបញ្ជាក់ទូទាត់នឹងដាក់បង្កាន់ដៃក្នុងជួរ។ ការរំលឹកត្រូវការកិច្ចការកំណត់ពេល។ អ៊ីមែលត្រូវកំណត់សេវា និងដំណើរការផ្ញើ។ អ្នកផ្ដល់សេវាទទួលមិនធានាថាអតិថិជនបានទទួលទេ។",
+    "Xác nhận thu tiền sẽ xếp biên nhận vào hàng đợi. Nhắc thanh toán cần tác vụ định kỳ. Email cần cấu hình dịch vụ và tác vụ gửi; nhà cung cấp tiếp nhận không đảm bảo khách đã nhận."
+  ],
+  "确认订单": [
+    "Order checkout",
+    "Pengesahan pesanan",
+    "ยืนยันรายการสั่งซื้อ",
+    "បញ្ជាក់ការបញ្ជាទិញ",
+    "Xác nhận đơn hàng"
+  ],
+  "移除图片": [
+    "Remove image",
+    "Buang gambar",
+    "ลบรูป",
+    "លុបរូបភាព",
+    "Xóa ảnh"
+  ],
+  "立即登录": [
+    "Log in",
+    "Log masuk",
+    "เข้าสู่ระบบ",
+    "ចូលគណនី",
+    "Đăng nhập"
+  ],
+  "立即购买": [
+    "Buy now",
+    "Beli sekarang",
+    "ซื้อเลย",
+    "ទិញឥឡូវ",
+    "Mua ngay"
+  ],
+  "笔已付款 ·": [
+    "paid ·",
+    "dibayar ·",
+    "ชำระแล้ว ·",
+    "បានទូទាត់ ·",
+    "đã thanh toán ·"
+  ],
+  "笔待付款": [
+    "pending payment",
+    "menunggu bayaran",
+    "รอชำระ",
+    "រង់ចាំទូទាត់",
+    "chờ thanh toán"
+  ],
+  "等待发送": [
+    "Queued",
+    "Menunggu dihantar",
+    "รอส่ง",
+    "រង់ចាំផ្ញើ",
+    "Chờ gửi"
+  ],
+  "等待接受": [
+    "Awaiting acceptance",
+    "Menunggu penerimaan",
+    "รอตอบรับ",
+    "រង់ចាំទទួលយក",
+    "Chờ chấp nhận"
+  ],
+  "筛选订单": [
+    "Filter orders",
+    "Tapis pesanan",
+    "กรองคำสั่งซื้อ",
+    "ត្រងការបញ្ជាទិញ",
+    "Lọc đơn hàng"
+  ],
+  "简介及电话会显示在公开商店。": [
+    "Description and phone number appear publicly in your store.",
+    "Penerangan dan telefon dipaparkan secara awam di kedai.",
+    "รายละเอียดและเบอร์โทรจะแสดงสาธารณะในร้านค้า",
+    "ការពិពណ៌នា និងលេខទូរសព្ទបង្ហាញជាសាធារណៈនៅហាង។",
+    "Giới thiệu và số điện thoại sẽ hiển thị công khai trên cửa hàng."
+  ],
+  "管理付款方式与订阅": [
+    "Manage billing & subscription",
+    "Urus bil & langganan",
+    "จัดการการเรียกเก็บเงินและสมาชิก",
+    "គ្រប់គ្រងវិក្កយបត្រ និងការជាវ",
+    "Quản lý thanh toán và đăng ký"
+  ],
+  "类型": [
+    "Type",
+    "Jenis",
+    "ประเภท",
+    "ប្រភេទ",
+    "Loại"
+  ],
+  "精选商品": [
+    "Featured products",
+    "Produk pilihan",
+    "สินค้าแนะนำ",
+    "ផលិតផលពិសេស",
+    "Sản phẩm chọn lọc"
+  ],
+  "累计已付款订单": [
+    "Total paid orders",
+    "Jumlah pesanan dibayar",
+    "จำนวนคำสั่งซื้อที่ชำระแล้วทั้งหมด",
+    "ការបញ្ជាទិញដែលបានទូទាត់សរុប",
+    "Tổng đơn đã thanh toán"
+  ],
+  "继续账户认证": [
+    "Continue account verification",
+    "Teruskan pengesahan akaun",
+    "ยืนยันบัญชีต่อ",
+    "បន្តផ្ទៀងផ្ទាត់គណនី",
+    "Tiếp tục xác minh tài khoản"
+  ],
+  "继续选购": [
+    "Continue shopping",
+    "Teruskan membeli",
+    "เลือกซื้อสินค้าต่อ",
+    "បន្តទិញទំនិញ",
+    "Tiếp tục mua sắm"
+  ],
+  "编辑商品": [
+    "Edit product",
+    "Sunting produk",
+    "แก้ไขสินค้า",
+    "កែសម្រួលផលិតផល",
+    "Sửa sản phẩm"
+  ],
+  "缺少此订单的访问凭证，请联系商家核实订单。": [
+    "Order access token is missing. Contact the merchant to verify your order.",
+    "Token akses pesanan tiada. Hubungi peniaga untuk mengesahkan pesanan.",
+    "ไม่พบข้อมูลสิทธิ์เข้าดูคำสั่งซื้อ โปรดติดต่อร้านค้าเพื่อตรวจสอบ",
+    "ខ្វះព័ត៌មានសិទ្ធិចូលមើលការបញ្ជាទិញ។ សូមទាក់ទងអាជីវករដើម្បីផ្ទៀងផ្ទាត់។",
+    "Thiếu mã truy cập đơn hàng. Hãy liên hệ nhà bán hàng để xác minh."
+  ],
+  "联系及收货资料": [
+    "Contact & delivery details",
+    "Maklumat hubungan & penghantaran",
+    "ข้อมูลติดต่อและจัดส่ง",
+    "ព័ត៌មានទំនាក់ទំនង និងដឹកជញ្ជូន",
+    "Thông tin liên hệ và nhận hàng"
+  ],
+  "联系商家": [
+    "Contact merchant",
+    "Hubungi peniaga",
+    "ติดต่อร้านค้า",
+    "ទាក់ទងអាជីវករ",
+    "Liên hệ nhà bán hàng"
+  ],
+  "联系商家付款 · 由商家核实到账": [
+    "Pay the merchant · Merchant verifies receipt",
+    "Bayar kepada peniaga · Peniaga sahkan penerimaan",
+    "ชำระให้ร้านค้า · ร้านค้าตรวจสอบยอดรับ",
+    "ទូទាត់ទៅអាជីវករ · អាជីវករផ្ទៀងផ្ទាត់ប្រាក់",
+    "Thanh toán cho nhà bán hàng · Nhà bán hàng xác nhận"
+  ],
+  "至少 10 个字符": [
+    "At least 10 characters",
+    "Sekurang-kurangnya 10 aksara",
+    "อย่างน้อย 10 ตัวอักษร",
+    "យ៉ាងហោចណាស់ 10 តួអក្សរ",
+    "Ít nhất 10 ký tự"
+  ],
+  "若此邮箱已注册，将收到重设邮件。请检查收件箱和垃圾邮件，并使用最新链接。": [
+    "If this email is registered, a reset email will arrive. Check your inbox and spam folder, and use the latest link.",
+    "Jika e-mel berdaftar, e-mel tetapan semula akan dihantar. Semak peti masuk dan spam, dan guna pautan terkini.",
+    "หากอีเมลนี้ลงทะเบียนไว้ คุณจะได้รับอีเมลรีเซ็ต โปรดตรวจสอบกล่องเข้าและสแปม แล้วใช้ลิงก์ล่าสุด",
+    "ប្រសិនបើអ៊ីមែលនេះបានចុះឈ្មោះ អ្នកនឹងទទួលអ៊ីមែលកំណត់ឡើងវិញ។ ពិនិត្យប្រអប់ចូល និងសារឥតបានការ ហើយប្រើតំណថ្មីបំផុត។",
+    "Nếu email đã đăng ký, bạn sẽ nhận thư đặt lại. Kiểm tra hộp thư và thư rác, dùng liên kết mới nhất."
+  ],
+  "规格 / 款式（选填）": [
+    "Variant / style (optional)",
+    "Variasi / gaya (pilihan)",
+    "ตัวเลือก / แบบ (ไม่บังคับ)",
+    "ជម្រើស / រចនាប័ទ្ម (មិនចាំបាច់)",
+    "Phân loại / kiểu (không bắt buộc)"
+  ],
+  "规格：": [
+    "Variant:",
+    "Variasi:",
+    "ตัวเลือก:",
+    "ជម្រើស៖",
+    "Phân loại:"
+  ],
+  "角色": [
+    "Role",
+    "Peranan",
+    "บทบาท",
+    "តួនាទី",
+    "Vai trò"
+  ],
+  "计算中…": [
+    "Calculating…",
+    "Sedang mengira…",
+    "กำลังคำนวณ…",
+    "កំពុងគណនា…",
+    "Đang tính…"
+  ],
+  "订单": [
+    "Order",
+    "Pesanan",
+    "คำสั่งซื้อ",
+    "ការបញ្ជាទិញ",
+    "Đơn hàng"
+  ],
+  "订单备注": [
+    "Order notes",
+    "Nota pesanan",
+    "หมายเหตุคำสั่งซื้อ",
+    "កំណត់ចំណាំបញ្ជាទិញ",
+    "Ghi chú đơn hàng"
+  ],
+  "订单客服": [
+    "Order support",
+    "Staf pesanan",
+    "เจ้าหน้าที่คำสั่งซื้อ",
+    "បុគ្គលិកបញ្ជាទិញ",
+    "Nhân viên đơn hàng"
+  ],
+  "订单已保存，尚未确认收款。请联系商家安排付款。": [
+    "Order saved; payment is not confirmed. Contact the merchant to arrange payment.",
+    "Pesanan disimpan; bayaran belum disahkan. Hubungi peniaga untuk urusan bayaran.",
+    "บันทึกคำสั่งซื้อแล้ว แต่ยังไม่ยืนยันรับเงิน โปรดติดต่อร้านค้าเพื่อชำระเงิน",
+    "បានរក្សាទុកការបញ្ជាទិញ ប៉ុន្តែមិនទាន់បញ្ជាក់ទូទាត់។ ទាក់ទងអាជីវករដើម្បីរៀបចំការទូទាត់។",
+    "Đã lưu đơn nhưng chưa xác nhận thanh toán. Liên hệ nhà bán hàng để thanh toán."
+  ],
+  "订单已创建": [
+    "Order created",
+    "Pesanan dicipta",
+    "สร้างคำสั่งซื้อแล้ว",
+    "បានបង្កើតការបញ្ជាទិញ",
+    "Đã tạo đơn hàng"
+  ],
+  "订单已取消": [
+    "Order cancelled",
+    "Pesanan dibatalkan",
+    "ยกเลิกคำสั่งซื้อแล้ว",
+    "បានបោះបង់ការបញ្ជាទិញ",
+    "Đã hủy đơn hàng"
+  ],
+  "订单已取消，库存已恢复": [
+    "Order cancelled; stock restored",
+    "Pesanan dibatalkan; stok dipulihkan",
+    "ยกเลิกคำสั่งซื้อและคืนสต็อกแล้ว",
+    "បានបោះបង់ការបញ្ជាទិញ និងបញ្ចូលស្តុកវិញ",
+    "Đã hủy đơn và hoàn tồn kho"
+  ],
+  "订单已退款": [
+    "Order refunded",
+    "Pesanan dibayar balik",
+    "คืนเงินคำสั่งซื้อแล้ว",
+    "បានសងប្រាក់ការបញ្ជាទិញ",
+    "Đã hoàn tiền đơn hàng"
+  ],
+  "订单总数": [
+    "Total orders",
+    "Jumlah pesanan",
+    "คำสั่งซื้อทั้งหมด",
+    "ការបញ្ជាទិញសរុប",
+    "Tổng đơn hàng"
+  ],
+  "订单总额": [
+    "Order total",
+    "Jumlah pesanan",
+    "ยอดรวมคำสั่งซื้อ",
+    "តម្លៃបញ្ជាទិញសរុប",
+    "Tổng tiền đơn hàng"
+  ],
+  "订单摘要": [
+    "Order summary",
+    "Ringkasan pesanan",
+    "สรุปคำสั่งซื้อ",
+    "សង្ខេបការបញ្ជាទិញ",
+    "Tóm tắt đơn hàng"
+  ],
+  "订单数": [
+    "Orders",
+    "Bilangan pesanan",
+    "จำนวนคำสั่งซื้อ",
+    "ចំនួនការបញ្ជាទិញ",
+    "Số đơn"
+  ],
+  "订单管理": [
+    "Orders",
+    "Pengurusan pesanan",
+    "จัดการคำสั่งซื้อ",
+    "គ្រប់គ្រងការបញ្ជាទិញ",
+    "Quản lý đơn hàng"
+  ],
+  "订单编号": [
+    "Order number",
+    "Nombor pesanan",
+    "เลขคำสั่งซื้อ",
+    "លេខបញ្ជាទិញ",
+    "Mã đơn hàng"
+  ],
+  "订单详情": [
+    "Order details",
+    "Butiran pesanan",
+    "รายละเอียดคำสั่งซื้อ",
+    "ព័ត៌មានលម្អិតបញ្ជាទិញ",
+    "Chi tiết đơn hàng"
+  ],
+  "订单金额": [
+    "Order amount",
+    "Amaun pesanan",
+    "จำนวนเงินคำสั่งซื้อ",
+    "ចំនួនប្រាក់បញ្ជាទិញ",
+    "Giá trị đơn hàng"
+  ],
+  "订单金额尚未确认，请等待邮费更新后再提交。": [
+    "Order amount is not confirmed. Wait for shipping to update before submitting.",
+    "Amaun belum disahkan. Tunggu kos pos dikemas kini sebelum menghantar.",
+    "ยังไม่ยืนยันยอดคำสั่งซื้อ โปรดรอค่าส่งอัปเดตก่อนส่งคำสั่งซื้อ",
+    "ចំនួនប្រាក់បញ្ជាទិញមិនទាន់បញ្ជាក់។ រង់ចាំថ្លៃដឹកធ្វើបច្ចុប្បន្នភាពមុនផ្ញើ។",
+    "Chưa xác nhận tổng tiền. Chờ cập nhật phí giao hàng rồi gửi đơn."
+  ],
+  "订阅价格需核查": [
+    "Subscription price needs review",
+    "Harga langganan perlu disemak",
+    "ต้องตรวจสอบราคาสมาชิก",
+    "តម្លៃជាវត្រូវការត្រួតពិនិត្យ",
+    "Giá đăng ký cần kiểm tra"
+  ],
+  "订阅状态：": [
+    "Subscription status:",
+    "Status langganan:",
+    "สถานะสมาชิก:",
+    "ស្ថានភាពជាវ៖",
+    "Trạng thái đăng ký:"
+  ],
+  "订阅账单": [
+    "Subscription billing",
+    "Bil langganan",
+    "ใบเรียกเก็บค่าสมาชิก",
+    "វិក្កយបត្រជាវ",
+    "Hóa đơn đăng ký"
+  ],
+  "让你的第一笔线上生意，从这里开始。": [
+    "Start your first online sale here.",
+    "Mulakan jualan dalam talian pertama di sini.",
+    "เริ่มการขายออนไลน์ครั้งแรกที่นี่",
+    "ចាប់ផ្ដើមការលក់អនឡាញដំបូងនៅទីនេះ។",
+    "Bắt đầu bán hàng trực tuyến tại đây."
+  ],
+  "让合适的人，处理合适的工作。": [
+    "Give the right people the right work.",
+    "Beri tugas sesuai kepada orang yang tepat.",
+    "ให้คนที่เหมาะสมทำงานที่เหมาะสม",
+    "ផ្ដល់ការងារត្រឹមត្រូវដល់មនុស្សត្រឹមត្រូវ។",
+    "Phân đúng việc cho đúng người."
+  ],
+  "让每一份推广，都有清晰的回报。": [
+    "Clear rewards for every referral.",
+    "Ganjaran jelas bagi setiap rujukan.",
+    "ทุกการแนะนำมีผลตอบแทนที่ชัดเจน",
+    "រង្វាន់ច្បាស់លាស់សម្រាប់រាល់ការណែនាំ។",
+    "Mỗi lượt giới thiệu có phần thưởng rõ ràng."
+  ],
+  "让顾客发现你的好产品": [
+    "Help customers discover your products",
+    "Bantu pelanggan menemui produk anda",
+    "ให้ลูกค้าค้นพบสินค้าของคุณ",
+    "ជួយអតិថិជនស្វែងរកផលិតផលរបស់អ្នក",
+    "Giúp khách hàng tìm thấy sản phẩm của bạn"
+  ],
+  "记录已完成的外部处理": [
+    "Record completed external resolution",
+    "Rekod penyelesaian luaran yang selesai",
+    "บันทึกการดำเนินการภายนอกที่เสร็จแล้ว",
+    "កត់ត្រាការដោះស្រាយខាងក្រៅដែលបានបញ្ចប់",
+    "Ghi nhận xử lý bên ngoài đã hoàn tất"
+  ],
+  "设置密码": [
+    "Set password",
+    "Tetapkan kata laluan",
+    "ตั้งรหัสผ่าน",
+    "កំណត់ពាក្យសម្ងាត់",
+    "Đặt mật khẩu"
+  ],
+  "设置新密码": [
+    "Set new password",
+    "Tetapkan kata laluan baharu",
+    "ตั้งรหัสผ่านใหม่",
+    "កំណត់ពាក្យសម្ងាត់ថ្មី",
+    "Đặt mật khẩu mới"
+  ],
+  "试用中": [
+    "Trial",
+    "Percubaan",
+    "ทดลองใช้งาน",
+    "កំពុងសាកល្បង",
+    "Đang dùng thử"
+  ],
+  "请使用商家指定的邮箱接受邀请。链接仅可使用一次。": [
+    "Accept using the email invited by the merchant. This link works once only.",
+    "Terima menggunakan e-mel yang dijemput peniaga. Pautan hanya sekali guna.",
+    "ใช้อีเมลที่ร้านค้าเชิญเพื่อตอบรับ ลิงก์ใช้ได้ครั้งเดียว",
+    "ទទួលយកដោយអ៊ីមែលដែលអាជីវករបានអញ្ជើញ។ តំណនេះអាចប្រើបានតែម្ដង។",
+    "Chấp nhận bằng email được nhà bán hàng mời. Liên kết chỉ dùng một lần."
+  ],
+  "请使用邀请邮箱和刚设置的密码登录。": [
+    "Log in with the invited email and the password you just set.",
+    "Log masuk dengan e-mel jemputan dan kata laluan yang baru ditetapkan.",
+    "เข้าสู่ระบบด้วยอีเมลที่เชิญและรหัสผ่านที่เพิ่งตั้ง",
+    "ចូលដោយអ៊ីមែលអញ្ជើញ និងពាក្យសម្ងាត់ដែលទើបកំណត់។",
+    "Đăng nhập bằng email được mời và mật khẩu vừa đặt."
+  ],
+  "请先在收款服务商后台核实或完成退款，再记录结果。此处不会转账、退款或把订单改为已付款。": [
+    "First verify or refund through your payment provider, then record the result. This does not transfer, refund or mark an order paid.",
+    "Sahkan atau buat bayaran balik melalui penyedia dahulu, kemudian rekod hasil. Ini tidak memindah, membayar balik atau menandakan pesanan dibayar.",
+    "ตรวจสอบหรือคืนเงินผ่านผู้ให้บริการก่อน แล้วจึงบันทึกผล ที่นี่จะไม่โอนเงิน คืนเงิน หรือทำเครื่องหมายว่าชำระแล้ว",
+    "ផ្ទៀងផ្ទាត់ ឬសងប្រាក់តាមអ្នកផ្ដល់សេវាជាមុន រួចកត់ត្រាលទ្ធផល។ នេះមិនផ្ទេរ សងប្រាក់ ឬកំណត់ថាបានទូទាត់ទេ។",
+    "Xác minh hoặc hoàn tiền tại nhà cung cấp trước rồi ghi nhận kết quả. Thao tác này không chuyển tiền, hoàn tiền hay đánh dấu đã thanh toán."
+  ],
+  "请先在银行核实实际打款成功，再登记参考号；此操作不会发起转账。": [
+    "Verify the actual bank transfer first, then record its reference. This will not initiate a transfer.",
+    "Sahkan pindahan bank sebenar dahulu, kemudian rekod rujukan. Ini tidak memulakan pindahan.",
+    "ตรวจสอบการโอนเงินจริงที่ธนาคารก่อน แล้วบันทึกเลขอ้างอิง การดำเนินการนี้จะไม่โอนเงิน",
+    "ផ្ទៀងផ្ទាត់ការផ្ទេរធនាគារពិតជាមុន រួចកត់ត្រាលេខយោង។ នេះមិនចាប់ផ្ដើមការផ្ទេរទេ។",
+    "Kiểm tra giao dịch chuyển khoản thực tế trước rồi ghi mã tham chiếu. Thao tác này không chuyển tiền."
+  ],
+  "请先完成邮箱验证，再登录商家后台。当前由商家核实收款。": [
+    "Verify your email before signing in. Payments are verified by the merchant.",
+    "Sahkan e-mel sebelum log masuk. Bayaran disahkan oleh peniaga.",
+    "ยืนยันอีเมลก่อนเข้าสู่ระบบ ร้านค้าจะตรวจสอบการรับเงิน",
+    "ផ្ទៀងផ្ទាត់អ៊ីមែលមុនចូល។ អាជីវករផ្ទៀងផ្ទាត់ការទូទាត់។",
+    "Xác minh email trước khi đăng nhập. Nhà bán hàng xác minh thanh toán."
+  ],
+  "请先检查购物车的商品和库存": [
+    "Check cart items and stock first",
+    "Semak produk troli dan stok dahulu",
+    "โปรดตรวจสอบสินค้าและสต็อกในตะกร้าก่อน",
+    "ពិនិត្យផលិតផលក្នុងកន្ត្រក និងស្តុកជាមុន",
+    "Kiểm tra sản phẩm và tồn kho trong giỏ trước"
+  ],
+  "请先登录，再上传图片。": [
+    "Log in before uploading images.",
+    "Log masuk sebelum memuat naik gambar.",
+    "เข้าสู่ระบบก่อนอัปโหลดรูป",
+    "ចូលគណនីមុនផ្ទុករូបភាពឡើង។",
+    "Đăng nhập trước khi tải ảnh lên."
+  ],
+  "请先自行寄件，再填写真实运单号。此操作不会向快递公司下单。": [
+    "Dispatch the parcel yourself, then enter its real tracking number. This does not book a courier.",
+    "Hantar bungkusan sendiri, kemudian isi nombor penjejakan sebenar. Ini tidak menempah kurier.",
+    "ส่งพัสดุด้วยตนเองก่อนแล้วกรอกเลขติดตามจริง การดำเนินการนี้ไม่ได้จองขนส่ง",
+    "ផ្ញើកញ្ចប់ដោយខ្លួនឯងជាមុន រួចបញ្ចូលលេខតាមដានពិត។ នេះមិនកក់ក្រុមហ៊ុនដឹកជញ្ជូនទេ។",
+    "Tự gửi kiện hàng trước rồi nhập mã vận đơn thật. Thao tác này không đặt dịch vụ vận chuyển."
+  ],
+  "请先验证邮箱，再使用此邮箱和密码登录；系统会接受有效邀请。": [
+    "Verify your email, then sign in with your email and password to accept a valid invitation.",
+    "Sahkan e-mel, kemudian log masuk dengan e-mel dan kata laluan untuk menerima jemputan sah.",
+    "ยืนยันอีเมลแล้วเข้าสู่ระบบด้วยอีเมลและรหัสผ่านเพื่อรับคำเชิญที่ยังใช้ได้",
+    "ផ្ទៀងផ្ទាត់អ៊ីមែល រួចចូលដោយអ៊ីមែល និងពាក្យសម្ងាត់ ដើម្បីទទួលការអញ្ជើញត្រឹមត្រូវ។",
+    "Xác minh email rồi đăng nhập bằng email và mật khẩu để chấp nhận lời mời hợp lệ."
+  ],
+  "请手动复制上方链接": [
+    "Copy the link above manually",
+    "Salin pautan di atas secara manual",
+    "โปรดคัดลอกลิงก์ด้านบนด้วยตนเอง",
+    "សូមចម្លងតំណខាងលើដោយដៃ",
+    "Vui lòng sao chép liên kết bên trên"
+  ],
+  "请核对银行实际到账。确认此订单已收款？": [
+    "Check actual bank receipt. Confirm this order is paid?",
+    "Semak penerimaan bank sebenar. Sahkan pesanan ini dibayar?",
+    "ตรวจสอบเงินเข้าธนาคารจริง ยืนยันว่ารับชำระคำสั่งซื้อนี้แล้ว?",
+    "ពិនិត្យប្រាក់ចូលធនាគារពិត។ បញ្ជាក់ថាការបញ្ជាទិញនេះបានទូទាត់?",
+    "Kiểm tra tiền thực nhận trong ngân hàng. Xác nhận đơn này đã thanh toán?"
+  ],
+  "请求失败，请稍后重试": [
+    "Request failed. Please try again later",
+    "Permintaan gagal. Sila cuba kemudian",
+    "คำขอไม่สำเร็จ โปรดลองภายหลัง",
+    "សំណើបរាជ័យ។ សូមព្យាយាមពេលក្រោយ",
+    "Yêu cầu thất bại. Vui lòng thử lại sau"
+  ],
+  "请移除此商品": [
+    "Remove this item",
+    "Buang produk ini",
+    "โปรดลบสินค้านี้",
+    "លុបផលិតផលនេះ",
+    "Hãy xóa sản phẩm này"
+  ],
+  "请稍候…": [
+    "Please wait…",
+    "Sila tunggu…",
+    "โปรดรอ…",
+    "សូមរង់ចាំ…",
+    "Vui lòng chờ…"
+  ],
+  "请等待图片上传完成后再保存。": [
+    "Wait for images to finish uploading before saving.",
+    "Tunggu gambar selesai dimuat naik sebelum menyimpan.",
+    "โปรดรอรูปอัปโหลดเสร็จก่อนบันทึก",
+    "រង់ចាំរូបភាពផ្ទុកចប់មុនរក្សាទុក។",
+    "Chờ tải ảnh xong trước khi lưu."
+  ],
+  "请输入至少 10 个字符的新密码。成功更新后会退出账号会话。": [
+    "Enter a new password of at least 10 characters. Updating it will sign out account sessions.",
+    "Masukkan kata laluan baharu sekurang-kurangnya 10 aksara. Kemas kini akan melog keluar sesi akaun.",
+    "กรอกรหัสผ่านใหม่อย่างน้อย 10 ตัวอักษร เมื่อเปลี่ยนแล้วจะออกจากเซสชันบัญชี",
+    "បញ្ចូលពាក្យសម្ងាត់ថ្មីយ៉ាងតិច 10 តួអក្សរ។ ការប្ដូរនឹងចាកចេញពីវគ្គគណនី។",
+    "Nhập mật khẩu mới ít nhất 10 ký tự. Cập nhật sẽ đăng xuất các phiên tài khoản."
+  ],
+  "请选择 JPG、PNG 或 WebP 图片。": [
+    "Choose a JPG, PNG or WebP image.",
+    "Pilih gambar JPG, PNG atau WebP.",
+    "เลือกรูป JPG, PNG หรือ WebP",
+    "ជ្រើសរូបភាព JPG, PNG ឬ WebP។",
+    "Chọn ảnh JPG, PNG hoặc WebP."
+  ],
+  "请选择州属": [
+    "Select state",
+    "Pilih negeri",
+    "เลือกรัฐ",
+    "ជ្រើសរដ្ឋ",
+    "Chọn bang"
+  ],
+  "账单周期结束：": [
+    "Billing period ends:",
+    "Tempoh bil tamat:",
+    "รอบบิลสิ้นสุด:",
+    "រយៈពេលវិក្កយបត្របញ្ចប់៖",
+    "Kỳ thanh toán kết thúc:"
+  ],
+  "账号已创建，请先通过邮件验证，再返回登录。": [
+    "Account created. Verify your email before logging in.",
+    "Akaun dicipta. Sahkan e-mel sebelum log masuk.",
+    "สร้างบัญชีแล้ว โปรดยืนยันอีเมลก่อนเข้าสู่ระบบ",
+    "បានបង្កើតគណនី។ ផ្ទៀងផ្ទាត់អ៊ីមែលមុនចូល។",
+    "Đã tạo tài khoản. Xác minh email trước khi đăng nhập."
+  ],
+  "账户已启用结算": [
+    "Payouts enabled",
+    "Pembayaran keluar aktif",
+    "เปิดโอนยอดเข้าธนาคารแล้ว",
+    "បានបើកការទូទាត់ចេញ",
+    "Đã bật chi trả"
+  ],
+  "购买数量": [
+    "Purchase quantity",
+    "Kuantiti pembelian",
+    "จำนวนที่ซื้อ",
+    "ចំនួនទិញ",
+    "Số lượng mua"
+  ],
+  "购物车": [
+    "Cart",
+    "Troli",
+    "ตะกร้า",
+    "កន្ត្រក",
+    "Giỏ hàng"
+  ],
+  "购物车还是空的，去发现一些好物吧。": [
+    "Your cart is empty. Find something you love.",
+    "Troli kosong. Cari produk kegemaran anda.",
+    "ตะกร้ายังว่าง ไปเลือกสินค้าที่ถูกใจ",
+    "កន្ត្រករបស់អ្នកទទេ។ ស្វែងរកផលិតផលដែលអ្នកចូលចិត្ត។",
+    "Giỏ hàng trống. Hãy tìm sản phẩm yêu thích."
+  ],
+  "资料已保存": [
+    "Details saved",
+    "Maklumat disimpan",
+    "บันทึกข้อมูลแล้ว",
+    "បានរក្សាទុកព័ត៌មាន",
+    "Đã lưu thông tin"
+  ],
+  "输入你的密码": [
+    "Enter your password",
+    "Masukkan kata laluan",
+    "กรอกรหัสผ่าน",
+    "បញ្ចូលពាក្យសម្ងាត់",
+    "Nhập mật khẩu"
+  ],
+  "运单号": [
+    "Tracking number",
+    "Nombor penjejakan",
+    "หมายเลขพัสดุ",
+    "លេខតាមដាន",
+    "Mã vận đơn"
+  ],
+  "运单号：": [
+    "Tracking number:",
+    "Nombor penjejakan:",
+    "หมายเลขพัสดุ:",
+    "លេខតាមដាន៖",
+    "Mã vận đơn:"
+  ],
+  "运送进度请向对应快递公司查询。": [
+    "Check delivery progress with the courier.",
+    "Semak kemajuan penghantaran dengan kurier.",
+    "ตรวจสอบความคืบหน้าการจัดส่งกับบริษัทขนส่ง",
+    "ពិនិត្យដំណើរដឹកជញ្ជូនជាមួយក្រុមហ៊ុនដឹកជញ្ជូន។",
+    "Tra cứu tiến trình giao hàng với đơn vị vận chuyển."
+  ],
+  "返回 EZShop": [
+    "Back to EZShop",
+    "Kembali ke EZShop",
+    "กลับ EZShop",
+    "ត្រឡប់ទៅ EZShop",
+    "Về EZShop"
+  ],
+  "返回店铺": [
+    "Back to store",
+    "Kembali ke kedai",
+    "กลับร้านค้า",
+    "ត្រឡប់ទៅហាង",
+    "Về cửa hàng"
+  ],
+  "返回登录": [
+    "Back to login",
+    "Kembali ke log masuk",
+    "กลับหน้าเข้าสู่ระบบ",
+    "ត្រឡប់ទៅចូលគណនី",
+    "Về trang đăng nhập"
+  ],
+  "还没有商品。点击「添加商品」开始。": [
+    "No products yet. Click Add product to get started.",
+    "Belum ada produk. Klik Tambah produk untuk bermula.",
+    "ยังไม่มีสินค้า คลิกเพิ่มสินค้าเพื่อเริ่มต้น",
+    "មិនទាន់មានផលិតផល។ ចុចបន្ថែមផលិតផលដើម្បីចាប់ផ្ដើម។",
+    "Chưa có sản phẩm. Nhấn Thêm sản phẩm để bắt đầu."
+  ],
+  "还没有图片": [
+    "No image yet",
+    "Belum ada gambar",
+    "ยังไม่มีรูป",
+    "មិនទាន់មានរូបភាព",
+    "Chưa có ảnh"
+  ],
+  "还没有店铺？": [
+    "Don't have a store yet?",
+    "Belum ada kedai?",
+    "ยังไม่มีร้านค้า?",
+    "មិនទាន់មានហាង?",
+    "Chưa có cửa hàng?"
+  ],
+  "这笔费用是商家使用 EZShop 的订阅服务费，与顾客购买商品的款项分开。": [
+    "This is the merchant's EZShop service subscription, separate from customer product payments.",
+    "Ini langganan perkhidmatan EZShop peniaga, berasingan daripada bayaran produk pelanggan.",
+    "นี่คือค่าสมาชิกบริการ EZShop ของร้านค้า แยกจากค่าสินค้าที่ลูกค้าจ่าย",
+    "នេះជាថ្លៃជាវសេវា EZShop របស់អាជីវករ ដាច់ពីប្រាក់ផលិតផលរបស់អតិថិជន។",
+    "Đây là phí dịch vụ EZShop của nhà bán hàng, tách biệt với tiền hàng của khách."
+  ],
+  "这里不会发起银行转账。商家须实际完成打款后，再填写转账参考号登记。退款会扣回佣金；已打出的佣金可能形成负余额，须先结清。": [
+    "No bank transfer is made here. Transfer funds externally before recording the reference. Refunds reverse commission; previously paid commission may create a negative balance that must be settled.",
+    "Tiada pindahan bank dibuat di sini. Pindah wang dahulu sebelum merekod rujukan. Bayaran balik menarik balik komisen; komisen telah dibayar mungkin menghasilkan baki negatif yang perlu dijelaskan.",
+    "ที่นี่จะไม่โอนเงินธนาคาร โปรดโอนจริงภายนอกก่อนบันทึกเลขอ้างอิง การคืนเงินจะหักค่าคอมมิชชันคืน และยอดที่จ่ายไปแล้วอาจทำให้ติดลบซึ่งต้องชำระคืน",
+    "មិនមានការផ្ទេរធនាគារនៅទីនេះទេ។ ផ្ទេរប្រាក់ខាងក្រៅមុនកត់ត្រាលេខយោង។ ការសងប្រាក់ដកកម្រៃជើងសាវិញ ហើយប្រាក់ដែលបានទូទាត់អាចធ្វើឱ្យសមតុល្យអវិជ្ជមានដែលត្រូវដោះស្រាយ។",
+    "Hệ thống không chuyển khoản tại đây. Chuyển tiền thực tế bên ngoài trước khi ghi mã. Hoàn tiền thu hồi hoa hồng; khoản đã chi có thể tạo số dư âm cần bù."
+  ],
+  "退出登录": [
+    "Log out",
+    "Log keluar",
+    "ออกจากระบบ",
+    "ចាកចេញ",
+    "Đăng xuất"
+  ],
+  "退款已登记，佣金已回冲": [
+    "Refund recorded; commission reversed",
+    "Bayaran balik direkod; komisen ditarik balik",
+    "บันทึกคืนเงินและหักค่าคอมมิชชันคืนแล้ว",
+    "បានកត់ត្រាសងប្រាក់ និងដកកម្រៃជើងសាវិញ",
+    "Đã ghi nhận hoàn tiền và thu hồi hoa hồng"
+  ],
+  "退款时订单状态已改变": [
+    "Order status changed during refund",
+    "Status pesanan berubah semasa bayaran balik",
+    "สถานะคำสั่งซื้อเปลี่ยนระหว่างคืนเงิน",
+    "ស្ថានភាពបញ្ជាទិញបានផ្លាស់ប្ដូរពេលសងប្រាក់",
+    "Trạng thái đơn thay đổi trong lúc hoàn tiền"
+  ],
+  "选择后自动上传，点击保存后应用到店铺。": [
+    "Upload starts after selection. Save to apply it to the store.",
+    "Muat naik bermula selepas pilihan. Simpan untuk menggunakannya di kedai.",
+    "เลือกรูปแล้วจะอัปโหลดอัตโนมัติ กดบันทึกเพื่อนำไปใช้กับร้านค้า",
+    "ផ្ទុកឡើងបន្ទាប់ពីជ្រើសរើស។ រក្សាទុកដើម្បីអនុវត្តទៅហាង។",
+    "Chọn ảnh sẽ tự tải lên. Nhấn lưu để áp dụng cho cửa hàng."
+  ],
+  "选择图片": [
+    "Choose image",
+    "Pilih gambar",
+    "เลือกรูป",
+    "ជ្រើសរូបភាព",
+    "Chọn ảnh"
+  ],
+  "通过 Stripe Connect 绑定你自己的收款账户，顾客商品款归属该账户。": [
+    "Connect your own Stripe account. Customer product payments go to that merchant account.",
+    "Sambungkan akaun Stripe sendiri. Bayaran produk pelanggan masuk ke akaun peniaga itu.",
+    "เชื่อมบัญชี Stripe ของคุณ ค่าสินค้าจากลูกค้าจะเข้าบัญชีร้านค้านั้น",
+    "ភ្ជាប់គណនី Stripe ផ្ទាល់ខ្លួន។ ប្រាក់ផលិតផលអតិថិជនទៅគណនីអាជីវករនោះ។",
+    "Kết nối tài khoản Stripe của bạn. Tiền hàng của khách vào tài khoản nhà bán hàng đó."
+  ],
+  "邀请团队成员": [
+    "Invite team member",
+    "Jemput ahli pasukan",
+    "เชิญสมาชิกทีม",
+    "អញ្ជើញសមាជិកក្រុម",
+    "Mời thành viên nhóm"
+  ],
+  "邀请团队成员，按角色分工协作。": [
+    "Invite your team and assign roles.",
+    "Jemput pasukan dan tetapkan peranan.",
+    "เชิญทีมงานและแบ่งหน้าที่ตามบทบาท",
+    "អញ្ជើញក្រុម និងកំណត់តួនាទី។",
+    "Mời thành viên và phân công theo vai trò."
+  ],
+  "邀请已创建 · 7 天内有效，仅限指定邮箱使用": [
+    "Invitation created · Valid 7 days for the specified email only",
+    "Jemputan dicipta · Sah 7 hari untuk e-mel ditetapkan sahaja",
+    "สร้างคำเชิญแล้ว · ใช้ได้ 7 วัน เฉพาะอีเมลที่ระบุ",
+    "បានបង្កើតការអញ្ជើញ · មានសុពលភាព 7 ថ្ងៃ សម្រាប់អ៊ីមែលដែលបានកំណត់ប៉ុណ្ណោះ",
+    "Đã tạo lời mời · Hiệu lực 7 ngày, chỉ dành cho email chỉ định"
+  ],
+  "邀请已过期": [
+    "Invitation expired",
+    "Jemputan tamat tempoh",
+    "คำเชิญหมดอายุ",
+    "ការអញ្ជើញផុតកំណត់",
+    "Lời mời hết hạn"
+  ],
+  "邀请成员": [
+    "Invite member",
+    "Jemput ahli",
+    "เชิญสมาชิก",
+    "អញ្ជើញសមាជិក",
+    "Mời thành viên"
+  ],
+  "邀请邮箱": [
+    "Invitation email",
+    "E-mel jemputan",
+    "อีเมลที่ได้รับเชิญ",
+    "អ៊ីមែលអញ្ជើញ",
+    "Email được mời"
+  ],
+  "邮件通知": [
+    "Email notifications",
+    "Pemberitahuan e-mel",
+    "การแจ้งเตือนอีเมล",
+    "ការជូនដំណឹងអ៊ីមែល",
+    "Thông báo email"
+  ],
+  "邮箱地址": [
+    "Email address",
+    "Alamat e-mel",
+    "ที่อยู่อีเมล",
+    "អាសយដ្ឋានអ៊ីមែល",
+    "Địa chỉ email"
+  ],
+  "邮编": [
+    "Postcode",
+    "Poskod",
+    "รหัสไปรษณีย์",
+    "លេខកូដប្រៃសណីយ៍",
+    "Mã bưu chính"
+  ],
+  "邮费": [
+    "Shipping",
+    "Kos pos",
+    "ค่าจัดส่ง",
+    "ថ្លៃដឹកជញ្ជូន",
+    "Phí giao hàng"
+  ],
+  "邮费由商家自行设定，金额和库存由后端核算。当前不提供快递自动报价。": [
+    "Shipping is set by the merchant. Totals and stock are checked by the server. No automatic courier quotes.",
+    "Kos pos ditetapkan peniaga. Jumlah dan stok disemak pelayan. Tiada sebut harga kurier automatik.",
+    "ร้านค้ากำหนดค่าส่ง ระบบหลังบ้านตรวจสอบยอดและสต็อก ไม่มีการเสนอราคาขนส่งอัตโนมัติ",
+    "ថ្លៃដឹកកំណត់ដោយអាជីវករ។ ម៉ាស៊ីនមេពិនិត្យចំនួនប្រាក់ និងស្តុក។ មិនមានសម្រង់តម្លៃដឹកជញ្ជូនស្វ័យប្រវត្តិទេ។",
+    "Phí giao do nhà bán hàng đặt. Máy chủ kiểm tra tổng tiền và tồn kho. Không tự báo giá vận chuyển."
+  ],
+  "部分退款或退款金额需核查": [
+    "Partial refund or amount needs review",
+    "Bayaran balik separa atau amaun perlu disemak",
+    "คืนเงินบางส่วนหรือจำนวนเงินต้องตรวจสอบ",
+    "ការសងប្រាក់មួយផ្នែក ឬចំនួនប្រាក់ត្រូវត្រួតពិនិត្យ",
+    "Hoàn tiền một phần hoặc số tiền cần kiểm tra"
+  ],
+  "配送及邮费": [
+    "Delivery & shipping fees",
+    "Penghantaran & kos pos",
+    "การจัดส่งและค่าส่ง",
+    "ការដឹកជញ្ជូន និងថ្លៃដឹក",
+    "Giao hàng và phí vận chuyển"
+  ],
+  "配送范围：马来西亚。请确认收货地址、州属和邮编正确。": [
+    "Delivery within Malaysia. Check your address, state and postcode.",
+    "Penghantaran dalam Malaysia. Semak alamat, negeri dan poskod.",
+    "จัดส่งในมาเลเซีย โปรดตรวจสอบที่อยู่ รัฐ และรหัสไปรษณีย์",
+    "ដឹកជញ្ជូនក្នុងម៉ាឡេស៊ី។ ពិនិត្យអាសយដ្ឋាន រដ្ឋ និងលេខកូដប្រៃសណីយ៍។",
+    "Giao hàng trong Malaysia. Kiểm tra địa chỉ, bang và mã bưu chính."
+  ],
+  "重新发送验证邮件": [
+    "Resend verification email",
+    "Hantar semula e-mel pengesahan",
+    "ส่งอีเมลยืนยันอีกครั้ง",
+    "ផ្ញើអ៊ីមែលផ្ទៀងផ្ទាត់ម្ដងទៀត",
+    "Gửi lại email xác minh"
+  ],
+  "重新申请重设邮件": [
+    "Request another reset email",
+    "Mohon e-mel tetapan semula baharu",
+    "ขออีเมลรีเซ็ตใหม่",
+    "ស្នើអ៊ីមែលកំណត់ឡើងវិញថ្មី",
+    "Yêu cầu email đặt lại mới"
+  ],
+  "重设链接已失效或缺少登录凭证，请重新申请。": [
+    "Reset link is expired or credentials are missing. Request a new link.",
+    "Pautan tamat tempoh atau bukti log masuk tiada. Mohon pautan baharu.",
+    "ลิงก์รีเซ็ตหมดอายุหรือไม่มีข้อมูลสิทธิ์ โปรดขอลิงก์ใหม่",
+    "តំណកំណត់ឡើងវិញផុតកំណត់ ឬខ្វះព័ត៌មានចូល។ ស្នើតំណថ្មី។",
+    "Liên kết đã hết hạn hoặc thiếu thông tin xác thực. Hãy yêu cầu liên kết mới."
+  ],
+  "重设链接已失效，请重新申请。": [
+    "Reset link has expired. Request a new one.",
+    "Pautan tetapan semula tamat tempoh. Mohon yang baharu.",
+    "ลิงก์รีเซ็ตหมดอายุ โปรดขอใหม่",
+    "តំណកំណត់ឡើងវិញផុតកំណត់។ ស្នើតំណថ្មី។",
+    "Liên kết đặt lại đã hết hạn. Hãy yêu cầu liên kết mới."
+  ],
+  "金额": [
+    "Amount",
+    "Amaun",
+    "จำนวนเงิน",
+    "ចំនួនប្រាក់",
+    "Số tiền"
+  ],
+  "银行结算：": [
+    "Bank payouts:",
+    "Pembayaran bank:",
+    "การโอนเข้าธนาคาร:",
+    "ការទូទាត់ធនាគារ៖",
+    "Chi trả ngân hàng:"
+  ],
+  "销售代理": [
+    "Sales agent",
+    "Ejen jualan",
+    "ตัวแทนขาย",
+    "ភ្នាក់ងារលក់",
+    "Đại lý bán hàng"
+  ],
+  "销售伙伴": [
+    "Sales partner",
+    "Rakan jualan",
+    "พันธมิตรการขาย",
+    "ដៃគូលក់",
+    "Đối tác bán hàng"
+  ],
+  "销售概况": [
+    "Sales overview",
+    "Gambaran jualan",
+    "ภาพรวมยอดขาย",
+    "ទិដ្ឋភាពការលក់",
+    "Tổng quan doanh số"
+  ],
+  "需要核查": [
+    "Needs review",
+    "Perlu semakan",
+    "ต้องตรวจสอบ",
+    "ត្រូវត្រួតពិនិត្យ",
+    "Cần kiểm tra"
+  ],
+  "顾客": [
+    "Customer",
+    "Pelanggan",
+    "ลูกค้า",
+    "អតិថិជន",
+    "Khách hàng"
+  ],
+  "顾客发起支付争议": [
+    "Customer disputed payment",
+    "Pelanggan mempertikaikan bayaran",
+    "ลูกค้าโต้แย้งการชำระเงิน",
+    "អតិថិជនជំទាស់ការទូទាត់",
+    "Khách hàng khiếu nại thanh toán"
+  ],
+  "顾客提交的全部订单": [
+    "All customer-submitted orders",
+    "Semua pesanan pelanggan",
+    "คำสั่งซื้อทั้งหมดจากลูกค้า",
+    "ការបញ្ជាទិញទាំងអស់ពីអតិថិជន",
+    "Tất cả đơn khách đã gửi"
+  ],
+  "顾客点链接进入店铺下单，你在「订单管理」收款核实和安排发货。": [
+    "Customers order through the link; verify payment and arrange delivery in Orders.",
+    "Pelanggan memesan melalui pautan; sahkan bayaran dan atur penghantaran dalam Pesanan.",
+    "ลูกค้าสั่งผ่านลิงก์ แล้วคุณตรวจสอบรับเงินและจัดส่งในเมนูคำสั่งซื้อ",
+    "អតិថិជនបញ្ជាទិញតាមតំណ ហើយអ្នកផ្ទៀងផ្ទាត់ប្រាក់ និងរៀបចំដឹកក្នុងផ្នែកបញ្ជាទិញ។",
+    "Khách đặt qua liên kết; xác nhận thu tiền và sắp xếp giao hàng trong mục Đơn hàng."
+  ],
+  "预览": [
+    "Preview",
+    "Pratonton",
+    "ตัวอย่าง",
+    "មើលជាមុន",
+    "Xem trước"
+  ],
+  "验证邮件请求已提交，请检查收件箱和垃圾邮件。": [
+    "Verification email requested. Check your inbox and spam folder.",
+    "E-mel pengesahan diminta. Semak peti masuk dan spam.",
+    "ส่งคำขออีเมลยืนยันแล้ว โปรดตรวจสอบกล่องเข้าและสแปม",
+    "បានស្នើអ៊ីមែលផ្ទៀងផ្ទាត់។ ពិនិត្យប្រអប់ចូល និងសារឥតបានការ។",
+    "Đã yêu cầu email xác minh. Kiểm tra hộp thư và thư rác."
+  ],
+  "，以实际发货记录为准。": [
+    "; the recorded shipment takes precedence.",
+    "; rekod penghantaran sebenar diutamakan.",
+    "โดยยึดข้อมูลจัดส่งที่บันทึกจริง",
+    "ដោយផ្អែកលើកំណត់ត្រាដឹកជញ្ជូនពិត។",
+    "; căn cứ thông tin gửi hàng thực tế."
+  ],
+  "语言": [
+    "Language",
+    "Bahasa",
+    "ภาษา",
+    "ភាសា",
+    "Ngôn ngữ"
+  ],
+  "WELCOME TO EZSHOP": [
+    "WELCOME TO EZSHOP",
+    "SELAMAT DATANG KE EZSHOP",
+    "ยินดีต้อนรับสู่ EZSHOP",
+    "សូមស្វាគមន៍មកកាន់ EZSHOP",
+    "CHÀO MỪNG ĐẾN EZSHOP"
+  ],
+  "YOUR BUSINESS, SIMPLIFIED": [
+    "YOUR BUSINESS, SIMPLIFIED",
+    "PERNIAGAAN ANDA, DIPERMUDAHKAN",
+    "ธุรกิจของคุณ ง่ายขึ้น",
+    "អាជីវកម្មរបស់អ្នក កាន់តែងាយស្រួល",
+    "KINH DOANH ĐƠN GIẢN HƠN"
+  ],
+  "BUSINESS OVERVIEW": [
+    "BUSINESS OVERVIEW",
+    "GAMBARAN PERNIAGAAN",
+    "ภาพรวมธุรกิจ",
+    "ទិដ្ឋភាពអាជីវកម្ម",
+    "TỔNG QUAN KINH DOANH"
+  ],
+  "AFFILIATE PORTAL": [
+    "AFFILIATE PORTAL",
+    "PORTAL EJEN",
+    "พอร์ทัลตัวแทน",
+    "ទំព័រភ្នាក់ងារ",
+    "CỔNG ĐẠI LÝ"
+  ],
+  "ACCOUNT RECOVERY": [
+    "ACCOUNT RECOVERY",
+    "PEMULIHAN AKAUN",
+    "กู้คืนบัญชี",
+    "ស្ដារគណនី",
+    "KHÔI PHỤC TÀI KHOẢN"
+  ],
+  "RESET PASSWORD": [
+    "RESET PASSWORD",
+    "TETAP SEMULA KATA LALUAN",
+    "รีเซ็ตรหัสผ่าน",
+    "កំណត់ពាក្យសម្ងាត់ឡើងវិញ",
+    "ĐẶT LẠI MẬT KHẨU"
+  ],
+  "{count} 笔订单等待付款": [
+    "{count} orders awaiting payment",
+    "{count} pesanan menunggu bayaran",
+    "{count} คำสั่งซื้อรอชำระเงิน",
+    "{count} ការបញ្ជាទិញរង់ចាំទូទាត់",
+    "{count} đơn hàng chờ thanh toán"
+  ],
+  "邮箱或密码不正确。": [
+    "Incorrect email or password.",
+    "E-mel atau kata laluan salah.",
+    "อีเมลหรือรหัสผ่านไม่ถูกต้อง",
+    "អ៊ីមែល ឬពាក្យសម្ងាត់មិនត្រឹមត្រូវ។",
+    "Email hoặc mật khẩu không đúng."
+  ],
+  "请先验证邮箱，再登录。": [
+    "Verify your email before logging in.",
+    "Sahkan e-mel sebelum log masuk.",
+    "โปรดยืนยันอีเมลก่อนเข้าสู่ระบบ",
+    "ផ្ទៀងផ្ទាត់អ៊ីមែលមុនចូល។",
+    "Xác minh email trước khi đăng nhập."
+  ],
+  "商品库存已变更，请刷新购物车后重试。": [
+    "Stock has changed. Refresh your cart and retry.",
+    "Stok berubah. Muat semula troli dan cuba lagi.",
+    "สต็อกเปลี่ยนแล้ว โปรดรีเฟรชตะกร้าและลองอีกครั้ง",
+    "ស្តុកបានផ្លាស់ប្ដូរ។ ផ្ទុកកន្ត្រកឡើងវិញ រួចព្យាយាមម្ដងទៀត។",
+    "Tồn kho đã thay đổi. Tải lại giỏ hàng rồi thử lại."
+  ],
+  "登录已失效或没有操作权限，请重新登录。": [
+    "Session expired or access denied. Log in again.",
+    "Sesi tamat tempoh atau akses ditolak. Log masuk semula.",
+    "เซสชันหมดอายุหรือไม่มีสิทธิ์ โปรดเข้าสู่ระบบใหม่",
+    "វគ្គផុតកំណត់ ឬគ្មានសិទ្ធិ។ ចូលម្ដងទៀត។",
+    "Phiên hết hạn hoặc không có quyền. Hãy đăng nhập lại."
+  ],
+  "资料已变更，请刷新后重试。": [
+    "Data has changed. Refresh and retry.",
+    "Data berubah. Muat semula dan cuba lagi.",
+    "ข้อมูลเปลี่ยนแล้ว โปรดรีเฟรชและลองอีกครั้ง",
+    "ទិន្នន័យបានផ្លាស់ប្ដូរ។ ផ្ទុកឡើងវិញ រួចព្យាយាមម្ដងទៀត។",
+    "Dữ liệu đã thay đổi. Tải lại rồi thử lại."
+  ],
+  "付款服务暂时无法完成请求，请勿重复付款，请联系商家。": [
+    "Payment could not be completed. Do not pay again; contact the merchant.",
+    "Bayaran tidak dapat diselesaikan. Jangan bayar semula; hubungi peniaga.",
+    "ไม่สามารถดำเนินการชำระเงินได้ อย่าชำระซ้ำ โปรดติดต่อร้านค้า",
+    "មិនអាចបញ្ចប់ការទូទាត់។ កុំទូទាត់ម្ដងទៀត សូមទាក់ទងអាជីវករ។",
+    "Chưa thể hoàn tất thanh toán. Không trả lại lần nữa; hãy liên hệ nhà bán hàng."
+  ],
+  "请检查邮箱地址及验证状态。": [
+    "Check your email address and verification status.",
+    "Semak alamat e-mel dan status pengesahan.",
+    "ตรวจสอบอีเมลและสถานะการยืนยัน",
+    "ពិនិត្យអាសយដ្ឋានអ៊ីមែល និងស្ថានភាពផ្ទៀងផ្ទាត់។",
+    "Kiểm tra địa chỉ email và trạng thái xác minh."
+  ],
+  "订单不存在或访问凭证无效，请联系商家。": [
+    "Order not found or invalid access token. Contact the merchant.",
+    "Pesanan tidak ditemui atau token tidak sah. Hubungi peniaga.",
+    "ไม่พบคำสั่งซื้อหรือสิทธิ์เข้าถึงไม่ถูกต้อง โปรดติดต่อร้านค้า",
+    "រកមិនឃើញការបញ្ជាទិញ ឬសិទ្ធិមិនត្រឹមត្រូវ។ ទាក់ទងអាជីវករ។",
+    "Không tìm thấy đơn hoặc mã truy cập không hợp lệ. Hãy liên hệ nhà bán hàng."
+  ],
+  "网络连接失败，请稍后重试。": [
+    "Network connection failed. Try again later.",
+    "Sambungan rangkaian gagal. Cuba kemudian.",
+    "เชื่อมต่อเครือข่ายไม่ได้ โปรดลองภายหลัง",
+    "ការតភ្ជាប់បណ្ដាញបរាជ័យ។ ព្យាយាមពេលក្រោយ។",
+    "Kết nối mạng thất bại. Vui lòng thử lại sau."
+  ],
+  "操作未完成，请检查资料后重试或联系管理员。": [
+    "Action failed. Check your details and retry or contact the administrator.",
+    "Tindakan gagal. Semak maklumat dan cuba lagi atau hubungi pentadbir.",
+    "ดำเนินการไม่สำเร็จ ตรวจสอบข้อมูลแล้วลองอีกครั้งหรือติดต่อผู้ดูแล",
+    "សកម្មភាពបរាជ័យ។ ពិនិត្យព័ត៌មាន រួចព្យាយាមម្ដងទៀត ឬទាក់ទងអ្នកគ្រប់គ្រង។",
+    "Thao tác thất bại. Kiểm tra thông tin rồi thử lại hoặc liên hệ quản trị viên."
+  ],
+  "确认修改商家 {name} 的方案或状态？这不会发起订阅扣款。": [
+    "Change the plan or status for {name}? This does not charge a subscription.",
+    "Tukar pelan atau status {name}? Ini tidak mengenakan caj langganan.",
+    "เปลี่ยนแพ็กเกจหรือสถานะของ {name}? การดำเนินการนี้ไม่เรียกเก็บค่าสมาชิก",
+    "ប្ដូរគម្រោង ឬស្ថានភាពរបស់ {name}? នេះមិនគិតថ្លៃជាវទេ។",
+    "Đổi gói hoặc trạng thái của {name}? Thao tác này không thu phí đăng ký."
+  ],
+  "Email": [
+    "Email",
+    "E-mel",
+    "อีเมล",
+    "អ៊ីមែល",
+    "Email"
+  ],
+  "EZShop · Made for Malaysian businesses": [
+    "EZShop · Made for Malaysian businesses",
+    "EZShop · Untuk perniagaan Malaysia",
+    "EZShop · เพื่อธุรกิจมาเลเซีย",
+    "EZShop · សម្រាប់អាជីវកម្មម៉ាឡេស៊ី",
+    "EZShop · Dành cho doanh nghiệp Malaysia"
+  ],
+  "CURATED WITH CARE · MALAYSIA": [
+    "CURATED WITH CARE · MALAYSIA",
+    "DIPILIH DENGAN TELITI · MALAYSIA",
+    "คัดสรรด้วยความใส่ใจ · มาเลเซีย",
+    "ជ្រើសរើសដោយយកចិត្តទុកដាក់ · ម៉ាឡេស៊ី",
+    "TUYỂN CHỌN TẬN TÂM · MALAYSIA"
+  ],
+  "FIND YOUR FAVORITES": [
+    "FIND YOUR FAVORITES",
+    "CARI KEGEMARAN ANDA",
+    "ค้นหาสิ่งที่ถูกใจ",
+    "ស្វែងរកអ្វីដែលអ្នកចូលចិត្ត",
+    "TÌM SẢN PHẨM YÊU THÍCH"
+  ],
+  "ORDER RECEIVED": [
+    "ORDER RECEIVED",
+    "PESANAN DITERIMA",
+    "รับคำสั่งซื้อแล้ว",
+    "បានទទួលការបញ្ជាទិញ",
+    "ĐÃ NHẬN ĐƠN HÀNG"
+  ],
+  "{label}预览": [
+    "{label} preview",
+    "Pratonton {label}",
+    "ตัวอย่าง{label}",
+    "មើលជាមុន {label}",
+    "Xem trước {label}"
+  ],
+  "{label}选择图片": [
+    "{label}: choose image",
+    "{label}: pilih gambar",
+    "{label}: เลือกรูป",
+    "{label}៖ ជ្រើសរូបភាព",
+    "{label}: chọn ảnh"
+  ],
+  "支付服务尚未配置，当前不会发起付款或订阅。": [
+    "Payment service is not configured. No payment or subscription will be started.",
+    "Perkhidmatan bayaran belum dikonfigurasi. Tiada bayaran atau langganan akan dimulakan.",
+    "ยังไม่ได้ตั้งค่าบริการชำระเงิน จะไม่มีการเริ่มชำระเงินหรือสมัครสมาชิก",
+    "មិនទាន់កំណត់សេវាទូទាត់។ នឹងមិនចាប់ផ្ដើមការទូទាត់ ឬការជាវទេ។",
+    "Chưa cấu hình dịch vụ thanh toán. Không khởi tạo thanh toán hoặc đăng ký."
+  ],
+  "平台尚未配置订阅价格，当前不会扣费。": [
+    "Subscription pricing is not configured. You will not be charged.",
+    "Harga langganan belum dikonfigurasi. Tiada caj dikenakan.",
+    "ยังไม่ได้ตั้งค่าราคาสมาชิก จะไม่มีการเรียกเก็บเงิน",
+    "មិនទាន់កំណត់តម្លៃជាវ។ នឹងមិនគិតប្រាក់ទេ។",
+    "Chưa cấu hình giá đăng ký. Bạn sẽ không bị thu phí."
+  ],
+  "商家收款账户尚未完成开通。": [
+    "The merchant payment account is not ready yet.",
+    "Akaun pembayaran peniaga belum sedia.",
+    "บัญชีรับชำระของร้านค้ายังไม่พร้อม",
+    "គណនីទទួលប្រាក់អាជីវករមិនទាន់រួចរាល់។",
+    "Tài khoản nhận thanh toán của nhà bán hàng chưa sẵn sàng."
+  ],
+  "找不到店铺": [
+    "Store not found",
+    "Kedai tidak ditemui",
+    "ไม่พบร้านค้า",
+    "រកមិនឃើញហាង",
+    "Không tìm thấy cửa hàng"
+  ],
+  "数量无效": [
+    "Invalid quantity. Check the number of items.",
+    "Kuantiti tidak sah. Semak bilangan produk.",
+    "จำนวนไม่ถูกต้อง โปรดตรวจสอบจำนวนสินค้า",
+    "ចំនួនមិនត្រឹមត្រូវ។ ពិនិត្យចំនួនផលិតផល។",
+    "Số lượng không hợp lệ. Kiểm tra số sản phẩm."
+  ],
+  "店铺不存在": [
+    "Store not found",
+    "Kedai tidak ditemui",
+    "ไม่พบร้านค้า",
+    "រកមិនឃើញហាង",
+    "Không tìm thấy cửa hàng"
+  ]
+}

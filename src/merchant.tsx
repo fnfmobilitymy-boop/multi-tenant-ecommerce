@@ -1,8 +1,9 @@
+import { I18nProvider, LanguageToolbar, useI18n } from "./i18n";
 import { useEffect, useState } from "react";
 import { Payouts } from "./payouts";
 import { ImageUpload } from "./image-upload";
 import { COURIERS } from "./delivery";
-import {MerchantPayments} from "./payments";
+import { MerchantPayments } from "./payments";
 import { Link } from "react-router-dom";
 import {
   ArrowUpRight,
@@ -38,10 +39,30 @@ type Tab =
   | "payouts"
   | "payments";
 export function MerchantApp() {
+  const [tab, setTab] = useState<Tab>(() => {
+    const query = new URLSearchParams(window.location.search);
+    return query.has("connect") || query.has("billing")
+      ? "payments"
+      : "dashboard";
+  });
+  return (
+    <I18nProvider audience={tab === "platform" ? "platform" : "merchant"}>
+      <LanguageToolbar />
+      <MerchantPage tab={tab} setTab={setTab} />
+    </I18nProvider>
+  );
+}
+function MerchantPage({
+  tab,
+  setTab,
+}: {
+  tab: Tab;
+  setTab: React.Dispatch<React.SetStateAction<Tab>>;
+}) {
+  const { t, locale, errorText } = useI18n();
   const [data, setData] = useState<Dashboard | null>(null),
     [loading, setLoading] = useState(true),
     [error, setError] = useState(""),
-    [tab, setTab] = useState<Tab>(() => {const query=new URLSearchParams(window.location.search);return query.has("connect")||query.has("billing")?"payments":"dashboard"}),
     [register, setRegister] = useState(false),
     [busy, setBusy] = useState(false),
     [modal, setModal] = useState<"product" | "agent" | null>(null),
@@ -110,6 +131,7 @@ export function MerchantApp() {
           ...form,
           price: Math.round(Number(form.price) * 100),
           stock: Number(form.stock),
+          category: String(form.category || "全部商品"),
           published: form.published === "on" ? 1 : 0,
           featured: form.featured === "on" ? 1 : 0,
           ...(editing ? { id: editing.id, version: editing.version } : {}),
@@ -140,9 +162,11 @@ export function MerchantApp() {
   async function orderAction(o: Order, action: "paid" | "cancel") {
     if (
       !confirm(
-        action === "paid"
-          ? "请核对银行实际到账。确认此订单已收款？"
-          : "确认取消此未付款订单并恢复库存？",
+        t(
+          action === "paid"
+            ? "请核对银行实际到账。确认此订单已收款？"
+            : "确认取消此未付款订单并恢复库存？",
+        ),
       )
     )
       return;
@@ -190,46 +214,46 @@ export function MerchantApp() {
       <div className="auth-layout">
         <section className="auth-story">
           <Brand />
-          <span className="eyebrow">YOUR BUSINESS, SIMPLIFIED</span>
+          <span className="eyebrow">{t("YOUR BUSINESS, SIMPLIFIED")}</span>
           <h1>
-            好生意，
+            {t("好生意，")}
             <br />
-            从简单开始。
+            {t("从简单开始。")}
           </h1>
           <p>
-            开一家属于你的线上商店。
+            {t("开一家属于你的线上商店。")}
             <br />
-            从商品、订单到代理佣金，
+            {t("从商品、订单到代理佣金，")}
             <br />
-            每一步都井井有条。
+            {t("每一步都井井有条。")}
           </p>
           <div className="auth-art">
             <ShoppingBag size={95} strokeWidth={1} />
-            <span>为马来西亚商家而生 ✦</span>
+            <span>{t("为马来西亚商家而生 ✦")}</span>
           </div>
         </section>
         <section className="auth-panel">
           <form onSubmit={auth}>
-            <span className="eyebrow">WELCOME TO EZSHOP</span>
-            <h1>{register ? "创建你的店铺" : "欢迎回来 👋"}</h1>
+            <span className="eyebrow">{t("WELCOME TO EZSHOP")}</span>
+            <h1>{register ? t("创建你的店铺") : t("欢迎回来 \uD83D\uDC4B")}</h1>
             <p>
               {register
-                ? "让你的第一笔线上生意，从这里开始。"
-                : "登录工作台，看看今天的生意。"}
+                ? t("让你的第一笔线上生意，从这里开始。")
+                : t("登录工作台，看看今天的生意。")}
             </p>
             {register && (
               <>
                 <label>
-                  店铺名称
+                  {t("店铺名称")}
                   <input
                     name="name"
                     required
                     maxLength={80}
-                    placeholder="例如：Kedai Kita"
+                    placeholder={t("例如：Kedai Kita")}
                   />
                 </label>
                 <label>
-                  店铺网址标识
+                  {t("店铺网址标识")}
                   <input
                     name="slug"
                     required
@@ -241,7 +265,7 @@ export function MerchantApp() {
               </>
             )}
             <label>
-              邮箱地址
+              {t("邮箱地址")}
               <input
                 name="email"
                 type="email"
@@ -251,7 +275,7 @@ export function MerchantApp() {
               />
             </label>
             <label>
-              密码
+              {t("密码")}
               <input
                 name="password"
                 type="password"
@@ -259,23 +283,23 @@ export function MerchantApp() {
                 minLength={register ? 10 : 1}
                 maxLength={256}
                 required
-                placeholder={register ? "至少 10 个字符" : "输入你的密码"}
+                placeholder={register ? t("至少 10 个字符") : t("输入你的密码")}
               />
             </label>
             {!register && supabase && (
               <div style={{ textAlign: "right", margin: "-5px 0 15px" }}>
                 <Link className="text-button" to="/forgot-password">
-                  忘记密码？
+                  {t("忘记密码？")}
                 </Link>
               </div>
             )}
             <ErrorBox error={error} />
             <button className="button full" disabled={busy || uploading}>
-              {busy ? "请稍候…" : register ? "创建店铺" : "登录工作台"}
+              {busy ? t("请稍候…") : register ? t("创建店铺") : t("登录工作台")}
               <ArrowRight size={17} />
             </button>
             <div className="auth-switch">
-              {register ? "已有账号？" : "还没有店铺？"}
+              {register ? t("已有账号？") : t("还没有店铺？")}
               <button
                 type="button"
                 className="text-button"
@@ -284,7 +308,7 @@ export function MerchantApp() {
                   setError("");
                 }}
               >
-                {register ? "立即登录" : "免费注册"}
+                {register ? t("立即登录") : t("免费注册")}
               </button>
             </div>
             {supabase && (
@@ -311,18 +335,18 @@ export function MerchantApp() {
                   }
                 }}
               >
-                重新发送验证邮件
+                {t("重新发送验证邮件")}
               </button>
             )}
             {notice && (
               <p role="status" className="success">
-                {notice}
+                {t(notice)}
               </p>
             )}
             <div className="soft-note">
               {supabase
-                ? "请先完成邮箱验证，再登录商家后台。当前由商家核实收款。"
-                : "本地开发模式 · 当前通过商家手动确认收款"}
+                ? t("请先完成邮箱验证，再登录商家后台。当前由商家核实收款。")
+                : t("本地开发模式 \u00B7 当前通过商家手动确认收款")}
             </div>
           </form>
         </section>
@@ -340,7 +364,8 @@ export function MerchantApp() {
             t.id === "settings" ||
             t.id === "agents" ||
             t.id === "notifications" ||
-            t.id === "payouts" || t.id === "payments"
+            t.id === "payouts" ||
+            t.id === "payments"
           ? role === "owner"
           : t.id === "products"
             ? ["owner", "manager", "inventory"].includes(role)
@@ -355,12 +380,12 @@ export function MerchantApp() {
       <table>
         <thead>
           <tr>
-            <th>订单编号</th>
-            <th>顾客</th>
-            <th>下单时间（马来西亚）</th>
-            <th>金额</th>
-            <th>付款状态</th>
-            <th>操作</th>
+            <th>{t("订单编号")}</th>
+            <th>{t("顾客")}</th>
+            <th>{t("下单时间（马来西亚）")}</th>
+            <th>{t("金额")}</th>
+            <th>{t("付款状态")}</th>
+            <th>{t("操作")}</th>
           </tr>
         </thead>
         <tbody>
@@ -371,16 +396,17 @@ export function MerchantApp() {
                 {o.customer}
                 <small>{o.email}</small>
               </td>
-              <td>{dateLabel(o.created)}</td>
-              <td>{money(o.total)}</td>
+              <td>{dateLabel(o.created, locale)}</td>
+              <td>{money(o.total, locale)}</td>
               <td>
                 <span className={"badge " + o.status}>
-                  {statusLabel(o.status)}
+                  {t(statusLabel(o.status))}
                 </span>
               </td>
               <td>
                 <button className="text-button" onClick={() => showOrder(o.id)}>
-                  查看详情 <ChevronRight size={13} />
+                  {t("查看详情")}
+                  <ChevronRight size={13} />
                 </button>
               </td>
             </tr>
@@ -388,7 +414,7 @@ export function MerchantApp() {
         </tbody>
       </table>
       {!rows.length && (
-        <Empty>暂无订单。分享店铺链接，开始接收第一笔订单。</Empty>
+        <Empty>{t("暂无订单。分享店铺链接，开始接收第一笔订单。")}</Empty>
       )}
     </div>
   );
@@ -396,48 +422,52 @@ export function MerchantApp() {
     <div className="dashboard-layout">
       <aside className="sidebar">
         <Brand />
-        <span className="nav-caption">商家工作台</span>
+        <span className="nav-caption">{t("商家工作台")}</span>
         <nav>
-          {visibleTabs.map((t) => (
+          {visibleTabs.map((entry) => (
             <button
-              key={t.id}
-              className={tab === t.id ? "nav-item active" : "nav-item"}
+              key={entry.id}
+              className={tab === entry.id ? "nav-item active" : "nav-item"}
               onClick={() => {
-                setTab(t.id);
+                setTab(entry.id);
                 setError("");
                 setNotice("");
               }}
             >
-              <t.icon size={19} />
-              {t.name}
+              <entry.icon size={19} />
+              {t(entry.name)}
             </button>
           ))}
         </nav>
         <div className="sidebar-bottom">
           <div className="upgrade-card">
             <span>✦</span>
-            <strong>你的生意，你的节奏。</strong>
-            <p>分享店铺链接，让顾客随时随地下单。</p>
+            <strong>{t("你的生意，你的节奏。")}</strong>
+            <p>{t("分享店铺链接，让顾客随时随地下单。")}</p>
             <Link to={shop}>
-              查看我的店铺 <ArrowUpRight size={14} />
+              {t("查看我的店铺")}
+              <ArrowUpRight size={14} />
             </Link>
           </div>
           <button className="nav-item" onClick={logout}>
             <LogOut size={18} />
-            退出登录
+            {t("退出登录")}
           </button>
         </div>
       </aside>
       <section className="dashboard-main">
         <header className="dashboard-header">
           <p>
-            工作台 <ChevronRight size={14} />{" "}
-            <span>{tabs.find((t) => t.id === tab)?.name}</span>
+            {t("工作台")}
+            <ChevronRight size={14} />{" "}
+            <span>
+              {t(tabs.find((entry) => entry.id === tab)?.name || "工作台")}
+            </span>
           </p>
           <div className="profile">
             <span>
               {data.merchant.name}
-              <small>商家账号</small>
+              <small>{t("商家账号")}</small>
             </span>
             <div className="avatar">{data.merchant.name.slice(0, 1)}</div>
           </div>
@@ -447,9 +477,9 @@ export function MerchantApp() {
           {notice && (
             <div className="success" role="status">
               <Check size={16} />
-              {notice}
+              {t(notice)}
               <button className="text-button" onClick={() => setNotice("")}>
-                关闭
+                {t("关闭")}
               </button>
             </div>
           )}
@@ -457,42 +487,47 @@ export function MerchantApp() {
             <>
               <div className="page-heading">
                 <div>
-                  <span className="eyebrow">BUSINESS OVERVIEW</span>
-                  <h1>生意总览</h1>
-                  <p>每一笔订单，都是生意的新进展。</p>
+                  <span className="eyebrow">{t("BUSINESS OVERVIEW")}</span>
+                  <h1>{t("生意总览")}</h1>
+                  <p>{t("每一笔订单，都是生意的新进展。")}</p>
                 </div>
                 <Link className="button secondary" to={shop} target="_blank">
                   <ArrowUpRight size={17} />
-                  查看我的店铺
+                  {t("查看我的店铺")}
                 </Link>
               </div>
               <div className="metric-grid">
                 {[
                   {
-                    name: "总销售额",
-                    value: money(sales),
-                    note: "仅统计已确认付款订单",
+                    name: t("总销售额"),
+                    value: money(sales, locale),
+                    note: t("仅统计已确认付款订单"),
                     icon: Wallet,
                     color: "purple",
                   },
                   {
-                    name: "订单总数",
+                    name: t("订单总数"),
                     value: data.orders.length,
-                    note: "顾客提交的全部订单",
+                    note: t("顾客提交的全部订单"),
                     icon: ShoppingBag,
                     color: "green",
                   },
                   {
-                    name: "待收款金额",
-                    value: money(pending.reduce((s, o) => s + o.total, 0)),
-                    note: pending.length + " 笔订单等待付款",
+                    name: t("待收款金额"),
+                    value: money(
+                      pending.reduce((s, o) => s + o.total, 0),
+                      locale,
+                    ),
+                    note: t("{count} 笔订单等待付款", {
+                      count: pending.length,
+                    }),
                     icon: Clock,
                     color: "orange",
                   },
                   {
-                    name: "代理佣金",
-                    value: money(commission),
-                    note: "已付款订单累计佣金",
+                    name: t("代理佣金"),
+                    value: money(commission, locale),
+                    note: t("已付款订单累计佣金"),
                     icon: Users,
                     color: "blue",
                   },
@@ -512,26 +547,29 @@ export function MerchantApp() {
               <div className="overview-grid">
                 <section className="card">
                   <div className="card-heading">
-                    <h2>销售概况</h2>
-                    <span className="muted">累计已付款订单</span>
+                    <h2>{t("销售概况")}</h2>
+                    <span className="muted">{t("累计已付款订单")}</span>
                   </div>
                   <div className="sales-visual">
                     <div className="sales-orbit">
                       <BarChart3 size={48} strokeWidth={1.5} />
                     </div>
                     <div>
-                      <span className="muted">已确认销售额</span>
-                      <h2>{money(sales)}</h2>
+                      <span className="muted">{t("已确认销售额")}</span>
+                      <h2>{money(sales, locale)}</h2>
                       <p>
-                        {paid.length} 笔已付款 · {pending.length} 笔待付款
+                        {paid.length}
+                        {t("笔已付款 \u00B7")}
+                        {pending.length}
+                        {t("笔待付款")}
                       </p>
-                      <small>以商家实际核实到账记录为准</small>
+                      <small>{t("以商家实际核实到账记录为准")}</small>
                     </div>
                   </div>
                 </section>
                 <section className="card">
                   <div className="card-heading">
-                    <h2>快捷操作</h2>
+                    <h2>{t("快捷操作")}</h2>
                     <span className="purple">✧</span>
                   </div>
                   <div className="quick-actions">
@@ -541,8 +579,8 @@ export function MerchantApp() {
                           <Plus size={20} />
                         </span>
                         <div>
-                          <strong>添加新商品</strong>
-                          <small>让顾客发现你的好产品</small>
+                          <strong>{t("添加新商品")}</strong>
+                          <small>{t("让顾客发现你的好产品")}</small>
                         </div>
                         <ArrowRight size={17} />
                       </button>
@@ -570,8 +608,8 @@ export function MerchantApp() {
                         <Copy size={19} />
                       </span>
                       <div>
-                        <strong>分享店铺</strong>
-                        <small>复制链接，开始接收订单</small>
+                        <strong>{t("分享店铺")}</strong>
+                        <small>{t("复制链接，开始接收订单")}</small>
                       </div>
                       <ArrowRight size={17} />
                     </button>
@@ -586,8 +624,8 @@ export function MerchantApp() {
                           <Users size={20} />
                         </span>
                         <div>
-                          <strong>添加销售代理</strong>
-                          <small>与伙伴一起拓展生意</small>
+                          <strong>{t("添加销售代理")}</strong>
+                          <small>{t("与伙伴一起拓展生意")}</small>
                         </div>
                         <ArrowRight size={17} />
                       </button>
@@ -597,19 +635,21 @@ export function MerchantApp() {
               </div>
               <section className="card">
                 <div className="card-heading">
-                  <h2>最近订单</h2>
+                  <h2>{t("最近订单")}</h2>
                   <button
                     className="text-button"
                     onClick={() => setTab("orders")}
                   >
-                    查看全部 <ArrowRight size={14} />
+                    {t("查看全部")}
+                    <ArrowRight size={14} />
                   </button>
                 </div>
                 {orderTable(data.orders.slice(0, 5))}
               </section>
             </>
           )}
-          {tab === "payments" && <MerchantPayments/>}{tab === "payouts" && <Payouts />}
+          {tab === "payments" && <MerchantPayments />}
+          {tab === "payouts" && <Payouts />}
           {tab === "notifications" && <Notifications />}
           {tab === "team" && <Team />}
           {tab === "platform" && <Platform />}
@@ -617,19 +657,19 @@ export function MerchantApp() {
             <>
               <div className="page-heading">
                 <div>
-                  <h1>商品管理</h1>
-                  <p>把好产品，带给更多顾客。</p>
+                  <h1>{t("商品管理")}</h1>
+                  <p>{t("把好产品，带给更多顾客。")}</p>
                 </div>
                 <button className="button" onClick={addProduct}>
                   <Plus size={17} />
-                  添加商品
+                  {t("添加商品")}
                 </button>
               </div>
               <div className="search">
                 <Search size={17} />
                 <input
-                  aria-label="搜索商品"
-                  placeholder="搜索商品名称…"
+                  aria-label={t("搜索商品")}
+                  placeholder={t("搜索商品名称…")}
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                 />
@@ -646,15 +686,25 @@ export function MerchantApp() {
                           <span>{p.emoji}</span>
                         )}
                         <span className="product-status">
-                          {p.published === 0 ? "未发布" : "已发布"}
+                          {p.published === 0 ? t("未发布") : t("已发布")}
                         </span>
                       </div>
                       <div className="product-info">
-                        <small>{p.category || "全部商品"}</small>
+                        <small>
+                          {!p.category || p.category === "全部商品"
+                            ? t("全部商品")
+                            : p.category}
+                        </small>
                         <h3>{p.name}</h3>
                         <div className="row between">
-                          <strong className="purple">{money(p.price)}</strong>
-                          <span className="muted">库存 {p.stock} 件</span>
+                          <strong className="purple">
+                            {money(p.price, locale)}
+                          </strong>
+                          <span className="muted">
+                            {t("库存")}
+                            {p.stock}
+                            {t("件")}
+                          </span>
                         </div>
                         <button
                           className="button secondary full small-button"
@@ -664,14 +714,14 @@ export function MerchantApp() {
                             setError("");
                           }}
                         >
-                          编辑商品
+                          {t("编辑商品")}
                         </button>
                       </div>
                     </article>
                   ))}
               </div>
               {!data.products.length && (
-                <Empty>还没有商品。点击「添加商品」开始。</Empty>
+                <Empty>{t("还没有商品。点击「添加商品」开始。")}</Empty>
               )}
             </>
           )}
@@ -679,23 +729,23 @@ export function MerchantApp() {
             <>
               <div className="page-heading">
                 <div>
-                  <h1>订单管理</h1>
-                  <p>每笔订单的进展，清楚掌握。</p>
+                  <h1>{t("订单管理")}</h1>
+                  <p>{t("每笔订单的进展，清楚掌握。")}</p>
                 </div>
                 <select
-                  aria-label="筛选订单"
+                  aria-label={t("筛选订单")}
                   value={filter}
                   onChange={(e) => setFilter(e.target.value)}
                 >
-                  <option value="all">全部状态</option>
-                  <option value="pending">待付款</option>
-                  <option value="paid">已付款</option>
-                  <option value="cancelled">已取消</option>
-                  <option value="refunded">已退款</option>
+                  <option value="all">{t("全部状态")}</option>
+                  <option value="pending">{t("待付款")}</option>
+                  <option value="paid">{t("已付款")}</option>
+                  <option value="cancelled">{t("已取消")}</option>
+                  <option value="refunded">{t("已退款")}</option>
                 </select>
               </div>
               <div className="soft-note">
-                确认收款前请核对实际到账，当前尚未连接自动支付回调。
+                {t("确认收款前请核对实际到账，当前尚未连接自动支付回调。")}
               </div>
               <section className="card">
                 {orderTable(
@@ -710,8 +760,8 @@ export function MerchantApp() {
             <>
               <div className="page-heading">
                 <div>
-                  <h1>代理与佣金</h1>
-                  <p>让每一份推广，都有清晰的回报。</p>
+                  <h1>{t("代理与佣金")}</h1>
+                  <p>{t("让每一份推广，都有清晰的回报。")}</p>
                 </div>
                 <button
                   className="button"
@@ -721,21 +771,23 @@ export function MerchantApp() {
                   }}
                 >
                   <Plus size={17} />
-                  添加代理
+                  {t("添加代理")}
                 </button>
               </div>
               <div className="soft-note">
-                当前支持推广链接、订单归属与已付款佣金统计。代理可通过团队邀请独立登录，并在专属门户申请佣金提现。
+                {t(
+                  "当前支持推广链接、订单归属与已付款佣金统计。代理可通过团队邀请独立登录，并在专属门户申请佣金提现。",
+                )}
               </div>
               <section className="card table-scroll">
                 <table>
                   <thead>
                     <tr>
-                      <th>代理</th>
-                      <th>佣金比例</th>
-                      <th>订单数</th>
-                      <th>已赚佣金</th>
-                      <th>推广链接</th>
+                      <th>{t("代理")}</th>
+                      <th>{t("佣金比例")}</th>
+                      <th>{t("订单数")}</th>
+                      <th>{t("已赚佣金")}</th>
+                      <th>{t("推广链接")}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -744,14 +796,15 @@ export function MerchantApp() {
                         <td>{a.name}</td>
                         <td>{a.rate}%</td>
                         <td>{a.orders_count}</td>
-                        <td>{money(a.earned)}</td>
+                        <td>{money(a.earned, locale)}</td>
                         <td>
                           <Link
                             className="text-button"
                             to={shop + "?agent=" + a.code}
                             target="_blank"
                           >
-                            打开专属店铺 <ArrowUpRight size={14} />
+                            {t("打开专属店铺")}
+                            <ArrowUpRight size={14} />
                           </Link>
                         </td>
                       </tr>
@@ -759,7 +812,7 @@ export function MerchantApp() {
                   </tbody>
                 </table>
                 {!data.agents.length && (
-                  <Empty>添加第一位代理，生成专属销售链接。</Empty>
+                  <Empty>{t("添加第一位代理，生成专属销售链接。")}</Empty>
                 )}
               </section>
             </>
@@ -768,14 +821,14 @@ export function MerchantApp() {
             <>
               <div className="page-heading">
                 <div>
-                  <h1>店铺设置</h1>
-                  <p>把你的店铺故事，告诉每一位顾客。</p>
+                  <h1>{t("店铺设置")}</h1>
+                  <p>{t("把你的店铺故事，告诉每一位顾客。")}</p>
                 </div>
               </div>
               <form className="card settings-form" onSubmit={save}>
-                <h2>基本资料</h2>
+                <h2>{t("基本资料")}</h2>
                 <label>
-                  店铺名称
+                  {t("店铺名称")}
                   <input
                     name="name"
                     required
@@ -784,7 +837,7 @@ export function MerchantApp() {
                   />
                 </label>
                 <label>
-                  店铺简介
+                  {t("店铺简介")}
                   <textarea
                     name="description"
                     maxLength={500}
@@ -794,19 +847,19 @@ export function MerchantApp() {
                 </label>
                 <ImageUpload
                   name="logo"
-                  label="商家 Logo"
+                  label={t("商家 Logo")}
                   initialValue={data.merchant.logo}
                   onUploading={imageUploading}
                 />
                 <ImageUpload
                   name="banner"
-                  label="商店 Banner"
+                  label={t("商店 Banner")}
                   initialValue={data.merchant.banner}
                   onUploading={imageUploading}
                   wide
                 />
                 <label>
-                  公开 WhatsApp 联系电话
+                  {t("公开 WhatsApp 联系电话")}
                   <input
                     name="phone"
                     type="tel"
@@ -816,9 +869,9 @@ export function MerchantApp() {
                     defaultValue={data.merchant.phone}
                   />
                 </label>
-                <h2 style={{ marginTop: 28 }}>配送及邮费</h2>
+                <h2 style={{ marginTop: 28 }}>{t("配送及邮费")}</h2>
                 <label>
-                  每单邮费（MYR）
+                  {t("每单邮费（MYR）")}
                   <input
                     name="shipping_fee"
                     type="number"
@@ -830,17 +883,18 @@ export function MerchantApp() {
                   />
                 </label>
                 <p className="muted">
-                  由你自行设定，填 0
-                  代表免邮。只影响新订单，邮费不计入代理佣金。
+                  {t(
+                    "由你自行设定，填 0 代表免邮。只影响新订单，邮费不计入代理佣金。",
+                  )}
                 </p>
                 <label>
-                  常用快递公司
+                  {t("常用快递公司")}
                   <input
                     name="courier"
                     list="store-couriers"
                     maxLength={100}
                     defaultValue={data.merchant.courier}
-                    placeholder="可选择或自行填写"
+                    placeholder={t("可选择或自行填写")}
                   />
                 </label>
                 <datalist id="store-couriers">
@@ -849,45 +903,53 @@ export function MerchantApp() {
                   ))}
                 </datalist>
                 <p className="muted">
-                  快递由你自行安排，实际公司及运单号可在发货时填写。系统不会自动报价或叫件。
+                  {t(
+                    "快递由你自行安排，实际公司及运单号可在发货时填写。系统不会自动报价或叫件。",
+                  )}
                 </p>
                 <p className="muted" style={{ marginTop: 20 }}>
-                  简介及电话会显示在公开商店。
+                  {t("简介及电话会显示在公开商店。")}
                 </p>
                 <div className="store-guide">
-                  <strong>直播卖货，怎样用店铺接单？</strong>
+                  <strong>{t("直播卖货，怎样用店铺接单？")}</strong>
                   <ol>
-                    <li>先在「商品管理」添加商品、价格和库存。</li>
+                    <li>{t("先在「商品管理」添加商品、价格和库存。")}</li>
                     <li>
-                      把下方店铺链接放到 TikTok、Facebook 直播简介、置顶留言或
-                      WhatsApp。
+                      {t(
+                        "把下方店铺链接放到 TikTok、Facebook 直播简介、置顶留言或 WhatsApp。",
+                      )}
                     </li>
                     <li>
-                      顾客点链接进入店铺下单，你在「订单管理」收款核实和安排发货。
+                      {t(
+                        "顾客点链接进入店铺下单，你在「订单管理」收款核实和安排发货。",
+                      )}
                     </li>
                   </ol>
                   <p>
-                    目前不会自动导入社交平台的商品或订单；添加社交账号不等于接通平台订单。
+                    {t(
+                      "目前不会自动导入社交平台的商品或订单；添加社交账号不等于接通平台订单。",
+                    )}
                   </p>
                 </div>
                 <div className="soft-note">
-                  店铺网址：
+                  {t("店铺网址：")}
                   <Link to={shop}>
                     {location.origin +
                       import.meta.env.BASE_URL.replace(/\/$/, "") +
                       shop}
                   </Link>
                   <br />
-                  交易币种：MYR · 马来西亚令吉
+                  {t("交易币种：MYR \u00B7 马来西亚令吉")}
                 </div>
                 <button className="button" disabled={busy || uploading}>
-                  保存店铺资料
+                  {t("保存店铺资料")}
                 </button>
               </form>
             </>
           )}
           <footer className="dashboard-footer">
-            © {new Date().getFullYear()} EZShop · Made for Malaysian businesses
+            © {new Date().getFullYear()}{" "}
+            {t("EZShop · Made for Malaysian businesses")}
           </footer>
         </main>
       </section>
@@ -896,9 +958,9 @@ export function MerchantApp() {
           title={
             modal === "product"
               ? editing
-                ? "编辑商品"
-                : "添加商品"
-              : "添加销售代理"
+                ? t("编辑商品")
+                : t("添加商品")
+              : t("添加销售代理")
           }
           close={() => {
             setModal(null);
@@ -909,7 +971,7 @@ export function MerchantApp() {
             {modal === "product" ? (
               <>
                 <label>
-                  商品名称
+                  {t("商品名称")}
                   <input
                     name="name"
                     required
@@ -917,10 +979,21 @@ export function MerchantApp() {
                     defaultValue={editing?.name}
                   />
                 </label>
-                <label>规格 / 款式（选填）<input name="variant" maxLength={100} defaultValue={editing?.variant} placeholder="例如：黑色 / M 或 500ml"/><small>不同规格分别建立商品，各自设置价格及库存。</small></label>
+                <label>
+                  {t("规格 / 款式（选填）")}
+                  <input
+                    name="variant"
+                    maxLength={100}
+                    defaultValue={editing?.variant}
+                    placeholder={t("例如：黑色 / M 或 500ml")}
+                  />
+                  <small>
+                    {t("不同规格分别建立商品，各自设置价格及库存。")}
+                  </small>
+                </label>
                 <div className="form-grid">
                   <label>
-                    价格（MYR）
+                    {t("价格（MYR）")}
                     <input
                       name="price"
                       type="number"
@@ -932,7 +1005,7 @@ export function MerchantApp() {
                     />
                   </label>
                   <label>
-                    可售库存
+                    {t("可售库存")}
                     <input
                       name="stock"
                       type="number"
@@ -944,7 +1017,7 @@ export function MerchantApp() {
                   </label>
                 </div>
                 <label>
-                  商品介绍
+                  {t("商品介绍")}
                   <textarea
                     name="description"
                     maxLength={2000}
@@ -953,22 +1026,23 @@ export function MerchantApp() {
                   />
                 </label>
                 <label>
-                  分类
+                  {t("分类")}
                   <input
                     name="category"
                     maxLength={80}
-                    defaultValue={editing?.category || "全部商品"}
+                    defaultValue={editing?.category || ""}
+                    placeholder={t("全部商品")}
                   />
                 </label>
                 <ImageUpload
                   name="image"
-                  label="商品图片"
+                  label={t("商品图片")}
                   initialValue={editing?.image}
                   onUploading={imageUploading}
                   wide
                 />
                 <label>
-                  无图片时使用的图标
+                  {t("无图片时使用的图标")}
                   <select name="emoji" defaultValue={editing?.emoji || "📦"}>
                     {["📦", "🍪", "☕", "👕", "🎁", "🧴", "🍰"].map((e) => (
                       <option key={e}>{e}</option>
@@ -981,7 +1055,7 @@ export function MerchantApp() {
                     name="published"
                     defaultChecked={editing?.published !== 0}
                   />
-                  发布到顾客端店铺
+                  {t("发布到顾客端店铺")}
                 </label>
                 <label className="checkbox-label">
                   <input
@@ -989,20 +1063,20 @@ export function MerchantApp() {
                     name="featured"
                     defaultChecked={editing?.featured === 1}
                   />
-                  列入热门精选
+                  {t("列入热门精选")}
                 </label>
                 <p className="muted">
-                  修改价格不影响已有订单；库存变动后请刷新再编辑。
+                  {t("修改价格不影响已有订单；库存变动后请刷新再编辑。")}
                 </p>
               </>
             ) : (
               <>
                 <label>
-                  代理名称
+                  {t("代理名称")}
                   <input name="name" required maxLength={80} />
                 </label>
                 <label>
-                  佣金比例（%）
+                  {t("佣金比例（%）")}
                   <input
                     name="rate"
                     type="number"
@@ -1017,64 +1091,70 @@ export function MerchantApp() {
             )}
             <ErrorBox error={error} />
             <button className="button full" disabled={busy || uploading}>
-              {busy ? "正在保存…" : "保存"}
+              {busy ? t("正在保存…") : t("保存")}
             </button>
           </form>
         </Modal>
       )}
       {detail && (
-        <Modal title="订单详情" close={() => setDetail(null)}>
+        <Modal title={t("订单详情")} close={() => setDetail(null)}>
           <p className="purple">
-            {detail.order.reference} · {statusLabel(detail.order.status)}
+            {detail.order.reference} · {t(statusLabel(detail.order.status))}
           </p>
           <div className="order-info">
             <div>
-              <small>顾客</small>
+              <small>{t("顾客")}</small>
               <p>{detail.order.customer}</p>
               <p>{detail.order.email}</p>
               <p>{detail.order.phone}</p>
             </div>
             <div>
-              <small>收货地址</small>
+              <small>{t("收货地址")}</small>
               <p>{detail.order.address}</p>
               <p>
                 {[detail.order.postcode, detail.order.city, detail.order.state]
                   .filter(Boolean)
                   .join(", ")}
               </p>
-              <small>订单备注</small>
-              <p>{detail.order.note || "无"}</p>
+              <small>{t("订单备注")}</small>
+              <p>{detail.order.note || t("无")}</p>
             </div>
           </div>
           {detail.items.map((i, n) => (
             <div className="summary-line" key={n}>
               <span>
                 {i.name} × {i.quantity}
-                <small>{money(i.price)} / 件</small>
+                <small>
+                  {money(i.price, locale)}
+                  {t("/ 件")}
+                </small>
               </span>
-              <strong>{money(i.price * i.quantity)}</strong>
+              <strong>{money(i.price * i.quantity, locale)}</strong>
             </div>
           ))}
           <div className="summary-line">
-            <span>商品小计</span>
-            <span>{money(detail.order.subtotal ?? detail.order.total)}</span>
+            <span>{t("商品小计")}</span>
+            <span>
+              {money(detail.order.subtotal ?? detail.order.total, locale)}
+            </span>
           </div>
           <div className="summary-line">
-            <span>邮费</span>
-            <span>{money(detail.order.shipping || 0)}</span>
+            <span>{t("邮费")}</span>
+            <span>{money(detail.order.shipping || 0, locale)}</span>
           </div>
           <div className="summary-total">
-            <strong>订单总额</strong>
-            <strong>{money(detail.order.total)}</strong>
+            <strong>{t("订单总额")}</strong>
+            <strong>{money(detail.order.total, locale)}</strong>
           </div>
           <p className="muted">
-            代理：{detail.order.agent_name || "无"} · 佣金{" "}
-            {money(detail.order.commission)}
+            {t("代理：")}
+            {detail.order.agent_name || t("无")}
+            {t("\u00B7 佣金")} {money(detail.order.commission, locale)}
           </p>
           <ErrorBox error={error} />
           {detail.order.fulfillment_status === "shipped" ? (
             <div className="soft-note">
-              <strong>已登记发货</strong>
+              <strong>{t("已登记发货")}</strong>
               <p>
                 {detail.order.carrier} · {detail.order.tracking}
               </p>
@@ -1103,9 +1183,9 @@ export function MerchantApp() {
                   }
                 }}
               >
-                <h2 style={{ marginTop: 22 }}>登记已寄出的包裹</h2>
+                <h2 style={{ marginTop: 22 }}>{t("登记已寄出的包裹")}</h2>
                 <label>
-                  实际快递公司
+                  {t("实际快递公司")}
                   <input
                     name="carrier"
                     list="shipment-couriers"
@@ -1120,18 +1200,20 @@ export function MerchantApp() {
                   ))}
                 </datalist>
                 <label>
-                  运单号
+                  {t("运单号")}
                   <input name="tracking" maxLength={100} required />
                 </label>
                 <p className="muted">
-                  请先自行寄件，再填写真实运单号。此操作不会向快递公司下单。
+                  {t(
+                    "请先自行寄件，再填写真实运单号。此操作不会向快递公司下单。",
+                  )}
                 </p>
                 <button
                   className="button"
                   style={{ marginTop: 15 }}
                   disabled={busy}
                 >
-                  已寄件，保存发货记录
+                  {t("已寄件，保存发货记录")}
                 </button>
               </form>
             )
@@ -1142,7 +1224,7 @@ export function MerchantApp() {
               style={{ marginTop: 20 }}
               onClick={() => window.print()}
             >
-              打印收款记录
+              {t("打印收款记录")}
             </button>
           )}
           {detail.order.status === "paid" && role === "owner" && (
@@ -1152,7 +1234,7 @@ export function MerchantApp() {
                   className="button secondary danger"
                   onClick={() => setRefunding(true)}
                 >
-                  登记已完成退款
+                  {t("登记已完成退款")}
                 </button>
               ) : (
                 <form
@@ -1179,18 +1261,20 @@ export function MerchantApp() {
                   }}
                 >
                   <div className="soft-note">
-                    仅登记已在线下或支付平台实际完成的全额退款，不会发起退款转账。该订单的佣金将回冲，关联的待处理提现申请会被拒绝。
+                    {t(
+                      "仅登记已在线下或支付平台实际完成的全额退款，不会发起退款转账。该订单的佣金将回冲，关联的待处理提现申请会被拒绝。",
+                    )}
                   </div>
                   <label>
-                    实际退款参考号
+                    {t("实际退款参考号")}
                     <input name="reference" maxLength={200} required />
                   </label>
                   <label className="checkbox-label">
                     <input name="restock" type="checkbox" />
-                    已确认收回商品，恢复库存
+                    {t("已确认收回商品，恢复库存")}
                   </label>
                   <button className="button" disabled={busy || uploading}>
-                    已核实，登记全额退款
+                    {t("已核实，登记全额退款")}
                   </button>
                 </form>
               )}
@@ -1203,14 +1287,14 @@ export function MerchantApp() {
                 disabled={busy || uploading}
                 onClick={() => orderAction(detail.order, "cancel")}
               >
-                取消订单
+                {t("取消订单")}
               </button>
               <button
                 className="button"
                 disabled={busy || uploading}
                 onClick={() => orderAction(detail.order, "paid")}
               >
-                确认收款
+                {t("确认收款")}
               </button>
             </div>
           )}

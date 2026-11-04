@@ -1,8 +1,10 @@
+import { useI18n } from "./i18n";
 import { useEffect, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { api, initialPasswordRecovery, supabase } from "./api";
 import { Brand, ErrorBox, Loading } from "./ui";
 export function RecoveryListener() {
+  const { t, locale, errorText } = useI18n();
   const navigate = useNavigate();
   const consumed = useRef(false);
   useEffect(() => {
@@ -37,6 +39,7 @@ function message(error: unknown) {
   return "暂时无法完成，请稍后重试。";
 }
 export function ForgotPassword() {
+  const { t, locale, errorText } = useI18n();
   const [busy, setBusy] = useState(false),
     [error, setError] = useState(""),
     [done, setDone] = useState(false);
@@ -58,19 +61,21 @@ export function ForgotPassword() {
     <section className="auth-panel recovery-page">
       <form onSubmit={submit}>
         <Brand />
-        <span className="eyebrow">ACCOUNT RECOVERY</span>
-        <h1>找回密码</h1>
-        <p>填写注册邮箱，我们会向已注册的账号发送重设密码链接。</p>
+        <span className="eyebrow">{t("ACCOUNT RECOVERY")}</span>
+        <h1>{t("找回密码")}</h1>
+        <p>{t("填写注册邮箱，我们会向已注册的账号发送重设密码链接。")}</p>
         {!supabase ? (
-          <ErrorBox error="当前无法使用账号找回，请联系平台管理员。" />
+          <ErrorBox error={t("当前无法使用账号找回，请联系平台管理员。")} />
         ) : done ? (
           <div className="success" role="status">
-            若此邮箱已注册，将收到重设邮件。请检查收件箱和垃圾邮件，并使用最新链接。
+            {t(
+              "若此邮箱已注册，将收到重设邮件。请检查收件箱和垃圾邮件，并使用最新链接。",
+            )}
           </div>
         ) : (
           <>
             <label>
-              注册邮箱
+              {t("注册邮箱")}
               <input
                 name="email"
                 type="email"
@@ -81,18 +86,19 @@ export function ForgotPassword() {
             </label>
             <ErrorBox error={error} />
             <button className="button full" disabled={busy}>
-              {busy ? "正在提交…" : "发送重设邮件"}
+              {busy ? t("正在提交…") : t("发送重设邮件")}
             </button>
           </>
         )}
         <Link className="text-button" style={{ marginTop: 25 }} to="/">
-          返回登录
+          {t("返回登录")}
         </Link>
       </form>
     </section>
   );
 }
 export function ResetPassword() {
+  const { t, locale, errorText } = useI18n();
   const [loading, setLoading] = useState(true),
     [valid, setValid] = useState(false),
     [busy, setBusy] = useState(false),
@@ -131,10 +137,10 @@ export function ResetPassword() {
     }
     setBusy(true);
     try {
-      const result = await api<{ ok: boolean; sign_out_pending: boolean }>(
-        "update-password",
-        { password },
-      );
+      const result = await api<{
+        ok: boolean;
+        sign_out_pending: boolean;
+      }>("update-password", { password });
       setPending(result.sign_out_pending);
       setDone(true);
     } catch (e) {
@@ -147,36 +153,38 @@ export function ResetPassword() {
     <section className="auth-panel recovery-page">
       <form onSubmit={submit}>
         <Brand />
-        <span className="eyebrow">RESET PASSWORD</span>
-        <h1>设置新密码</h1>
+        <span className="eyebrow">{t("RESET PASSWORD")}</span>
+        <h1>{t("设置新密码")}</h1>
         {loading ? (
           <Loading />
         ) : done ? (
           <>
             <div className="success" role="status">
-              密码已更新，请使用新密码登录。
+              {t("密码已更新，请使用新密码登录。")}
             </div>
             {pending && (
               <p className="error">
-                密码已更新，但退出会话未完成。请关闭此窗口后重新登录。
+                {t("密码已更新，但退出会话未完成。请关闭此窗口后重新登录。")}
               </p>
             )}
             <Link className="button full" to="/">
-              返回登录
+              {t("返回登录")}
             </Link>
           </>
         ) : !valid ? (
           <>
-            <ErrorBox error="重设链接已失效或缺少登录凭证，请重新申请。" />
+            <ErrorBox error={t("重设链接已失效或缺少登录凭证，请重新申请。")} />
             <Link className="button full" to="/forgot-password">
-              重新申请重设邮件
+              {t("重新申请重设邮件")}
             </Link>
           </>
         ) : (
           <>
-            <p>请输入至少 10 个字符的新密码。成功更新后会退出账号会话。</p>
+            <p>
+              {t("请输入至少 10 个字符的新密码。成功更新后会退出账号会话。")}
+            </p>
             <label>
-              新密码
+              {t("新密码")}
               <input
                 name="password"
                 type="password"
@@ -187,7 +195,7 @@ export function ResetPassword() {
               />
             </label>
             <label>
-              再次输入新密码
+              {t("再次输入新密码")}
               <input
                 name="confirm"
                 type="password"
@@ -199,7 +207,7 @@ export function ResetPassword() {
             </label>
             <ErrorBox error={error} />
             <button className="button full" disabled={busy}>
-              {busy ? "正在更新…" : "保存新密码"}
+              {busy ? t("正在更新…") : t("保存新密码")}
             </button>
           </>
         )}

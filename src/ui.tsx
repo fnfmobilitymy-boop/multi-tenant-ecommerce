@@ -1,7 +1,9 @@
+import { useI18n } from "./i18n";
 import { Link } from "react-router-dom";
 import { ShoppingBag, X, LoaderCircle } from "lucide-react";
 import type { ReactNode } from "react";
 export function Brand() {
+  const { t, locale, errorText } = useI18n();
   return (
     <Link to="/" className="brand" aria-label="EZShop">
       <span className="brand-icon">
@@ -14,17 +16,19 @@ export function Brand() {
   );
 }
 export function Loading() {
+  const { t, locale, errorText } = useI18n();
   return (
     <div className="empty">
       <LoaderCircle className="spin" />
-      正在加载…
+      {t("正在加载…")}
     </div>
   );
 }
 export function ErrorBox({ error }: { error: string }) {
+  const { t, locale, errorText } = useI18n();
   return error ? (
     <p className="error" role="alert">
-      {error}
+      {errorText(error)}
     </p>
   ) : null;
 }
@@ -37,6 +41,7 @@ export function Modal({
   children: ReactNode;
   close: () => void;
 }) {
+  const { t, locale, errorText } = useI18n();
   return (
     <div className="modal-backdrop" onClick={close}>
       <section
@@ -48,7 +53,11 @@ export function Modal({
       >
         <div className="row between">
           <h2>{title}</h2>
-          <button className="icon-button" onClick={close} aria-label="关闭">
+          <button
+            className="icon-button"
+            onClick={close}
+            aria-label={t("关闭")}
+          >
             <X size={20} />
           </button>
         </div>
@@ -58,5 +67,6 @@ export function Modal({
   );
 }
 export function Empty({ children }: { children: ReactNode }) {
+  const { t, locale, errorText } = useI18n();
   return <div className="empty">{children}</div>;
 }

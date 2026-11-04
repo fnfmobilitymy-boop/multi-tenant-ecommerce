@@ -1,6 +1,7 @@
+import { intlLocale, type Locale } from "./i18n-core";
 import { createClient } from "@supabase/supabase-js";
 import { supabaseApi } from "./supabase-api";
-import {paymentsApi} from "./payments-api";
+import { paymentsApi } from "./payments-api";
 import { normalizeSupabaseUrl } from "./supabase-config";
 import { isPasswordRecovery } from "./auth-redirect";
 export const initialPasswordRecovery =
@@ -15,7 +16,10 @@ export const supabase =
       )
     : null;
 export async function api<T>(path: string, data?: unknown): Promise<T> {
-  if (supabase) return path.startsWith("payments/")?paymentsApi<T>(supabase,path.slice(9),data):supabaseApi<T>(supabase, path, data);
+  if (supabase)
+    return path.startsWith("payments/")
+      ? paymentsApi<T>(supabase, path.slice(9), data)
+      : supabaseApi<T>(supabase, path, data);
   const response = await fetch("/api/" + path, {
     credentials: "same-origin",
     method: data === undefined ? "GET" : "POST",
@@ -26,10 +30,11 @@ export async function api<T>(path: string, data?: unknown): Promise<T> {
   if (!response.ok) throw new Error(body.error || "请求失败，请稍后重试");
   return body;
 }
-export const money = (n: number) =>
-  new Intl.NumberFormat("en-MY", { style: "currency", currency: "MYR" }).format(
-    n / 100,
-  );
+export const money = (n: number, locale: Locale = "en") =>
+  new Intl.NumberFormat(intlLocale(locale), {
+    style: "currency",
+    currency: "MYR",
+  }).format(n / 100);
 export const statusLabel = (s: string) =>
   ({
     pending: "待付款",
@@ -37,8 +42,8 @@ export const statusLabel = (s: string) =>
     cancelled: "已取消",
     refunded: "已退款",
   })[s] || s;
-export const dateLabel = (s: string) =>
+export const dateLabel = (s: string, locale: Locale = "zh") =>
   new Date(s.includes("T") ? s : s.replace(" ", "T") + "Z").toLocaleString(
-    "zh-CN",
+    intlLocale(locale),
     { timeZone: "Asia/Kuala_Lumpur", hour12: false },
   );

@@ -1,3 +1,4 @@
+import { useI18n } from "./i18n";
 import { useEffect, useState } from "react";
 import { Payouts } from "./payouts";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
@@ -34,9 +35,11 @@ interface Audit {
   created: string;
 }
 export function Team() {
-  const [data, setData] = useState<{ members: Member[]; logs: Audit[] } | null>(
-      null,
-    ),
+  const { t, locale, errorText } = useI18n();
+  const [data, setData] = useState<{
+      members: Member[];
+      logs: Audit[];
+    } | null>(null),
     [error, setError] = useState(""),
     [invite, setInvite] = useState(""),
     [open, setOpen] = useState(false),
@@ -54,7 +57,9 @@ export function Team() {
     setBusy(true);
     try {
       const f = Object.fromEntries(new FormData(e.currentTarget));
-      const r = await api<{ invite_token: string }>("team/invite", {
+      const r = await api<{
+        invite_token: string;
+      }>("team/invite", {
         ...f,
         rate: Number(f.rate || 0),
       });
@@ -73,7 +78,7 @@ export function Team() {
     }
   }
   async function revoke(id: number) {
-    if (!confirm("确认撤销此账号的访问权限？已登录会话也会失效。")) return;
+    if (!confirm(t("确认撤销此账号的访问权限？已登录会话也会失效。"))) return;
     try {
       await api("team/revoke", { id });
       await load();
@@ -85,18 +90,18 @@ export function Team() {
     <>
       <div className="page-heading">
         <div>
-          <h1>团队与权限</h1>
-          <p>让合适的人，处理合适的工作。</p>
+          <h1>{t("团队与权限")}</h1>
+          <p>{t("让合适的人，处理合适的工作。")}</p>
         </div>
         <button className="button" onClick={() => setOpen(true)}>
           <Plus size={17} />
-          邀请成员
+          {t("邀请成员")}
         </button>
       </div>
       <ErrorBox error={error} />
       {invite && (
         <div className="soft-note">
-          <strong>邀请已创建 · 7 天内有效，仅限指定邮箱使用</strong>
+          <strong>{t("邀请已创建 \u00B7 7 天内有效，仅限指定邮箱使用")}</strong>
           <p className="break-link">{invite}</p>
           <button
             className="text-button"
@@ -109,7 +114,7 @@ export function Team() {
             }}
           >
             <Copy size={14} />
-            复制邀请链接
+            {t("复制邀请链接")}
           </button>
         </div>
       )}
@@ -117,10 +122,10 @@ export function Team() {
         <table>
           <thead>
             <tr>
-              <th>成员</th>
-              <th>角色</th>
-              <th>状态</th>
-              <th>操作</th>
+              <th>{t("成员")}</th>
+              <th>{t("角色")}</th>
+              <th>{t("状态")}</th>
+              <th>{t("操作")}</th>
             </tr>
           </thead>
           <tbody>
@@ -130,20 +135,20 @@ export function Team() {
                   {m.name}
                   <small>{m.email}</small>
                 </td>
-                <td>{roles[m.role]}</td>
+                <td>{t(roles[m.role])}</td>
                 <td>
                   {m.active
-                    ? "已启用"
+                    ? t("已启用")
                     : m.expires * 1000 > Date.now()
-                      ? "等待接受"
-                      : "邀请已过期"}
+                      ? t("等待接受")
+                      : t("邀请已过期")}
                 </td>
                 <td>
                   <button
                     className="text-button danger"
                     onClick={() => revoke(m.id)}
                   >
-                    撤销访问
+                    {t("撤销访问")}
                   </button>
                 </td>
               </tr>
@@ -151,29 +156,29 @@ export function Team() {
           </tbody>
         </table>
         {data && !data.members.length && (
-          <Empty>邀请团队成员，按角色分工协作。</Empty>
+          <Empty>{t("邀请团队成员，按角色分工协作。")}</Empty>
         )}
         {!data && !error && <Loading />}
       </div>
       <section className="card" style={{ marginTop: 24 }}>
         <div className="card-heading">
-          <h2>最近操作记录</h2>
-          <span className="muted">最多 50 条</span>
+          <h2>{t("最近操作记录")}</h2>
+          <span className="muted">{t("最多 50 条")}</span>
         </div>
         <div className="table-scroll">
           <table>
             <thead>
               <tr>
-                <th>时间</th>
-                <th>执行者</th>
-                <th>操作</th>
-                <th>对象</th>
+                <th>{t("时间")}</th>
+                <th>{t("执行者")}</th>
+                <th>{t("操作")}</th>
+                <th>{t("对象")}</th>
               </tr>
             </thead>
             <tbody>
               {data?.logs.map((l, i) => (
                 <tr key={i}>
-                  <td>{dateLabel(l.created)}</td>
+                  <td>{dateLabel(l.created, locale)}</td>
                   <td>{l.actor}</td>
                   <td>{l.action}</td>
                   <td>{l.object_id || "—"}</td>
@@ -184,34 +189,34 @@ export function Team() {
         </div>
       </section>
       {open && (
-        <Modal title="邀请团队成员" close={() => setOpen(false)}>
+        <Modal title={t("邀请团队成员")} close={() => setOpen(false)}>
           <form onSubmit={submit}>
             <label>
-              成员姓名
+              {t("成员姓名")}
               <input name="name" required maxLength={80} />
             </label>
             <label>
-              指定邮箱
+              {t("指定邮箱")}
               <input name="email" type="email" required maxLength={200} />
             </label>
             <label>
-              角色
+              {t("角色")}
               <select
                 name="role"
-                aria-label="角色"
+                aria-label={t("角色")}
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
               >
                 {Object.entries(roles).map(([k, n]) => (
                   <option key={k} value={k}>
-                    {n}
+                    {t(n)}
                   </option>
                 ))}
               </select>
             </label>
             {role === "agent" && (
               <label>
-                佣金比例（%）
+                {t("佣金比例（%）")}
                 <input
                   name="rate"
                   type="number"
@@ -223,11 +228,13 @@ export function Team() {
               </label>
             )}
             <p className="muted">
-              客服仅处理订单；库存专员仅管理商品；经理可管理商品和订单；代理只查看自己的推广业绩。
+              {t(
+                "客服仅处理订单；库存专员仅管理商品；经理可管理商品和订单；代理只查看自己的推广业绩。",
+              )}
             </p>
             <ErrorBox error={error} />
             <button className="button full" disabled={busy}>
-              生成安全邀请链接
+              {t("生成安全邀请链接")}
             </button>
           </form>
         </Modal>
@@ -246,12 +253,17 @@ interface PlatformMerchant {
   sales: number;
 }
 export function Platform() {
+  const { t, locale, errorText } = useI18n();
   const [merchants, setMerchants] = useState<PlatformMerchant[]>([]),
     [error, setError] = useState(""),
     [loading, setLoading] = useState(true);
   async function load() {
     setMerchants(
-      (await api<{ merchants: PlatformMerchant[] }>("platform")).merchants,
+      (
+        await api<{
+          merchants: PlatformMerchant[];
+        }>("platform")
+      ).merchants,
     );
   }
   useEffect(() => {
@@ -261,7 +273,11 @@ export function Platform() {
   }, []);
   async function change(m: PlatformMerchant, plan: string, status: string) {
     if (
-      !confirm("确认修改商家 " + m.name + " 的方案或状态？这不会发起订阅扣款。")
+      !confirm(
+        t("确认修改商家 {name} 的方案或状态？这不会发起订阅扣款。", {
+          name: m.name,
+        }),
+      )
     )
       return;
     try {
@@ -275,13 +291,15 @@ export function Platform() {
     <>
       <div className="page-heading">
         <div>
-          <h1>平台管理</h1>
-          <p>商家、方案及运营状态统一管理。</p>
+          <h1>{t("平台管理")}</h1>
+          <p>{t("商家、方案及运营状态统一管理。")}</p>
         </div>
         <Shield size={25} className="purple" />
       </div>
       <div className="soft-note">
-        方案为平台手动分配标识，不代表订阅已收款。自动订阅计费与网关尚未开通。
+        {t(
+          "方案为平台手动分配标识，不代表订阅已收款。自动订阅计费与网关尚未开通。",
+        )}
       </div>
       <ErrorBox error={error} />
       {loading ? (
@@ -291,11 +309,11 @@ export function Platform() {
           <table>
             <thead>
               <tr>
-                <th>商家</th>
-                <th>订单数</th>
-                <th>已收款销售额</th>
-                <th>方案</th>
-                <th>状态</th>
+                <th>{t("商家")}</th>
+                <th>{t("订单数")}</th>
+                <th>{t("已收款销售额")}</th>
+                <th>{t("方案")}</th>
+                <th>{t("状态")}</th>
               </tr>
             </thead>
             <tbody>
@@ -306,25 +324,25 @@ export function Platform() {
                     <small>{m.email}</small>
                   </td>
                   <td>{m.orders_count}</td>
-                  <td>{money(m.sales)}</td>
+                  <td>{money(m.sales, locale)}</td>
                   <td>
                     <select
-                      aria-label={m.name + " 方案"}
+                      aria-label={m.name + t(" 方案")}
                       value={m.plan}
                       onChange={(e) => change(m, e.target.value, m.status)}
                     >
                       <option value="free">Free</option>
-                      <option value="pro">Pro（手动分配）</option>
+                      <option value="pro">{t("Pro（手动分配）")}</option>
                     </select>
                   </td>
                   <td>
                     <select
-                      aria-label={m.name + " 状态"}
+                      aria-label={m.name + t(" 状态")}
                       value={m.status}
                       onChange={(e) => change(m, m.plan, e.target.value)}
                     >
-                      <option value="active">正常</option>
-                      <option value="suspended">暂停</option>
+                      <option value="active">{t("正常")}</option>
+                      <option value="suspended">{t("暂停")}</option>
                     </select>
                   </td>
                 </tr>
@@ -343,6 +361,7 @@ export function Affiliate({
   data: Dashboard;
   logout: () => void;
 }) {
+  const { t, locale, errorText } = useI18n();
   const a = data.agents[0],
     paid = data.orders.filter((o) => o.status === "paid"),
     earned = paid.reduce((s, o) => s + o.commission, 0),
@@ -352,77 +371,90 @@ export function Affiliate({
       <div className="row between">
         <Brand />
         <button className="button secondary" onClick={logout}>
-          退出登录
+          {t("退出登录")}
         </button>
       </div>
       <div className="page-heading" style={{ marginTop: 45 }}>
         <div>
-          <span className="eyebrow">AFFILIATE PORTAL</span>
-          <h1>你好，{a?.name || "销售伙伴"}</h1>
-          <p>{data.merchant.name} · 你的专属推广工作台</p>
+          <span className="eyebrow">{t("AFFILIATE PORTAL")}</span>
+          <h1>
+            {t("你好，")}
+            {a?.name || t("销售伙伴")}
+          </h1>
+          <p>
+            {data.merchant.name}
+            {t("\u00B7 你的专属推广工作台")}
+          </p>
         </div>
       </div>
       <div className="metric-grid">
         <div className="card metric">
           <Wallet className="purple" size={22} />
-          <p>已赚佣金</p>
-          <strong>{money(earned)}</strong>
-          <small>已确认付款订单</small>
+          <p>{t("已赚佣金")}</p>
+          <strong>{money(earned, locale)}</strong>
+          <small>{t("已确认付款订单")}</small>
         </div>
         <div className="card metric">
           <ShoppingBag className="purple" size={22} />
-          <p>推广订单</p>
+          <p>{t("推广订单")}</p>
           <strong>{data.orders.length}</strong>
-          <small>仅你的归属订单</small>
+          <small>{t("仅你的归属订单")}</small>
         </div>
         <div className="card metric">
           <Users className="purple" size={22} />
-          <p>佣金比例</p>
+          <p>{t("佣金比例")}</p>
           <strong>{a?.rate || 0}%</strong>
-          <small>当前商家设置</small>
+          <small>{t("当前商家设置")}</small>
         </div>
       </div>
       <div className="soft-note">
-        <strong>专属推广链接</strong>
+        <strong>{t("专属推广链接")}</strong>
         <p className="break-link">
           {location.origin + import.meta.env.BASE_URL.replace(/\/$/, "") + link}
         </p>
         <Link className="text-button" to={link} target="_blank">
-          打开推广店铺 <ArrowUpRight size={14} />
+          {t("打开推广店铺")}
+          <ArrowUpRight size={14} />
         </Link>
         <p>
-          佣金金额表示已赚取，不表示已支付。请在下方提交提现申请并查看实际结算记录。
+          {t(
+            "佣金金额表示已赚取，不表示已支付。请在下方提交提现申请并查看实际结算记录。",
+          )}
         </p>
       </div>
       <div className="card table-scroll">
         <table>
           <thead>
             <tr>
-              <th>订单编号</th>
-              <th>时间</th>
-              <th>订单金额</th>
-              <th>状态</th>
-              <th>佣金</th>
+              <th>{t("订单编号")}</th>
+              <th>{t("时间")}</th>
+              <th>{t("订单金额")}</th>
+              <th>{t("状态")}</th>
+              <th>{t("佣金")}</th>
             </tr>
           </thead>
           <tbody>
             {data.orders.map((o) => (
               <tr key={o.id}>
                 <td>{o.reference}</td>
-                <td>{dateLabel(o.created)}</td>
-                <td>{money(o.total)}</td>
+                <td>{dateLabel(o.created, locale)}</td>
+                <td>{money(o.total, locale)}</td>
                 <td>
                   <span className={"badge " + o.status}>
-                    {statusLabel(o.status)}
+                    {t(statusLabel(o.status))}
                   </span>
                 </td>
-                <td>{o.status === "paid" ? money(o.commission) : "待确认"}</td>
+                <td>
+                  {o.status === "paid"
+                    ? money(o.commission, locale)
+                    : t("待确认")}
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
         {!data.orders.length && (
-          <Empty>分享推广链接，开始你的第一笔成交。</Empty>
+          <Empty>{t("分享推广链接，开始你的第一笔成交。")}</Empty>
         )}
       </div>
       <Payouts agent />
@@ -430,6 +462,7 @@ export function Affiliate({
   );
 }
 export function Join() {
+  const { t, locale, errorText } = useI18n();
   const [params] = useSearchParams(),
     navigate = useNavigate(),
     [error, setError] = useState(""),
@@ -456,24 +489,24 @@ export function Join() {
       <form onSubmit={submit}>
         <Brand />
         <h1 style={{ marginTop: 30 }}>
-          {done ? "团队账号已启用" : "加入 EZShop 团队"}
+          {done ? t("团队账号已启用") : t("加入 EZShop 团队")}
         </h1>
         {done ? (
           <>
-            <p>请使用邀请邮箱和刚设置的密码登录。</p>
+            <p>{t("请使用邀请邮箱和刚设置的密码登录。")}</p>
             <button
               type="button"
               className="button full"
               onClick={() => navigate("/")}
             >
-              前往登录
+              {t("前往登录")}
             </button>
           </>
         ) : (
           <>
-            <p>请使用商家指定的邮箱接受邀请。链接仅可使用一次。</p>
+            <p>{t("请使用商家指定的邮箱接受邀请。链接仅可使用一次。")}</p>
             <label>
-              邀请邮箱
+              {t("邀请邮箱")}
               <input
                 name="email"
                 type="email"
@@ -482,7 +515,7 @@ export function Join() {
               />
             </label>
             <label>
-              设置密码
+              {t("设置密码")}
               <input
                 name="password"
                 type="password"
@@ -494,7 +527,7 @@ export function Join() {
             </label>
             <ErrorBox error={error} />
             <button className="button full" disabled={busy}>
-              接受邀请并启用账号
+              {t("接受邀请并启用账号")}
             </button>
           </>
         )}
@@ -512,11 +545,18 @@ interface NotificationJob {
   error?: string;
 }
 export function Notifications() {
+  const { t, locale, errorText } = useI18n();
   const [jobs, setJobs] = useState<NotificationJob[] | null>(null),
     [error, setError] = useState("");
   async function load() {
     try {
-      setJobs((await api<{ jobs: NotificationJob[] }>("notifications")).jobs);
+      setJobs(
+        (
+          await api<{
+            jobs: NotificationJob[];
+          }>("notifications")
+        ).jobs,
+      );
     } catch (e) {
       setError((e as Error).message);
     }
@@ -528,26 +568,28 @@ export function Notifications() {
     <>
       <div className="page-heading">
         <div>
-          <h1>邮件通知</h1>
-          <p>收据与付款提醒的处理记录。</p>
+          <h1>{t("邮件通知")}</h1>
+          <p>{t("收据与付款提醒的处理记录。")}</p>
         </div>
         <button className="button secondary" onClick={load}>
-          刷新记录
+          {t("刷新记录")}
         </button>
       </div>
       <div className="soft-note">
-        确认收款后会自动加入收据队列。未付款提醒需定时任务运行。只有配置邮件服务并启动发送任务后才会发出；「服务商已接受」不代表客户一定收到。
+        {t(
+          "确认收款后会自动加入收据队列。未付款提醒需定时任务运行。只有配置邮件服务并启动发送任务后才会发出；「服务商已接受」不代表客户一定收到。",
+        )}
       </div>
       <ErrorBox error={error} />
       <div className="card table-scroll">
         <table>
           <thead>
             <tr>
-              <th>订单</th>
-              <th>收件人</th>
-              <th>类型</th>
-              <th>状态</th>
-              <th>尝试次数</th>
+              <th>{t("订单")}</th>
+              <th>{t("收件人")}</th>
+              <th>{t("类型")}</th>
+              <th>{t("状态")}</th>
+              <th>{t("尝试次数")}</th>
             </tr>
           </thead>
           <tbody>
@@ -555,14 +597,14 @@ export function Notifications() {
               <tr key={j.id}>
                 <td>{j.reference}</td>
                 <td>{j.recipient}</td>
-                <td>{j.kind === "receipt" ? "付款收据" : "付款提醒"}</td>
+                <td>{j.kind === "receipt" ? t("付款收据") : t("付款提醒")}</td>
                 <td>
                   {{
-                    queued: "等待发送",
-                    sending: "正在发送",
-                    sent: "服务商已接受",
-                    failed: "发送失败",
-                    skipped: "已跳过",
+                    queued: t("等待发送"),
+                    sending: t("正在发送"),
+                    sent: t("服务商已接受"),
+                    failed: t("发送失败"),
+                    skipped: t("已跳过"),
                   }[j.status] || j.status}
                 </td>
                 <td>{j.attempts}</td>
@@ -570,7 +612,7 @@ export function Notifications() {
             ))}
           </tbody>
         </table>
-        {jobs && !jobs.length && <Empty>暂时没有通知记录。</Empty>}
+        {jobs && !jobs.length && <Empty>{t("暂时没有通知记录。")}</Empty>}
         {!jobs && !error && <Loading />}
       </div>
     </>

@@ -205,7 +205,11 @@ with tempfile.TemporaryDirectory() as temp:
             merchant.get_by_role('dialog').wait_for(state='hidden')
             customer.reload();customer.get_by_role('heading',name='订单已退款',exact=True).wait_for()
             agent_page.reload();agent_page.get_by_text('已拒绝',exact=False).wait_for()
-            assert 'MYR -2.00' in agent_page.inner_text('body') or '-RM' in agent_page.inner_text('body') or '-2.00' in agent_page.inner_text('body')
+            balance_table=agent_page.get_by_role('table').filter(has=agent_page.get_by_role('columnheader',name='可申请余额',exact=True))
+            balance_cell=balance_table.locator('tbody tr').first.locator('td').last
+            expected_negative=agent_page.evaluate("new Intl.NumberFormat('zh-CN',{style:'currency',currency:'MYR'}).format(-2)")
+            assert balance_cell.inner_text()==expected_negative, balance_cell.inner_text()
+            assert 'danger' in balance_cell.get_attribute('class')
             agent_page.screenshot(path=str(out/'affiliate-settlement.png'),full_page=True)
             assert not errors,errors
             browser.close()

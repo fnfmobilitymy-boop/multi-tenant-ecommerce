@@ -1,3 +1,4 @@
+import { useI18n } from "./i18n";
 import { useId, useState } from "react";
 import { ImagePlus, LoaderCircle, X } from "lucide-react";
 import { uploadImage } from "./media";
@@ -15,6 +16,7 @@ export function ImageUpload({
   wide = false,
   onUploading,
 }: Props) {
+  const { t, locale, errorText } = useI18n();
   const id = useId();
   const [value, setValue] = useState(initialValue),
     [busy, setBusy] = useState(false),
@@ -43,11 +45,11 @@ export function ImageUpload({
       <input type="hidden" name={name} value={value} />
       <div className="image-upload-body">
         {value ? (
-          <img src={value} alt={label + "预览"} />
+          <img src={value} alt={t("{label}预览", { label })} />
         ) : (
           <div className="image-placeholder">
             <ImagePlus size={28} />
-            <span>还没有图片</span>
+            <span>{t("还没有图片")}</span>
           </div>
         )}
         <div className="image-upload-controls">
@@ -55,19 +57,19 @@ export function ImageUpload({
             {busy ? (
               <>
                 <LoaderCircle size={16} className="spin" />
-                上传中…
+                {t("上传中…")}
               </>
             ) : (
               <>
                 <ImagePlus size={16} />
-                {value ? "更换图片" : "选择图片"}
+                {value ? t("更换图片") : t("选择图片")}
               </>
             )}
           </label>
           <input
             id={id}
             className="image-file-input"
-            aria-label={label + "选择图片"}
+            aria-label={t("{label}选择图片", { label })}
             type="file"
             accept="image/jpeg,image/png,image/webp"
             disabled={busy}
@@ -89,21 +91,21 @@ export function ImageUpload({
               }}
             >
               <X size={13} />
-              移除图片
+              {t("移除图片")}
             </button>
           )}
-          <p>JPG、PNG、WebP · 最大 5 MB</p>
-          <small>选择后自动上传，点击保存后应用到店铺。</small>
+          <p>{t("JPG、PNG、WebP \u00B7 最大 5 MB")}</p>
+          <small>{t("选择后自动上传，点击保存后应用到店铺。")}</small>
           {uploaded && (
             <span className="upload-success" role="status">
-              已上传，保存后生效
+              {t("已上传，保存后生效")}
             </span>
           )}
         </div>
       </div>
       {error && (
         <p className="error" role="alert">
-          {error}
+          {errorText(error)}
         </p>
       )}
     </div>

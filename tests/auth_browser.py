@@ -83,6 +83,14 @@ try:
         page.screenshot(path=str(root/'test-results/brand-font.png'),full_page=True)
         page.goto(base+'/reset-password')
         page.get_by_role('alert').filter(has_text='重设链接已失效').wait_for()
+        page.locator('.language-selector select').select_option('en')
+        page.get_by_role('alert').filter(has_text='Reset link is expired').wait_for()
+        page.get_by_role('link',name='Request another reset email',exact=True).click()
+        page.get_by_label('Registered email',exact=True).fill('test@example.test')
+        page.locator('.language-selector select').select_option('km')
+        assert page.locator('input[name=email]').input_value()=='test@example.test'
+        page.get_by_role('button',name='ផ្ញើអ៊ីមែលកំណត់ឡើងវិញ',exact=True).click()
+        page.get_by_role('status').filter(has_text='ប្រសិនបើអ៊ីមែលនេះបានចុះឈ្មោះ').wait_for()
         assert not errors,errors
         browser.close()
         print('PASS: 品牌字体已加载；注册/重发/找回邮件回跳正确；重设密码、退出会话及失效链接提示正常。全部邮件接口已模拟，没有发送实际邮件。')
