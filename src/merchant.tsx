@@ -114,7 +114,9 @@ export function MerchantApp() {
         });
       else if (modal === "agent")
         await api("agents", { ...form, rate: Number(form.rate) });
-      else
+      else {
+        if (data?.merchant.shipping_fee === undefined)
+          throw new Error("店铺配送设置尚未启用，请联系平台管理员完成设置。");
         await api("settings", {
           ...form,
           shipping_fee:
@@ -122,6 +124,7 @@ export function MerchantApp() {
               ? data?.merchant.shipping_fee || 0
               : Math.round(Number(form.shipping_fee) * 100),
         });
+      }
       await refresh();
       setModal(null);
       setEditing(null);

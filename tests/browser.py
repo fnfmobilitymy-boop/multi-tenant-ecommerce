@@ -1,6 +1,7 @@
 """Real browser acceptance flow against a temporary database; never production."""
 import os,subprocess,tempfile,time,urllib.request
 from pathlib import Path
+from urllib.parse import urlparse
 from playwright.sync_api import sync_playwright
 root=Path(__file__).resolve().parent.parent
 with tempfile.TemporaryDirectory() as temp:
@@ -15,7 +16,13 @@ with tempfile.TemporaryDirectory() as temp:
             options={'headless':True,'args':['--no-sandbox']}
             if os.environ.get('EZSHOP_CHROMIUM'):options['executable_path']=os.environ['EZSHOP_CHROMIUM']
             browser=p.chromium.launch(**options)
-            merchant=browser.new_context(viewport={'width':1440,'height':1050}).new_page()
+            def isolated_context(**kwargs):
+                context=browser.new_context(**kwargs)
+                # Never let integration fixtures register accounts or send mail
+                # against an accidentally configured live Supabase build.
+                context.route('**/*',lambda route:route.continue_() if urlparse(route.request.url).hostname=='127.0.0.1' else route.abort())
+                return context
+            merchant=isolated_context(viewport={'width':1440,'height':1050}).new_page()
             errors=[];merchant.on('pageerror',lambda e:errors.append(str(e)))
             merchant.goto(base)
             merchant.get_by_role('button',name='免费注册',exact=True).click()
@@ -48,7 +55,7 @@ with tempfile.TemporaryDirectory() as temp:
             merchant.get_by_label('常用快递公司',exact=True).fill('Ninja Van')
             merchant.get_by_role('button',name='保存店铺资料').click()
             merchant.get_by_role('status').filter(has_text='资料已保存').wait_for()
-            customer=browser.new_context(viewport={'width':1440,'height':1050}).new_page()
+            customer=isolated_context(viewport={'width':1440,'height':1050}).new_page()
             customer.on('pageerror',lambda e:errors.append(str(e)))
             customer.goto(base+'/shop/kedai-kita')
             customer.get_by_role('heading',name='Kedai Kita',exact=True).wait_for()
@@ -77,7 +84,7 @@ with tempfile.TemporaryDirectory() as temp:
             customer.reload()
             customer.get_by_role('heading',name='订单已创建',exact=True).wait_for()
             private_url=customer.url
-            stranger=browser.new_context().new_page();stranger.goto(private_url)
+            stranger=isolated_context().new_page();stranger.goto(private_url)
             stranger.get_by_role('alert').filter(has_text='缺少此订单的访问凭证').wait_for()
             merchant.reload()
             merchant.get_by_role('button',name='订单管理',exact=True).click()
@@ -116,7 +123,7 @@ with tempfile.TemporaryDirectory() as temp:
             member_dialog.get_by_role('button',name='生成安全邀请链接').click()
             member_dialog.wait_for(state='hidden')
             invite_link=merchant.locator('.break-link').inner_text()
-            staff=browser.new_context().new_page();staff.on('pageerror',lambda e:errors.append(str(e)))
+            staff=isolated_context().new_page();staff.on('pageerror',lambda e:errors.append(str(e)))
             staff.goto(invite_link)
             staff.get_by_label('邀请邮箱').fill('inventory@example.test')
             staff.get_by_label('设置密码').fill('Team-test-12345')
@@ -144,7 +151,7 @@ with tempfile.TemporaryDirectory() as temp:
             dialog.get_by_label('角色',exact=True).select_option('agent')
             dialog.get_by_role('button',name='生成安全邀请链接').click()
             dialog.wait_for(state='hidden')
-            agent_page=browser.new_context().new_page();agent_page.on('pageerror',lambda e:errors.append(str(e)))
+            agent_page=isolated_context().new_page();agent_page.on('pageerror',lambda e:errors.append(str(e)))
             agent_page.goto(merchant.locator('.break-link').inner_text())
             agent_page.get_by_label('邀请邮箱').fill('affiliate@example.test')
             agent_page.get_by_label('设置密码').fill('Affiliate-test-12345')

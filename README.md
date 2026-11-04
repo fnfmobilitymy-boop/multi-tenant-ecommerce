@@ -172,3 +172,12 @@ EZSHOP_AUTH_TEST_DIST=auth-test-dist python tests/auth_browser.py
 订单保留当时的商品小计和邮费，之后改价不影响历史订单，相同结账请求重试也不会重算新邮费。商家自行寄出包裹后，可在已付款订单中记录实际快递公司及运单号；顾客凭原有订单访问凭证查看发货记录。重复登记同一运单不会重复写入，已登记的运单不能静默覆盖。
 
 新增迁移 `202611040004_delivery.sql`，已有 001/002 的项目依次应用新增 003（图片存储）及 004（配送），不重跑旧迁移。当前只支持每单固定邮费和马来西亚配送；按重量、分区、多包裹、到付、自动物流追踪及数字商品免地址流程尚未实现。
+
+若本机已配置真实 Supabase，业务浏览器测试应使用独立的本地构建：
+
+```sh
+VITE_SUPABASE_URL= VITE_SUPABASE_ANON_KEY= npm run build -- --outDir=local-test-dist
+EZSHOP_DIST=/workspace/multi-tenant-ecommerce/local-test-dist python tests/browser.py
+```
+
+业务浏览器测试会拦截所有非本机请求，避免误用真实项目创建测试商家或发送验证邮件。不要将 `local-test-dist` 用于正式网站发布。
