@@ -1,0 +1,120 @@
+"""Real browser acceptance flow against a temporary database; never production."""
+import os,subprocess,tempfile,time,urllib.request
+from pathlib import Path
+from playwright.sync_api import sync_playwright
+root=Path(__file__).resolve().parent.parent
+with tempfile.TemporaryDirectory() as temp:
+    server=subprocess.Popen(['python3',str(root/'server/app.py')],env={**os.environ,'PORT':'3101','EZSHOP_DB':temp+'/browser.db'},stdout=subprocess.DEVNULL)
+    base='http://127.0.0.1:3101'
+    try:
+        for _ in range(60):
+            try:urllib.request.urlopen(base+'/api/health');break
+            except OSError:time.sleep(.05)
+        else:raise RuntimeError('Server not ready')
+        with sync_playwright() as p:
+            options={'headless':True,'args':['--no-sandbox']}
+            if os.environ.get('EZSHOP_CHROMIUM'):options['executable_path']=os.environ['EZSHOP_CHROMIUM']
+            browser=p.chromium.launch(**options)
+            merchant=browser.new_context(viewport={'width':1440,'height':1050}).new_page()
+            errors=[];merchant.on('pageerror',lambda e:errors.append(str(e)))
+            merchant.goto(base)
+            merchant.get_by_role('button',name='免费注册',exact=True).click()
+            merchant.get_by_label('店铺名称',exact=True).fill('Kedai Kita')
+            merchant.get_by_label('店铺网址标识').fill('kedai-kita')
+            merchant.get_by_label('邮箱地址').fill('merchant@example.test')
+            merchant.get_by_label('密码',exact=True).fill('Test-account-12345')
+            merchant.get_by_role('button',name='创建店铺',exact=True).click()
+            merchant.get_by_role('heading',name='生意总览',exact=True).wait_for()
+            merchant.get_by_role('button',name='添加新商品',exact=False).click()
+            dialog=merchant.get_by_role('dialog')
+            dialog.get_by_label('商品名称',exact=True).fill('手工曲奇礼盒')
+            dialog.get_by_label('价格（MYR）').fill('39.90')
+            dialog.get_by_label('商品介绍',exact=True).fill('每日新鲜手工烘焙，适合分享的美味。')
+            dialog.get_by_label('分类',exact=True).fill('礼盒')
+            dialog.get_by_label('无图片时使用的图标').select_option('🍪')
+            dialog.get_by_role('button',name='保存',exact=True).click()
+            dialog.wait_for(state='hidden')
+            merchant.get_by_role('button',name='店铺设置',exact=True).click()
+            merchant.get_by_label('店铺简介').fill('新鲜手作，分享每一份美好。')
+            merchant.get_by_label('公开 WhatsApp 联系电话').fill('+60123456789')
+            merchant.get_by_role('button',name='保存店铺资料').click()
+            merchant.get_by_role('status').filter(has_text='资料已保存').wait_for()
+            customer=browser.new_context(viewport={'width':1440,'height':1050}).new_page()
+            customer.on('pageerror',lambda e:errors.append(str(e)))
+            customer.goto(base+'/shop/kedai-kita')
+            customer.get_by_role('heading',name='Kedai Kita',exact=True).wait_for()
+            customer.get_by_label('搜索商品').fill('曲奇')
+            customer.get_by_role('link',name='礼盒 手工曲奇礼盒',exact=False).click()
+            customer.get_by_role('heading',name='手工曲奇礼盒',exact=True).wait_for()
+            customer.get_by_label('购买数量').fill('2')
+            customer.get_by_role('button',name='加入购物车',exact=True).click()
+            customer.get_by_role('link',name='购物车',exact=True).click()
+            customer.get_by_role('heading',name='我的购物车',exact=True).wait_for()
+            customer.reload()
+            assert customer.get_by_label('商品数量').input_value()=='2'
+            customer.get_by_role('link',name='前往结账',exact=False).click()
+            customer.get_by_label('姓名',exact=True).fill('测试顾客')
+            customer.get_by_label('Email',exact=True).fill('buyer@example.test')
+            customer.get_by_label('手机号码',exact=True).fill('0123456789')
+            customer.get_by_label('收货地址',exact=True).fill('Kuala Lumpur, Malaysia')
+            customer.get_by_label('订单备注',exact=True).fill('请小心包装')
+            customer.get_by_role('button',name='确认提交订单',exact=False).click()
+            customer.get_by_role('heading',name='订单已创建',exact=True).wait_for()
+            customer.get_by_text('待付款',exact=True).wait_for()
+            customer.reload()
+            customer.get_by_role('heading',name='订单已创建',exact=True).wait_for()
+            private_url=customer.url
+            stranger=browser.new_context().new_page();stranger.goto(private_url)
+            stranger.get_by_role('alert').filter(has_text='缺少此订单的访问凭证').wait_for()
+            merchant.reload()
+            merchant.get_by_role('button',name='订单管理',exact=True).click()
+            merchant.get_by_role('button',name='查看详情',exact=False).click()
+            merchant.get_by_role('dialog').get_by_text('请小心包装',exact=True).wait_for()
+            merchant.on('dialog',lambda d:d.accept())
+            merchant.get_by_role('button',name='确认收款',exact=True).click()
+            merchant.get_by_role('dialog').wait_for(state='hidden')
+            merchant.get_by_role('button',name='生意总览',exact=True).click()
+            customer.reload();customer.get_by_text('已付款',exact=True).wait_for()
+            out=root/'test-results';out.mkdir(exist_ok=True)
+            merchant.screenshot(path=str(out/'dashboard-desktop.png'),full_page=True)
+            customer.goto(base+'/shop/kedai-kita');customer.get_by_role('heading',name='Kedai Kita',exact=True).wait_for()
+            customer.screenshot(path=str(out/'storefront-desktop.png'),full_page=True)
+            for page,name in [(merchant,'dashboard'),(customer,'storefront')]:
+                page.set_viewport_size({'width':390,'height':844})
+                page.screenshot(path=str(out/(name+'-mobile.png')),full_page=True)
+                assert page.evaluate('document.documentElement.scrollWidth<=innerWidth'),name+' mobile overflow'
+            merchant.set_viewport_size({'width':1440,'height':1050})
+            merchant.get_by_role('button',name='团队与权限',exact=True).click()
+            merchant.get_by_role('button',name='邀请成员',exact=True).click()
+            member_dialog=merchant.get_by_role('dialog')
+            member_dialog.get_by_label('成员姓名').fill('库存同事')
+            member_dialog.get_by_label('指定邮箱').fill('inventory@example.test')
+            member_dialog.get_by_label('角色',exact=True).select_option('inventory')
+            member_dialog.get_by_role('button',name='生成安全邀请链接').click()
+            member_dialog.wait_for(state='hidden')
+            invite_link=merchant.locator('.break-link').inner_text()
+            staff=browser.new_context().new_page();staff.on('pageerror',lambda e:errors.append(str(e)))
+            staff.goto(invite_link)
+            staff.get_by_label('邀请邮箱').fill('inventory@example.test')
+            staff.get_by_label('设置密码').fill('Team-test-12345')
+            staff.get_by_role('button',name='接受邀请并启用账号').click()
+            staff.get_by_role('button',name='前往登录').click()
+            staff.get_by_label('邮箱地址').fill('inventory@example.test')
+            staff.get_by_label('密码',exact=True).fill('Team-test-12345')
+            staff.get_by_role('button',name='登录工作台').click()
+            staff.get_by_role('heading',name='生意总览',exact=True).wait_for()
+            assert staff.get_by_role('button',name='订单管理',exact=True).count()==0
+            assert staff.get_by_role('button',name='团队与权限',exact=True).count()==0
+            staff.get_by_role('button',name='商品管理',exact=True).click()
+            staff.get_by_role('heading',name='商品管理',exact=True).wait_for()
+            # Admin rights are bootstrapped only in this disposable test database.
+            import sqlite3
+            with sqlite3.connect(temp+'/browser.db') as db:db.execute("UPDATE merchants SET is_admin=1 WHERE email='merchant@example.test'")
+            merchant.reload();merchant.get_by_role('button',name='平台管理',exact=True).click()
+            merchant.get_by_role('heading',name='平台管理',exact=True).wait_for()
+            merchant.screenshot(path=str(out/'platform-desktop.png'),full_page=True)
+            assert not errors,errors
+            browser.close()
+            print('PASS: React 注册、后台商品、店铺设置、搜索、详情、购物车刷新恢复、结账、安全结果页、后台确认收款、团队邀请与库存角色、平台管理、手机布局；无 JS 错误。')
+    finally:
+        server.terminate();server.wait(timeout=5)

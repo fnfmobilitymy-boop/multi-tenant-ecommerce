@@ -1,0 +1,69 @@
+import type { SupabaseClient } from "@supabase/supabase-js";
+export async function supabaseApi<T>(
+  client: SupabaseClient,
+  path: string,
+  data?: unknown,
+): Promise<T> {
+  const url = new URL(path, "https://ezshop.local/");
+  let route = url.pathname.slice(1);
+  let payload: Record<string, unknown> = {
+    ...Object.fromEntries(url.searchParams),
+    ...((data as Record<string, unknown>) || {}),
+  };
+  if (route === "join") {
+    const { data: auth, error } = await client.auth.signUp({
+      email: String(payload.email),
+      password: String(payload.password),
+      options: { data: { invite_token: payload.token } },
+    });
+    if (error) throw error;
+    if (!auth.session)
+      throw new Error(
+        "请先验证邮箱，再使用此邮箱和密码登录；系统会接受有效邀请。",
+      );
+    const { error: joinError } = await client.rpc("ezshop_api", {
+      route: "join",
+      payload: { token: payload.token },
+    });
+    if (joinError) throw joinError;
+    return { ok: true } as T;
+  }
+  if (route === "register") {
+    const { data: auth, error } = await client.auth.signUp({
+      email: String(payload.email),
+      password: String(payload.password),
+      options: { data: { name: payload.name, slug: payload.slug } },
+    });
+    if (error) throw error;
+    if (!auth.session)
+      throw new Error("账号已创建，请先通过邮件验证，再返回登录。");
+    return { ok: true } as T;
+  }
+  if (route === "login") {
+    const { error } = await client.auth.signInWithPassword({
+      email: String(payload.email),
+      password: String(payload.password),
+    });
+    if (error) throw error;
+    const { data: current } = await client.auth.getUser();
+    if (current.user?.user_metadata?.invite_token) {
+      const { error: joinError } = await client.rpc("ezshop_api", {
+        route: "join",
+        payload: { token: current.user.user_metadata.invite_token },
+      });
+      if (joinError) throw joinError;
+    }
+    return { ok: true } as T;
+  }
+  if (route === "logout") {
+    const { error } = await client.auth.signOut();
+    if (error) throw error;
+    return { ok: true } as T;
+  }
+  const { data: body, error } = await client.rpc("ezshop_api", {
+    route,
+    payload,
+  });
+  if (error) throw new Error(error.message);
+  return body as T;
+}

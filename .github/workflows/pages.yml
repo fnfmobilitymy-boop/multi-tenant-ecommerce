@@ -1,0 +1,56 @@
+name: EZShop · 手动发布网站
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: "确认已配置 Supabase、应用并验证迁移，输入 DEPLOY 才发布"
+        required: true
+        type: string
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: false
+jobs:
+  build:
+    if: inputs.confirm == 'DEPLOY'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: 检查公开项目配置
+        env:
+          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
+        run: |
+          test -n "$VITE_SUPABASE_URL" || { echo '请先在仓库 Variables 配置 VITE_SUPABASE_URL'; exit 1; }
+          test -n "$VITE_SUPABASE_ANON_KEY" || { echo '请先配置 Supabase anon / publishable key，严禁 service_role'; exit 1; }
+      - run: npm ci --no-audit --no-fund
+      - run: npm test
+      - name: 构建 GitHub Pages 网站
+        env:
+          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
+          REPOSITORY_NAME: ${{ github.event.repository.name }}
+        run: |
+          npm run build -- --base="/$REPOSITORY_NAME/"
+          cp dist/index.html dist/404.html
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: 发布并输出网址
+        id: deployment
+        uses: actions/deploy-pages@v4

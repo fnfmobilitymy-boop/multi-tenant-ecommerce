@@ -1,0 +1,124 @@
+# EZShop
+
+为马来西亚商家打造的多商家商店、订单及代理佣金应用。由原有 Python 原型逐步迁移，保留了商家后台功能，新增 React 19 + TypeScript + Tailwind CSS 4 顾客端。
+
+**当前状态：可运行、可测试的开发版本，不是完整已上线的商业 SaaS。真实支付、代理提现和自动订阅计费尚未完成；邮件发送需配置服务并启用定时任务，Supabase 仍需连接实际项目。**
+
+## 当前可以做什么
+
+- 商家注册/登录、独立商店链接、商品新增/编辑/发布/下架、分类、描述和图片网址。
+- 商家订单管理、商品成交快照、手动确认实际收款、取消未付款订单并原子恢复库存。
+- 商家专属代理链接、订单归属、佣金统计；仅已确认付款的订单计入收入。
+- 代理独立登录与专属工作台，只能查看自己的订单业绩，不暴露顾客邮箱和地址。
+- 团队邮箱邀请（7 天有效、一次性接受）、订单客服/库存专员/经理分工、服务端权限控制、撤销会话及操作记录。
+- 平台管理员可查看商家、分配 Free/Pro 标识和暂停/恢复店铺；管理员只能由可信数据库操作授权，注册请求不能自行升级。
+- 确认收款后自动加入收据队列，提供 24 小时未付款提醒排队任务、幂等邮件发送任务与通知记录；不会将排队状态冒充已发送。
+- 顾客首页、分类搜索、商品详情、相关推荐、按店铺隔离并持久化的购物车、独立结账与安全订单结果页。
+- 后端重新计算金额及校验库存；支持幂等请求、跨商家校验、商品编辑库存冲突保护。
+- 支持商家 Logo/Banner 的 HTTPS 图片网址和热门商品设置。商品图片未配置时使用明确的图标占位；规格暂为单一标准款，复杂规格及图片文件上传尚未实现。
+- 运费和折扣目前均为 0，不伪造未配置的商业规则。付款方式只开放「联系商家付款」，无虚假支付成功。
+
+## 本地运行
+
+需要 Node.js 22.12+（建议 24）和 Python 3.12+。
+
+```sh
+npm ci
+npm run build
+npm run server
+```
+
+服务默认绑定本机 3000 端口，提供构建后的 React 页面及 API。开发时另开终端执行 `npm run dev`，Vite 将 API 代理到 3000。`PORT` 和 `EZSHOP_DB` 可更改本地 API 端口和 SQLite 文件位置。没有默认账户；通过页面注册。
+
+`server/data/`、环境变量文件和真实业务数据不会提交到 GitHub。原版后台页面保留在 `server/legacy.html`，本地服务 `/legacy` 可用于迁移对照。
+
+## 顾客端路由
+
+- `/shop/:slug`
+- `/shop/:slug/product/:productId`
+- `/shop/:slug/cart`
+- `/shop/:slug/checkout`
+- `/shop/:slug/order-result?ref=...`
+
+订单结果查询需要独立高熵凭证，凭证保存在当前浏览器标签页的 sessionStorage，刷新仍可使用，不出现在 URL 中。其他浏览器仅凭订单号无法访问。当前未实现邮件找回访问链接，因此请勿把当前结果页当作完整的顾客账户系统。
+
+## Supabase 模式
+
+没有配置时使用经过集成验证的本地 Python/SQLite API。设置以下公开项目配置后，前端会切换到 Supabase Auth 和 `ezshop_api` RPC：
+
+```text
+VITE_SUPABASE_URL=https://你的项目.supabase.co
+VITE_SUPABASE_ANON_KEY=项目 anon 或 publishable key
+```
+
+**绝不可在 VITE\_ 变量里放 service_role、数据库密码或支付密钥。**
+
+`supabase/migrations/202611040001_ezshop.sql` 提供隔离的 `ezshop` schema、RLS、受控 RPC、库存事务和订单访问凭证处理。已通过本地 PostgreSQL（PGlite）执行与权限测试，但**没有连接实际 Supabase 项目执行**，也没有验证远端 Auth、邮件或并发连接行为。已有项目须先检查现有表和迁移，不能盲目重复建模。新项目可审查后在 Supabase SQL Editor 应用该文件。须在 Supabase Auth 配置实际站点地址及邮件确认策略。
+
+本地 SQLite 数据不会自动复制到 Supabase，正式使用前需单独迁移与核对。
+
+## GitHub Actions
+
+**EZShop · 构建与测试**：推送 main、PR 或手动运行。执行 TypeScript 构建、购物车/PostgreSQL 测试、本地 API 测试和 Chromium 完整业务流程，上传构建及截图。
+
+**EZShop · 手动发布网站**：不随 push 自动发布。只有用户手动运行并输入 `DEPLOY` 才发布 GitHub Pages。先完成：
+
+1. 配置真实 Supabase 项目，并审查、应用及验证迁移。
+2. 在 GitHub 仓库 Settings → Secrets and variables → Actions → Variables 添加 `VITE_SUPABASE_URL` 和 `VITE_SUPABASE_ANON_KEY`（公开项目配置）。
+3. 在 Settings → Pages 将 Source 设为 GitHub Actions。
+4. 在 Actions 运行手动发布工作流。网址以成功运行的 `github-pages` deployment 输出为准。
+
+GitHub Pages 只托管静态前端，不运行 Python。缺少 Supabase 配置时发布工作流会失败并提示配置，不会发布一个假装可用的网站。Pages 的深链接回退使用 404.html，直接刷新深路径时可能返回 HTTP 404 状态；正式商用推荐支持 SPA 重写与自定义域名的托管服务。
+
+## 验证
+
+```sh
+npm run build
+npm test
+npm run test:api
+# 浏览器端到端验收（临时数据库，不写入商家真实数据）
+python -m pip install playwright==1.62.0
+python -m playwright install chromium
+python tests/browser.py
+```
+
+本机若已有 Chromium，可设置 `EZSHOP_CHROMIUM=/usr/bin/chromium`。测试截图写入未跟踪的 `test-results/`。测试涉及商家隔离、价格篡改、库存冲突、重复结账、订单凭证、权限边界和桌面/手机布局，不代表真实支付或生产环境已经验证。
+
+## 后续阶段与上线边界
+
+- 阶段一：核心顾客端、商家 Logo/Banner 网址、热门商品已迁移；复杂规格、图片文件上传及远端 Supabase 验证待完成。
+- 阶段二：收据/提醒队列与邮件任务已实现，真实邮件需服务配置与定时调度；真实支付、签名回调及对账尚未实现。
+- 阶段三：代理独立门户、邀请登录、佣金归属与统计可用；提现、结算及退款回冲待开发。
+- 阶段四：平台管理员、商家状态及手动方案标识已实现；自动订阅、套餐收费及账单尚未接入。
+- 阶段五：团队邀请、角色隔离、订单客服和关键操作记录已实现；完整审计覆盖、员工资料维护及生产安全验收仍待完成。
+- 上线前：HTTPS、限流、密码重置、备份恢复、真实网关沙箱验收、远端权限和并发验证等尚需完成。Python 标准库服务器仅用于开发，不能直接作为公网生产服务。
+
+正式 Logo 原图尚未作为本地附件提供，当前使用临时 EZShop 品牌标识，不把占位图标冒称为用户提供的 Logo。
+
+## 团队、代理与平台管理员
+
+商家后台「团队与权限」创建指定邮箱的邀请，将生成的安全链接交给对应成员。链接 7 天内有效，只能领取一次。代理在自己的账号登录后进入专属门户；库存专员只能管理商品，订单客服只能处理订单，经理可以处理商品及订单。团队成员不能管理店铺设置、邀请成员或访问平台管理。撤销权限后，现有会话的后续请求也会被拒绝。
+
+本地平台管理员先通过 UI 注册，再在可信终端执行：
+
+```sh
+python3 server/manage.py grant-admin 商家注册邮箱
+# 撤销：python3 server/manage.py revoke-admin 商家注册邮箱
+```
+
+Supabase 模式由项目管理员在 SQL Editor 中将受信任账号的 `ezshop.merchants.is_admin` 设置为 true。不要将此授权开放为浏览器可调用的自助接口。没有预置管理员或默认密码。
+
+## 自动收据及付款提醒
+
+邮件队列的 `sent` 表示邮件服务商已接受请求，不保证最终投递。重复确认收款不会重复产生收据；发送任务使用稳定幂等键，失败最多重试 3 次。已取消或已付款的订单不再发送待付款提醒。
+
+本地：配置服务端 `RESEND_API_KEY`、经 Resend 验证的 `MAIL_FROM`，由用户的定时调度器运行：
+
+```sh
+python3 server/notifications.py enqueue-reminders
+python3 server/notifications.py dispatch
+```
+
+不配置时不会发送。测试使用本地模拟服务商，没有给真实客户发邮件。
+
+Supabase：代码位于 `supabase/functions/send-notifications/`。在项目安全配置设置 `RESEND_API_KEY`、`MAIL_FROM` 和高熵 `NOTIFICATION_JOB_SECRET` 后，审查并部署函数，再配置定时 POST 请求，Authorization 为 `Bearer <NOTIFICATION_JOB_SECRET>`。函数使用 Supabase 自带的服务端服务角色；密钥不得进入前端或 Actions 公开变量。函数和定时任务当前未部署，Resend 实际投递未经远端验证。
