@@ -1,11 +1,12 @@
 import { createClient } from "@supabase/supabase-js";
 import { supabaseApi } from "./supabase-api";
+import { normalizeSupabaseUrl } from "./supabase-config";
 // Only public project credentials belong in the browser.
 // Cloud adapter is enabled only when both project settings are supplied.
 export const supabase =
   import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY
     ? createClient(
-        import.meta.env.VITE_SUPABASE_URL,
+        normalizeSupabaseUrl(import.meta.env.VITE_SUPABASE_URL),
         import.meta.env.VITE_SUPABASE_ANON_KEY,
       )
     : null;
