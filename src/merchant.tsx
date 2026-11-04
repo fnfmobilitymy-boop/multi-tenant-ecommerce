@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Payouts } from "./payouts";
 import { Link } from "react-router-dom";
 import {
   ArrowUpRight,
@@ -30,7 +31,8 @@ type Tab =
   | "settings"
   | "team"
   | "platform"
-  | "notifications";
+  | "notifications"
+  | "payouts";
 export function MerchantApp() {
   const [data, setData] = useState<Dashboard | null>(null),
     [loading, setLoading] = useState(true),
@@ -42,6 +44,7 @@ export function MerchantApp() {
     [editing, setEditing] = useState<Product | null>(null),
     [detail, setDetail] = useState<OrderResult | null>(null),
     [notice, setNotice] = useState(""),
+    [refunding, setRefunding] = useState(false),
     [filter, setFilter] = useState("all"),
     [query, setQuery] = useState("");
   async function refresh() {
@@ -130,6 +133,7 @@ export function MerchantApp() {
   }
   async function showOrder(id: number) {
     try {
+      setRefunding(false);
       setDetail(await api<OrderResult>("orders/detail?id=" + id));
     } catch (e) {
       setError((e as Error).message);
@@ -147,6 +151,7 @@ export function MerchantApp() {
     { id: "agents", name: "代理与佣金", icon: Users },
     { id: "settings", name: "店铺设置", icon: Settings },
     { id: "notifications", name: "邮件通知", icon: ShoppingBag },
+    { id: "payouts", name: "佣金结算", icon: Wallet },
     { id: "team", name: "团队与权限", icon: Users },
     { id: "platform", name: "平台管理", icon: LayoutDashboard },
   ] as const;
@@ -264,7 +269,8 @@ export function MerchantApp() {
         : t.id === "team" ||
             t.id === "settings" ||
             t.id === "agents" ||
-            t.id === "notifications"
+            t.id === "notifications" ||
+            t.id === "payouts"
           ? role === "owner"
           : t.id === "products"
             ? ["owner", "manager", "inventory"].includes(role)
@@ -533,6 +539,7 @@ export function MerchantApp() {
               </section>
             </>
           )}
+          {tab === "payouts" && <Payouts />}
           {tab === "notifications" && <Notifications />}
           {tab === "team" && <Team />}
           {tab === "platform" && <Platform />}
@@ -614,6 +621,7 @@ export function MerchantApp() {
                   <option value="pending">待付款</option>
                   <option value="paid">已付款</option>
                   <option value="cancelled">已取消</option>
+                  <option value="refunded">已退款</option>
                 </select>
               </div>
               <div className="soft-note">
@@ -647,7 +655,7 @@ export function MerchantApp() {
                 </button>
               </div>
               <div className="soft-note">
-                当前支持推广链接、订单归属与已付款佣金统计。代理独立登录、提现和结算尚未开放。
+                当前支持推广链接、订单归属与已付款佣金统计。代理可通过团队邀请独立登录，并在专属门户申请佣金提现。
               </div>
               <section className="card table-scroll">
                 <table>
@@ -942,6 +950,57 @@ export function MerchantApp() {
             >
               打印收款记录
             </button>
+          )}
+          {detail.order.status === "paid" && role === "owner" && (
+            <div style={{ marginTop: 20 }}>
+              {!refunding ? (
+                <button
+                  className="button secondary danger"
+                  onClick={() => setRefunding(true)}
+                >
+                  登记已完成退款
+                </button>
+              ) : (
+                <form
+                  onSubmit={async (e) => {
+                    e.preventDefault();
+                    setBusy(true);
+                    setError("");
+                    const f = new FormData(e.currentTarget);
+                    try {
+                      await api("orders/refund", {
+                        id: detail.order.id,
+                        reference: String(f.get("reference")),
+                        restock: f.get("restock") === "on",
+                      });
+                      setDetail(null);
+                      setRefunding(false);
+                      await refresh();
+                      setNotice("退款已登记，佣金已回冲");
+                    } catch (e) {
+                      setError((e as Error).message);
+                    } finally {
+                      setBusy(false);
+                    }
+                  }}
+                >
+                  <div className="soft-note">
+                    仅登记已在线下或支付平台实际完成的全额退款，不会发起退款转账。该订单的佣金将回冲，关联的待处理提现申请会被拒绝。
+                  </div>
+                  <label>
+                    实际退款参考号
+                    <input name="reference" maxLength={200} required />
+                  </label>
+                  <label className="checkbox-label">
+                    <input name="restock" type="checkbox" />
+                    已确认收回商品，恢复库存
+                  </label>
+                  <button className="button" disabled={busy}>
+                    已核实，登记全额退款
+                  </button>
+                </form>
+              )}
+            </div>
           )}
           {detail.order.status === "pending" && (
             <div className="row end">

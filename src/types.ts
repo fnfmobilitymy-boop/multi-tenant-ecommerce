@@ -33,7 +33,7 @@ export interface Order {
   phone: string;
   address: string;
   total: number;
-  status: "pending" | "paid" | "cancelled";
+  status: "pending" | "paid" | "cancelled" | "refunded";
   payment_status?: string;
   agent_name?: string;
   commission: number;

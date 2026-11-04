@@ -616,20 +616,24 @@ export function Storefront() {
               <CheckCircle2 size={48} className="purple" />
               <span className="eyebrow">ORDER RECEIVED</span>
               <h1>
-                {result.order.status === "cancelled"
-                  ? "订单已取消"
-                  : "订单已创建"}
+                {result.order.status === "refunded"
+                  ? "订单已退款"
+                  : result.order.status === "cancelled"
+                    ? "订单已取消"
+                    : "订单已创建"}
               </h1>
               <p>订单编号 {result.order.reference}</p>
               <div className={"badge " + result.order.status}>
                 {statusLabel(result.order.status)}
               </div>
               <p className="soft-note">
-                {result.order.status === "paid"
-                  ? "商家已确认收款。"
-                  : result.order.status === "cancelled"
-                    ? "此订单已取消，请勿继续付款。"
-                    : "订单已保存，尚未确认收款。请联系商家安排付款。"}
+                {result.order.status === "refunded"
+                  ? "商家已登记完成全额退款。请核对实际到账。"
+                  : result.order.status === "paid"
+                    ? "商家已确认收款。"
+                    : result.order.status === "cancelled"
+                      ? "此订单已取消，请勿继续付款。"
+                      : "订单已保存，尚未确认收款。请联系商家安排付款。"}
               </p>
               {result.items.map((i, n) => (
                 <div className="summary-line" key={n}>

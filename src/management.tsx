@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Payouts } from "./payouts";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import {
   Plus,
@@ -389,7 +390,9 @@ export function Affiliate({
         <Link className="text-button" to={link} target="_blank">
           打开推广店铺 <ArrowUpRight size={14} />
         </Link>
-        <p>提现和佣金结算尚未开放，当前金额表示已赚取，不表示已支付。</p>
+        <p>
+          佣金金额表示已赚取，不表示已支付。请在下方提交提现申请并查看实际结算记录。
+        </p>
       </div>
       <div className="card table-scroll">
         <table>
@@ -422,6 +425,7 @@ export function Affiliate({
           <Empty>分享推广链接，开始你的第一笔成交。</Empty>
         )}
       </div>
+      <Payouts agent />
     </div>
   );
 }

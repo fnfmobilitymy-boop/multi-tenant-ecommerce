@@ -1570,3 +1570,15 @@ tr:last-child td {
     height: 180px;
   }
 }
+
+.bank-details {
+  max-width: 250px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 12px;
+  margin: 10px 0;
+}
+.badge.refunded {
+  background: #f0edf9;
+  color: #8a71b0;
+}

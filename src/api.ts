@@ -26,7 +26,12 @@ export const money = (n: number) =>
     n / 100,
   );
 export const statusLabel = (s: string) =>
-  ({ pending: "待付款", paid: "已付款", cancelled: "已取消" })[s] || s;
+  ({
+    pending: "待付款",
+    paid: "已付款",
+    cancelled: "已取消",
+    refunded: "已退款",
+  })[s] || s;
 export const dateLabel = (s: string) =>
   new Date(s.includes("T") ? s : s.replace(" ", "T") + "Z").toLocaleString(
     "zh-CN",

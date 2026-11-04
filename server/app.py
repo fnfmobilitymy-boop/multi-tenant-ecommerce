@@ -1,6 +1,7 @@
 """EzShop local development prototype. Python 3.12+, no third-party dependencies."""
 import os, json, sqlite3, secrets, hashlib, hmac, re, time, mimetypes
 from pathlib import Path
+from finance import handle as handle_finance, FinanceError
 from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
 from urllib.parse import urlparse, parse_qs
 
@@ -41,6 +42,9 @@ def init():
             ('products', 'category', "TEXT NOT NULL DEFAULT '全部商品'"),
             ('products', 'image', "TEXT NOT NULL DEFAULT ''"),
             ('products', 'published', 'INTEGER NOT NULL DEFAULT 1'),
+            ('orders', 'refund_reference', "TEXT NOT NULL DEFAULT ''"),
+            ('orders', 'refunded_at', 'TEXT'),
+            ('orders', 'stock_returned', 'INTEGER NOT NULL DEFAULT 0'),
             ('orders', 'note', "TEXT NOT NULL DEFAULT ''"),
             ('orders', 'checkout_key', 'TEXT'),
             ('orders', 'access_token', 'TEXT'),
@@ -53,6 +57,7 @@ def init():
         db.execute('''CREATE TABLE IF NOT EXISTS memberships(id INTEGER PRIMARY KEY,merchant_id INTEGER NOT NULL REFERENCES merchants(id),name TEXT NOT NULL,email TEXT UNIQUE NOT NULL,password TEXT,role TEXT NOT NULL,agent_id INTEGER REFERENCES agents(id),invite_token TEXT UNIQUE,expires INTEGER NOT NULL)''')
         db.execute('''CREATE TABLE IF NOT EXISTS audit_log(id INTEGER PRIMARY KEY,merchant_id INTEGER NOT NULL REFERENCES merchants(id),actor TEXT NOT NULL,action TEXT NOT NULL,object_id INTEGER,created TEXT NOT NULL DEFAULT (datetime('now')))''')
         db.execute('''CREATE TABLE IF NOT EXISTS notification_jobs(id INTEGER PRIMARY KEY,merchant_id INTEGER NOT NULL REFERENCES merchants(id),order_id INTEGER NOT NULL REFERENCES orders(id),kind TEXT NOT NULL,event_key TEXT UNIQUE NOT NULL,status TEXT NOT NULL DEFAULT 'queued',attempts INTEGER NOT NULL DEFAULT 0,provider_id TEXT,error TEXT,updated INTEGER NOT NULL DEFAULT 0)''')
+        db.execute('''CREATE TABLE IF NOT EXISTS payouts(id INTEGER PRIMARY KEY,merchant_id INTEGER NOT NULL REFERENCES merchants(id),agent_id INTEGER NOT NULL REFERENCES agents(id),amount INTEGER NOT NULL CHECK(amount>0),bank_details TEXT NOT NULL,request_key TEXT NOT NULL,status TEXT NOT NULL DEFAULT 'requested' CHECK(status IN ('requested','paid','rejected')),reference TEXT NOT NULL DEFAULT '',created TEXT NOT NULL DEFAULT (datetime('now')),updated TEXT NOT NULL DEFAULT (datetime('now')),UNIQUE(merchant_id,agent_id,request_key))''')
         db.execute('CREATE UNIQUE INDEX IF NOT EXISTS order_checkout_key ON orders(merchant_id,checkout_key)')
 
 def public_order(row):
@@ -172,6 +177,8 @@ class Handler(BaseHTTPRequestHandler):
                     raise ValueError('Invalid JSON object')
             with connect() as db:
                 self.route(db, path, data)
+        except FinanceError as exc:
+            self.reply({'error':str(exc)},exc.status)
         except (ValueError, json.JSONDecodeError) as exc:
             self.reply({'error': str(exc)}, 400)
         except sqlite3.IntegrityError:
@@ -269,6 +276,9 @@ class Handler(BaseHTTPRequestHandler):
             return self.reply({'ok': True}, cookie='ezshop_session=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0')
         if merchant['status'] != 'active' and not (role=='owner' and merchant['is_admin']):
             return self.reply({'error': '店铺已暂停，请联系平台管理员'}, 403)
+        finance = handle_finance(db,mid,role,member,path,data,method)
+        if finance is not None:
+            return self.reply(*finance)
         if path == '/api/dashboard' and method == 'GET':
             if role == 'agent':
                 agent = db.execute('SELECT id,name,code,rate FROM agents WHERE id=? AND merchant_id=?', (member['agent_id'],mid)).fetchone()

@@ -1,5 +1,5 @@
 import { PGlite } from "@electric-sql/pglite";
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { beforeAll, afterAll, describe, it, expect } from "vitest";
 const db = new PGlite();
 const idA = "11111111-1111-4111-8111-111111111111",
@@ -18,9 +18,11 @@ beforeAll(async () => {
   await db.exec(
     `create role anon; create role authenticated; create role service_role; create schema auth; create schema extensions; create table auth.users(id uuid primary key,email text,raw_user_meta_data jsonb); create function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid $$;`,
   );
-  await db.exec(
-    readFileSync("supabase/migrations/202611040001_ezshop.sql", "utf8"),
-  );
+  for (const file of readdirSync("supabase/migrations")
+    .filter((f) => f.endsWith(".sql"))
+    .sort()) {
+    await db.exec(readFileSync("supabase/migrations/" + file, "utf8"));
+  }
   await db.query("insert into auth.users values($1,$2,$3),($4,$5,$6)", [
     idA,
     "a@example.test",
@@ -103,6 +105,9 @@ describe("Supabase PostgreSQL RPC", () => {
     await db.exec("set role anon");
     try {
       await expect(db.query("select * from ezshop.orders")).rejects.toThrow();
+      await expect(
+        db.query("select public.ezshop_core_api('dashboard','{}'::jsonb)"),
+      ).rejects.toThrow();
       const r = await rpc("store", { slug: "store-a" });
       expect(r.store.email).toBeUndefined();
     } finally {
@@ -232,5 +237,136 @@ describe("Supabase PostgreSQL RPC", () => {
       await user(idA);
     }
     expect((await rpc("notifications")).jobs[0].status).toBe("sent");
+  });
+  it("提现预留与退款回冲在 PostgreSQL 中保持账本一致", async () => {
+    const owner = "66666666-6666-4666-8666-666666666666",
+      agent = "77777777-7777-4777-8777-777777777777";
+    await db.query("insert into auth.users values($1,$2,$3),($4,$5,$6)", [
+      owner,
+      "financeowner@example.test",
+      JSON.stringify({ name: "Finance Store", slug: "finance-store" }),
+      agent,
+      "financeagent@example.test",
+      "{}",
+    ]);
+    await user(owner);
+    await rpc("dashboard");
+    await rpc("products", {
+      name: "Finance Product",
+      price: 10000,
+      stock: 10,
+      published: 1,
+    });
+    const product = (await rpc("dashboard")).products[0];
+    const invite = await rpc("team/invite", {
+      name: "Finance Agent",
+      email: "financeagent@example.test",
+      role: "agent",
+      rate: 50,
+    });
+    await user(agent);
+    await rpc("join", { token: invite.invite_token });
+    const code = (await rpc("dashboard")).agents[0].code;
+    await user("");
+    await rpc("checkout", {
+      slug: "finance-store",
+      customer: "Buyer",
+      email: "financebuyer@example.test",
+      phone: "0123456789",
+      address: "KL",
+      agent: code,
+      items: [{ id: product.id, quantity: 1 }],
+      checkout_key: "finance-order-key-123456",
+    });
+    await user(owner);
+    const order = (await rpc("dashboard")).orders[0];
+    await rpc("orders/paid", { id: order.id });
+    await user(agent);
+    const request = {
+      amount: 3000,
+      bank_details: "Test Bank / Test beneficiary",
+      request_key: "finance-payout-key-12345",
+    };
+    const payout = await rpc("payouts/request", request);
+    expect((await rpc("payouts/request", request)).id).toBe(payout.id);
+    await expect(
+      rpc("payouts/request", { ...request, amount: 3001 }),
+    ).rejects.toThrow();
+    await expect(
+      rpc("payouts/request", {
+        ...request,
+        amount: 2500,
+        request_key: "second-payout-key-123456",
+      }),
+    ).rejects.toThrow();
+    const pending = await rpc("payouts/request", {
+      ...request,
+      amount: 2000,
+      request_key: "pending-payout-key-123456",
+    });
+    expect((await rpc("payouts")).balances[0].available).toBe(0);
+    await expect(
+      rpc("payouts/update", {
+        id: payout.id,
+        status: "paid",
+        reference: "TEST-TRANSFER",
+      }),
+    ).rejects.toThrow();
+    await user(idB);
+    await expect(
+      rpc("payouts/update", {
+        id: payout.id,
+        status: "paid",
+        reference: "TEST-TRANSFER",
+      }),
+    ).rejects.toThrow();
+    await user(owner);
+    await rpc("payouts/update", {
+      id: payout.id,
+      status: "paid",
+      reference: "TEST-TRANSFER",
+    });
+    await rpc("payouts/update", {
+      id: payout.id,
+      status: "paid",
+      reference: "TEST-TRANSFER",
+    });
+    expect(
+      (await rpc("payouts")).payouts.find((p: any) => p.id === payout.id)
+        .reference,
+    ).toBe("TEST-TRANSFER");
+    await rpc("orders/refund", {
+      id: order.id,
+      reference: "TEST-REFUND",
+      restock: true,
+    });
+    await rpc("orders/refund", {
+      id: order.id,
+      reference: "TEST-REFUND",
+      restock: true,
+    });
+    await expect(
+      rpc("orders/refund", { id: order.id, reference: "OTHER", restock: true }),
+    ).rejects.toThrow();
+    const d = await rpc("dashboard");
+    expect(d.products[0].stock).toBe(10);
+    expect(d.orders[0].status).toBe("refunded");
+    expect(d.orders[0].refund_reference).toBe("TEST-REFUND");
+    await user(agent);
+    const ledger = await rpc("payouts");
+    expect(ledger.balances[0].available).toBe(-3000);
+    expect(ledger.balances[0].reserved).toBe(0);
+    expect(ledger.payouts.find((p: any) => p.id === pending.id).status).toBe(
+      "rejected",
+    );
+    await expect(
+      rpc("payouts/request", {
+        ...request,
+        amount: 1,
+        request_key: "after-refund-key-1234567",
+      }),
+    ).rejects.toThrow();
+    await user(idB);
+    expect((await rpc("payouts")).payouts).toHaveLength(0);
   });
 });
