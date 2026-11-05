@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "checks": {
+    "orders": {
+      "status": "pending",
+      "verified_at": null,
+      "reviewed_by": "",
+      "evidence": [],
+      "note": "待真实账号或独立验收项目验证下单、核款、发货、查询、库存及利润同步；本地模拟测试不作为正式验收记录。"
+    },
+    "stripe": {
+      "status": "pending",
+      "verified_at": null,
+      "reviewed_by": "",
+      "evidence": [],
+      "note": "待正式首次扣款和开通验证，并核对订阅续期、失败及取消行为。配置检查和模拟Webhook不能替代真实验证。"
+    },
+    "backup_restore": {
+      "status": "pending",
+      "verified_at": null,
+      "reviewed_by": "",
+      "evidence": [],
+      "note": "待生成正式项目加密备份，在独立项目验证账号、资料、权限及图片恢复。临时PostgreSQL恢复测试不作为正式项目恢复记录。"
+    }
+  }
+}

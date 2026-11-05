@@ -39,6 +39,9 @@ jobs:
         with:
           node-version: 24
           cache: npm
+      - name: 正式验收未齐全时不部署或升级
+        if: inputs.action != 'check'
+        run: node scripts/check-final-acceptance.mjs
       - run: npm ci --no-audit --no-fund
       - name: 仅检查，不修改远端
         if: inputs.action == 'check'

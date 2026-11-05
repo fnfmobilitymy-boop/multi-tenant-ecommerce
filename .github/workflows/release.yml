@@ -14,7 +14,18 @@ concurrency:
   group: ezshop-complete-release
   cancel-in-progress: false
 jobs:
+  acceptance:
+    if: inputs.confirm == 'DEPLOY' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: 全部正式验收完成后才发布
+        run: node scripts/check-final-acceptance.mjs
   backend:
+    needs: acceptance
     if: inputs.confirm == 'DEPLOY' && github.ref == 'refs/heads/main'
     uses: ./.github/workflows/backend.yml
     with:
