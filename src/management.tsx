@@ -1,17 +1,10 @@
+import { PlatformDetails } from "./platform-details";
 import { PlatformBillingAdmin } from "./platform-billing";
 import { useI18n } from "./i18n";
 import { useEffect, useState } from "react";
 import { Payouts } from "./payouts";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import {
-  Plus,
-  Users,
-  Copy,
-  ArrowUpRight,
-  Shield,
-  Wallet,
-  ShoppingBag,
-} from "lucide-react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { Plus, Users, Copy, Shield, Wallet, ShoppingBag } from "lucide-react";
 import { api, dateLabel, money, statusLabel } from "./api";
 import { Brand, Empty, ErrorBox, Loading, Modal } from "./ui";
 import type { Dashboard } from "./types";
@@ -255,6 +248,7 @@ interface PlatformMerchant {
 }
 export function Platform() {
   const { t, locale, errorText } = useI18n();
+  const [selected, setSelected] = useState<PlatformMerchant | null>(null);
   const [merchants, setMerchants] = useState<PlatformMerchant[]>([]),
     [error, setError] = useState(""),
     [loading, setLoading] = useState(true);
@@ -288,6 +282,10 @@ export function Platform() {
       setError((e as Error).message);
     }
   }
+  if (selected)
+    return (
+      <PlatformDetails merchant={selected} close={() => setSelected(null)} />
+    );
   return (
     <>
       <div className="page-heading">
@@ -298,9 +296,9 @@ export function Platform() {
         <Shield size={25} className="purple" />
       </div>
       <div className="soft-note">
-        {t(
-          "方案为平台手动分配标识，不代表订阅已收款。自动订阅计费与网关尚未开通。",
-        )}
+        {locale === "en"
+          ? "Manually assigning a plan does not confirm payment. Check subscription and payment records separately."
+          : "手动修改套餐不代表已收款，请同时核对订阅状态和付款记录。"}
       </div>
       <PlatformBillingAdmin />
       <ErrorBox error={error} />
@@ -312,6 +310,7 @@ export function Platform() {
             <thead>
               <tr>
                 <th>{t("商家")}</th>
+                <th>{locale === "en" ? "Business details" : "业务明细"}</th>
                 <th>{t("订单数")}</th>
                 <th>{t("已收款销售额")}</th>
                 <th>{t("方案")}</th>
@@ -324,6 +323,14 @@ export function Platform() {
                   <td>
                     {m.name}
                     <small>{m.email}</small>
+                  </td>
+                  <td>
+                    <button
+                      className="text-button"
+                      onClick={() => setSelected(m)}
+                    >
+                      {locale === "en" ? "View details" : "查看明细"}
+                    </button>
                   </td>
                   <td>{m.orders_count}</td>
                   <td>{money(m.sales, locale)}</td>
@@ -414,10 +421,6 @@ export function Affiliate({
         <p className="break-link">
           {location.origin + import.meta.env.BASE_URL.replace(/\/$/, "") + link}
         </p>
-        <Link className="text-button" to={link} target="_blank">
-          {t("打开推广店铺")}
-          <ArrowUpRight size={14} />
-        </Link>
         <p>
           {t(
             "佣金金额表示已赚取，不表示已支付。请在下方提交提现申请并查看实际结算记录。",

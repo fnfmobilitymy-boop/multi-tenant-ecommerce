@@ -99,7 +99,7 @@ export async function supabaseApi<T>(
     return { ok: true } as T;
   }
   if (route === "logout") {
-    const { error } = await client.auth.signOut();
+    const { error } = await client.auth.signOut({ scope: "local" });
     if (error) throw error;
     return { ok: true } as T;
   }

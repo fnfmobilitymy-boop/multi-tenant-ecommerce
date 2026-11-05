@@ -1919,3 +1919,8 @@ td { font-size: 1rem; }
 }
 
 .metric { overflow-wrap: anywhere; }
+
+.portal-detail-tabs { display:flex;flex-wrap:wrap;gap:10px;margin:20px 0; }
+.platform-detail-fields { margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:16px; }
+.platform-detail-fields dt { font-weight:600;margin-bottom:4px; }
+.platform-detail-fields dd { margin:0;overflow-wrap:anywhere;white-space:pre-wrap; }

@@ -11,7 +11,9 @@ export const customerRecovery =
   new URLSearchParams(window.location.hash.slice(1)).get("type") === "recovery";
 // Customer login must not replace the merchant/platform browser session.
 export const customerClient =
-  import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY
+  customerPath &&
+  import.meta.env.VITE_SUPABASE_URL &&
+  import.meta.env.VITE_SUPABASE_ANON_KEY
     ? createClient(
         normalizeSupabaseUrl(import.meta.env.VITE_SUPABASE_URL),
         import.meta.env.VITE_SUPABASE_ANON_KEY,

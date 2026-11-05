@@ -91,6 +91,17 @@ export async function liveChecks(env, fetcher = fetch) {
       manifest?.features?.bookkeeping === true,
     http: database.http,
   });
+  const platform = await probe(
+    "platform_read",
+    "/rest/v1/rpc/ezshop_platform_read_status",
+    "POST",
+    {},
+  );
+  checks.push({
+    id: "platform_read",
+    ok: platform.result?.ready === true,
+    http: platform.http,
+  });
   const functions = await Promise.all(
     ["payments", "stripe-webhook", "send-notifications"].map(async (name) => {
       const response = await probe(name, "/functions/v1/" + name, "OPTIONS");
@@ -104,7 +115,7 @@ export async function liveChecks(env, fetcher = fetch) {
   checks.push(...functions);
   return {
     checks,
-    database_ok: checks.slice(0, 2).every((check) => check.ok),
+    database_ok: checks.slice(0, 3).every((check) => check.ok),
     functions_deployed: functions.every((check) => check.ok),
     features: manifest?.features || {},
     production_verified: false,

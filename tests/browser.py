@@ -33,12 +33,7 @@ with tempfile.TemporaryDirectory() as temp:
             merchant.get_by_role('button',name='创建店铺',exact=True).click()
             merchant.get_by_role('heading',name='生意总览',exact=True).wait_for()
             merchant.get_by_role('button',name='收支与利润',exact=True).wait_for()
-            with merchant.expect_popup() as preview:
-                merchant.get_by_role('link',name='预览顾客店铺',exact=True).first.click()
-            preview_page=preview.value;preview_page.get_by_role('heading',name='Kedai Kita',exact=True).wait_for()
-            preview_page.get_by_text('商家暂未发布商品，请稍后再来。',exact=True).wait_for()
-            assert merchant.url.endswith('/merchant'), 'Customer preview replaced merchant dashboard'
-            preview_page.close()
+            assert merchant.locator('a[href*="/shop/"],a[href*="/platform"]').count()==0, 'Merchant portal exposes another portal link'
             merchant.get_by_role('button',name='添加新商品',exact=False).click()
             dialog=merchant.get_by_role('dialog')
             dialog.get_by_label('商品名称',exact=True).fill('手工曲奇礼盒')
@@ -62,9 +57,14 @@ with tempfile.TemporaryDirectory() as temp:
             merchant.get_by_label('常用快递公司',exact=True).fill('Ninja Van')
             merchant.get_by_role('button',name='保存店铺资料').click()
             merchant.get_by_role('status').filter(has_text='资料已保存').wait_for()
+            assert merchant.locator('a[href*="/shop/"],a[href*="/platform"]').count()==0, 'Settings exposes another portal link'
             customer=isolated_context(viewport={'width':1440,'height':1050}).new_page()
             customer.on('pageerror',lambda e:errors.append(str(e)))
-            customer.goto(base+'/shop/kedai-kita')
+            customer.goto(base+'/shop/kedai-kita/unknown-page')
+            customer.get_by_role('heading',name='找不到页面',exact=True).wait_for()
+            customer.get_by_role('link',name='返回 EZShop',exact=True).click()
+            customer.get_by_role('heading',name='Kedai Kita',exact=True).wait_for()
+            assert customer.locator('a[href*="/merchant"],a[href*="/platform"]').count()==0, 'Customer portal exposes a back-office link'
             customer.get_by_role('heading',name='Kedai Kita',exact=True).wait_for()
             customer.wait_for_function("Array.from(document.images).filter(i=>i.alt==='Kedai Kita Logo'||i.alt==='Kedai Kita Banner').every(i=>i.complete&&i.naturalWidth>0)")
             customer.get_by_label('搜索商品').fill('曲奇')
@@ -144,6 +144,9 @@ with tempfile.TemporaryDirectory() as temp:
             assert staff.get_by_role('button',name='团队与权限',exact=True).count()==0
             staff.get_by_role('button',name='商品管理',exact=True).click()
             staff.get_by_role('heading',name='商品管理',exact=True).wait_for()
+            merchant.goto(base+'/platform')
+            merchant.get_by_role('heading',name='平台管理员登录',exact=True).wait_for()
+            assert merchant.get_by_role('table').count()==0, 'Non-admin merchant received platform data'
             # Admin rights are bootstrapped only in this disposable test database.
             import sqlite3
             with sqlite3.connect(temp+'/browser.db') as db:db.execute("UPDATE merchants SET is_admin=1 WHERE email='merchant@example.test'")

@@ -9,7 +9,6 @@ import { COURIERS } from "./delivery";
 import { MerchantPayments } from "./payments";
 import { Link } from "react-router-dom";
 import {
-  ArrowUpRight,
   ArrowRight,
   LayoutDashboard,
   Package,
@@ -485,10 +484,6 @@ function MerchantPage({
             <span>✦</span>
             <strong>{t("你的生意，你的节奏。")}</strong>
             <p>{t("分享店铺链接，让顾客随时随地下单。")}</p>
-            <Link to={shop} target="_blank" rel="noopener noreferrer" title={t("在新标签页打开")}>
-              {t("预览顾客店铺")}
-              <ArrowUpRight size={14} />
-            </Link>
           </div>
           <button className="nav-item" onClick={logout}>
             <LogOut size={18} />
@@ -540,10 +535,6 @@ function MerchantPage({
                   <h1>{t("生意总览")}</h1>
                   <p>{t("每一笔订单，都是生意的新进展。")}</p>
                 </div>
-                <Link className="button secondary" to={shop} target="_blank" rel="noopener noreferrer" title={t("在新标签页打开")}>
-                  <ArrowUpRight size={17} />
-                  {t("预览顾客店铺")}
-                </Link>
               </div>
               <div className="metric-grid">
                 {[
@@ -855,14 +846,13 @@ function MerchantPage({
                         <td>{a.orders_count}</td>
                         <td>{money(a.earned, locale)}</td>
                         <td>
-                          <Link
-                            className="text-button"
-                            to={shop + "?agent=" + a.code}
-                            target="_blank"
-                          >
-                            {t("打开专属店铺")}
-                            <ArrowUpRight size={14} />
-                          </Link>
+                          <span className="break-link">
+                            {location.origin +
+                              import.meta.env.BASE_URL.replace(/\/$/, "") +
+                              shop +
+                              "?agent=" +
+                              encodeURIComponent(a.code)}
+                          </span>
                         </td>
                       </tr>
                     ))}
@@ -1000,11 +990,11 @@ function MerchantPage({
                 </div>
                 <div className="soft-note">
                   {t("店铺网址：")}
-                  <Link to={shop} target="_blank" rel="noopener noreferrer" title={t("在新标签页打开")}>
+                  <span className="break-link">
                     {location.origin +
                       import.meta.env.BASE_URL.replace(/\/$/, "") +
                       shop}
-                  </Link>
+                  </span>
                   <br />
                   {t("交易币种：MYR \u00B7 马来西亚令吉")}
                 </div>

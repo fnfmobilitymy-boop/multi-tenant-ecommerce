@@ -45,6 +45,8 @@ function AppRoutes() {
 }
 function LocalizedRoutes() {
   const { t } = useI18n();
+  const location = useLocation();
+  const shopPath = location.pathname.match(/^\/shop\/([^/]+)/)?.[0];
   return (
     <>
       <Routes>
@@ -63,7 +65,15 @@ function LocalizedRoutes() {
           element={
             <div className="empty">
               <h1>{t("找不到页面")}</h1>
-              <a href={import.meta.env.BASE_URL}>{t("返回 EZShop")}</a>
+              <a
+                href={
+                  shopPath
+                    ? import.meta.env.BASE_URL.replace(/\/$/, "") + shopPath
+                    : import.meta.env.BASE_URL
+                }
+              >
+                {t("返回 EZShop")}
+              </a>
             </div>
           }
         />

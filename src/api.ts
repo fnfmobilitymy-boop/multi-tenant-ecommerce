@@ -6,6 +6,14 @@ import { normalizeSupabaseUrl } from "./supabase-config";
 import { isPasswordRecovery } from "./auth-redirect";
 export const initialPasswordRecovery =
   typeof window !== "undefined" && isPasswordRecovery(window.location.href);
+const portalPath =
+  typeof window === "undefined"
+    ? ""
+    : window.location.pathname.slice(
+        import.meta.env.BASE_URL.replace(/\/$/, "").length,
+      );
+const platformPortal = /^\/platform(?:\/|$)/.test(portalPath);
+const customerPortal = /^\/shop\/[^/]+(?:\/|$)/.test(portalPath);
 // Only public project credentials belong in the browser.
 // Cloud adapter is enabled only when both project settings are supplied.
 export const supabase =
@@ -15,14 +23,43 @@ export const supabase =
         import.meta.env.VITE_SUPABASE_ANON_KEY,
         {
           auth: {
-            detectSessionInUrl:
-              typeof window === "undefined" ||
-              !/\/shop\/[^/]+(?:\/|$)/.test(window.location.pathname),
+            ...(platformPortal
+              ? {
+                  storageKey:
+                    "ezshop-platform-auth-" +
+                    new URL(
+                      normalizeSupabaseUrl(import.meta.env.VITE_SUPABASE_URL),
+                    ).hostname,
+                }
+              : {}),
+            ...(customerPortal
+              ? {
+                  storageKey:
+                    "ezshop-public-auth-" +
+                    new URL(
+                      normalizeSupabaseUrl(import.meta.env.VITE_SUPABASE_URL),
+                    ).hostname,
+                  persistSession: false,
+                  autoRefreshToken: false,
+                }
+              : {}),
+            detectSessionInUrl: !platformPortal && !customerPortal,
           },
         },
       )
     : null;
 export async function api<T>(path: string, data?: unknown): Promise<T> {
+  if (supabase && path.startsWith("platform-read/")) {
+    const { data: result, error } = await supabase.rpc(
+      "ezshop_platform_read_api",
+      {
+        route: path.slice(14),
+        payload: data || {},
+      },
+    );
+    if (error) throw new Error(error.message);
+    return result as T;
+  }
   if (supabase && path.startsWith("books/")) {
     const { data: result, error } = await supabase.rpc("ezshop_books_api", {
       route: path.slice(6),
