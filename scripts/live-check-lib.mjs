@@ -83,7 +83,7 @@ export async function liveChecks(env, fetcher = fetch) {
   manifest = database.result;
   checks.push({
     id: "database_migrations",
-    ok: manifest?.database_ready === true && manifest?.features?.trial_access === true,
+    ok: manifest?.database_ready === true && manifest?.features?.trial_access === true && manifest?.features?.merchant_receiving === true,
     http: database.http,
   });
   const functions = await Promise.all(

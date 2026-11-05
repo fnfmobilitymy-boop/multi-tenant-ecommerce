@@ -26,6 +26,7 @@ try:
             def reply(value,status=200):return route.fulfill(status=status,content_type='application/json',body=json.dumps(value))
             if url.path=='/rest/v1/rpc/ezshop_api':
                 name=body['route'];calls.append(name)
+                if name=='receiving':return reply({'receiving':{'bank_enabled':False,'wallet_enabled':False,'usdt_enabled':False,'link_enabled':False,'version':0,'instructions':''}})
                 if name=='dashboard':return reply({'merchant':merchant,'products':[],'orders':[],'agents':[]})
                 if name=='store':return reply({'store':merchant,'products':[]})
                 if name=='order-result':

@@ -665,3 +665,46 @@ it('七天试用固定截止；到期禁止经营及绕过入口，保留续费�
  expect((await main('dashboard')).merchant.subscription_access).toBe(false);
  await user(owner);
 });
+
+it('商家自行填写银行资料，商家隔离且订单锁定当时账户，不自动标记已付款',async()=>{
+ await user(owner);
+ const original=(await main('receiving')).receiving;
+ const payload={...original,bank_enabled:true,bank_name:'Test Merchant Bank',holder:'Test Merchant Holder',account:'1234567890',instructions:'Use the order reference'};
+ const first=(await main('receiving/save',payload)).receiving;
+ expect(first.version).toBe(1);
+ await expect(main('receiving/save',payload)).rejects.toThrow('已更新');
+ await user(other);expect((await main('receiving')).receiving.account).toBe('');
+ const publicStore=await main('store',{slug:'pay-store'});expect(JSON.stringify(publicStore)).not.toContain('1234567890');
+ const placed=await order('bank-snapshot');
+ expect(placed.status).toBe('pending');
+ const result=await main('order-result',{slug:'pay-store',reference:placed.reference,token:placed.access_token});
+ expect(result.payment_instructions.bank.account).toBe('1234567890');expect(result.order.status).toBe('pending');
+ await expect(main('order-result',{slug:'pay-store',reference:placed.reference,token:'wrong'})).rejects.toThrow();
+ await user(owner);const changed=(await main('receiving/save',{...first,account:'9999999999'})).receiving;
+ await user('');
+ expect((await main('order-result',{slug:'pay-store',reference:placed.reference,token:placed.access_token})).payment_instructions.bank.account).toBe('1234567890');
+ expect((await order('bank-snapshot')).reference).toBe(placed.reference);
+ await user(owner);await main('receiving/save',{...changed,bank_enabled:false});
+ const unconfigured=await order('bank-disabled');
+ expect((await main('order-result',{slug:'pay-store',reference:unconfigured.reference,token:unconfigured.access_token})).payment_instructions).toEqual({});
+ await expect(main('receiving')).rejects.toThrow();
+ await user(owner);
+});
+
+it('电子钱包、USDT和商家链接独立校验，停用银行资料不泄露也不伪造汇率或到账',async()=>{
+ await user(owner);const base=(await main('receiving')).receiving;
+ await expect(main('receiving/save',{...base,link_enabled:true,payment_link:'javascript:alert(1)'})).rejects.toThrow('HTTPS');
+ await expect(main('receiving/save',{...base,link_enabled:true,payment_link:'https://user:pass@example.test/pay'})).rejects.toThrow('HTTPS');
+ await expect(main('receiving/save',{...base,wallet_enabled:true,wallet_name:'Test Wallet',wallet_identifier:'',wallet_qr:''})).rejects.toThrow('电子钱包');
+ await expect(main('receiving/save',{...base,usdt_enabled:true,usdt_network:null,usdt_address:''})).rejects.toThrow('USDT');
+ await expect(main('receiving/save',{...base,usdt_enabled:true,usdt_network:'TRC20',usdt_address:'invalid'})).rejects.toThrow('USDT');
+ await main('receiving/save',{...base,bank_enabled:false,wallet_enabled:true,wallet_name:'Test Wallet',wallet_identifier:'test-wallet-id',usdt_enabled:true,usdt_network:'ERC20',usdt_address:'0x1111111111111111111111111111111111111111',link_enabled:true,payment_link:'https://checkout.stripe.com/c/pay/test-fixture'});
+ const placed=await order('merchant-multiple-rails');
+ const result=await main('order-result',{slug:'pay-store',reference:placed.reference,token:placed.access_token});
+ expect(result.payment_instructions).not.toHaveProperty('bank');
+ expect(result.payment_instructions.wallet.identifier).toBe('test-wallet-id');
+ expect(result.payment_instructions.usdt.network).toBe('ERC20');
+ expect(result.payment_instructions.link).toBe('https://checkout.stripe.com/c/pay/test-fixture');
+ expect(result.order.total).toBeGreaterThan(0);expect(result.order.status).toBe('pending');expect(result.payment_instructions).not.toHaveProperty('exchange_rate');
+ await user(owner);
+});

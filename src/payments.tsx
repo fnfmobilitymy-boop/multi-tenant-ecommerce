@@ -1,4 +1,5 @@
-import { stripeAutomationEnabled } from "./features";
+import { MerchantReceiving } from "./merchant-receiving";
+import { stripeAutomationEnabled, stripeConnectEnabled } from "./features";
 import { intlLocale, useI18n } from "./i18n";
 import { useEffect, useRef, useState } from "react";
 import { CreditCard, ShieldCheck, Wallet, RefreshCw } from "lucide-react";
@@ -38,7 +39,7 @@ const reviewLabel: Record<string, string> = {
   partial_refund_or_mismatch: "部分退款或退款金额需核查",
   payment_disputed: "顾客发起支付争议",
 };
-export function MerchantPayments({ plan = "", trialEndsAt }: { plan?: string; trialEndsAt?: string }) {
+export function MerchantPayments({ plan = "", trialEndsAt, showManualSettings = true }: { plan?: string; trialEndsAt?: string; showManualSettings?: boolean }) {
   const { t, locale, errorText } = useI18n();
   const [data, setData] = useState<PaymentStatus | null>(null),
     [error, setError] = useState(""),
@@ -78,6 +79,7 @@ export function MerchantPayments({ plan = "", trialEndsAt }: { plan?: string; tr
   }
   if (!stripeAutomationEnabled) return <>
     <div className="page-heading"><div><h1>{t("收款与订阅")}</h1><p>{t("商品款付给商家，平台服务费付给 EZShop。")}</p></div><Wallet className="purple" size={25} /></div>
+    {showManualSettings && <MerchantReceiving />}
     <div className="overview-grid">
       <section className="card payment-panel"><h2>{t("商品订单收款")}</h2>
         <span className="badge pending">{t("人工核实收款")}</span>
@@ -100,6 +102,7 @@ export function MerchantPayments({ plan = "", trialEndsAt }: { plan?: string; tr
         </div>
         <CreditCard className="purple" size={25} />
       </div>
+      {showManualSettings && <MerchantReceiving />}
       {!supabase ? (
         <div className="soft-note">
           {t("当前使用商家手动收款，线上支付服务尚未启用。")}
@@ -111,7 +114,7 @@ export function MerchantPayments({ plan = "", trialEndsAt }: { plan?: string; tr
           {data && (
             <>
               <div className="overview-grid">
-                {data.subscription_access !== false && <section className="card payment-panel">
+                {stripeConnectEnabled && data.subscription_access !== false && <section className="card payment-panel">
                   <Wallet className="purple" size={27} />
                   <h2>{t("店铺线上收款")}</h2>
                   <ErrorBox error={connectError} />
@@ -400,7 +403,7 @@ export function OrderPayment({
         <ErrorBox
           error={t("付款需要商家核查，请勿重复付款。请联系商家处理。")}
         />
-      ) : status === "pending" && summary?.online_enabled ? (
+      ) : status === "pending" && stripeConnectEnabled && summary?.online_enabled ? (
         <>
           <button className="button full" disabled={busy} onClick={pay}>
             <CreditCard size={17} />

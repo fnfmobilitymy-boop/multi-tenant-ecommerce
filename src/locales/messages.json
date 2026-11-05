@@ -3865,7 +3865,7 @@
   ],
   "保存收款资料": [
     "Save receiving details",
-    "Simpan maklumat penerimaan",
+    "Simpan butiran penerimaan",
     "บันทึกข้อมูลรับเงิน",
     "រក្សាទុកព័ត៌មានទទួលប្រាក់",
     "Lưu thông tin nhận tiền"
@@ -4205,5 +4205,236 @@
     "Stripe Connect ไม่อนุญาตให้แพลตฟอร์มนี้เปิดรับเงินสำหรับประเทศนี้ โปรดตรวจสอบประเทศที่รองรับ",
     "Stripe Connect មិនអនុញ្ញាតឱ្យវេទិកានេះបើកទទួលប្រាក់សម្រាប់ប្រទេសនេះទេ។ សូមពិនិត្យប្រទេសវេទិកា និងអ្នកលក់ដែលគាំទ្រ។",
     "Stripe Connect không cho phép nền tảng mở tài khoản cho quốc gia này. Hãy kiểm tra các quốc gia được hỗ trợ."
+  ],
+  "商家银行收款设置": [
+    "Merchant bank transfer settings",
+    "Tetapan pindahan bank peniaga",
+    "ตั้งค่ารับโอนเงินของร้านค้า",
+    "ការកំណត់ទទួលប្រាក់តាមធនាគាររបស់អ្នកលក់",
+    "Cài đặt nhận chuyển khoản của cửa hàng"
+  ],
+  "填写你自己的收款账户，顾客下单后可查看并转账。": [
+    "Enter your own receiving account. Customers can view it after ordering and transfer payment.",
+    "Masukkan akaun penerimaan anda. Pelanggan boleh melihatnya selepas membuat pesanan dan memindahkan bayaran.",
+    "กรอกบัญชีรับเงินของคุณ ลูกค้าจะดูและโอนเงินได้หลังสั่งซื้อ",
+    "បញ្ចូលគណនីទទួលប្រាក់របស់អ្នក។ អតិថិជនអាចមើល និងផ្ទេរប្រាក់ក្រោយបញ្ជាទិញ។",
+    "Nhập tài khoản nhận tiền của bạn. Khách có thể xem và chuyển khoản sau khi đặt hàng."
+  ],
+  "向下单顾客显示银行转账资料": [
+    "Show bank transfer details to customers after ordering",
+    "Paparkan butiran pindahan bank selepas pelanggan membuat pesanan",
+    "แสดงข้อมูลโอนเงินให้ลูกค้าหลังสั่งซื้อ",
+    "បង្ហាញព័ត៌មានផ្ទេរប្រាក់ដល់អតិថិជនក្រោយបញ្ជាទិញ",
+    "Hiển thị thông tin chuyển khoản sau khi đặt hàng"
+  ],
+  "银行名称": [
+    "Bank name",
+    "Nama bank",
+    "ชื่อธนาคาร",
+    "ឈ្មោះធនាគារ",
+    "Tên ngân hàng"
+  ],
+  "收款人姓名": [
+    "Account holder name",
+    "Nama pemegang akaun",
+    "ชื่อเจ้าของบัญชี",
+    "ឈ្មោះម្ចាស់គណនី",
+    "Tên chủ tài khoản"
+  ],
+  "付款说明（选填）": [
+    "Payment instructions (optional)",
+    "Arahan bayaran (pilihan)",
+    "คำแนะนำการชำระเงิน (ไม่บังคับ)",
+    "ការណែនាំទូទាត់ (ជាជម្រើស)",
+    "Hướng dẫn thanh toán (không bắt buộc)"
+  ],
+  "顾客转账后由你核实到账。此处不会自动查账或扣款。": [
+    "Verify funds yourself after the customer transfers. This does not check balances or charge automatically.",
+    "Sahkan wang diterima selepas pelanggan membuat pindahan. Tiada semakan atau caj automatik.",
+    "ตรวจสอบยอดเงินจริงหลังลูกค้าโอน ระบบนี้ไม่ตรวจยอดหรือหักเงินอัตโนมัติ",
+    "សូមផ្ទៀងផ្ទាត់ប្រាក់ចូលក្រោយអតិថិជនផ្ទេរ។ មិនពិនិត្យគណនី ឬកាត់ប្រាក់ស្វ័យប្រវត្តិទេ។",
+    "Bạn cần xác minh tiền nhận sau khi khách chuyển khoản. Không tự động kiểm tra tài khoản hay trừ tiền."
+  ],
+  "收款资料已保存，仅用于之后的新订单。": [
+    "Receiving details saved for new orders only.",
+    "Butiran disimpan untuk pesanan baharu sahaja.",
+    "บันทึกข้อมูลแล้ว ใช้กับคำสั่งซื้อใหม่เท่านั้น",
+    "បានរក្សាទុកព័ត៌មាន សម្រាប់ការបញ្ជាទិញថ្មីប៉ុណ្ណោះ។",
+    "Đã lưu thông tin, chỉ áp dụng cho đơn hàng mới."
+  ],
+  "转账给商家": [
+    "Bank transfer to merchant",
+    "Pindahan bank kepada peniaga",
+    "โอนเงินให้ร้านค้า",
+    "ផ្ទេរប្រាក់ទៅអ្នកលក់",
+    "Chuyển khoản cho người bán"
+  ],
+  "转账前请核对商家、户名和金额，付款后联系商家确认。": [
+    "Check the merchant, account holder and amount before transferring. Contact the merchant after payment.",
+    "Semak peniaga, pemegang akaun dan jumlah sebelum pindahan. Hubungi peniaga selepas bayaran.",
+    "ตรวจสอบร้านค้า ชื่อบัญชี และยอดเงินก่อนโอน ติดต่อร้านค้าหลังชำระเงิน",
+    "ពិនិត្យអ្នកលក់ ម្ចាស់គណនី និងចំនួនប្រាក់មុនផ្ទេរ។ ទាក់ទងអ្នកលក់ក្រោយទូទាត់។",
+    "Kiểm tra người bán, chủ tài khoản và số tiền trước khi chuyển. Liên hệ người bán sau khi thanh toán."
+  ],
+  "商家收款设置暂不可用，请联系平台管理员。": [
+    "Merchant receiving settings are unavailable. Contact the platform administrator.",
+    "Tetapan penerimaan tidak tersedia. Hubungi pentadbir platform.",
+    "การตั้งค่ารับเงินยังไม่พร้อม โปรดติดต่อผู้ดูแลแพลตฟอร์ม",
+    "ការកំណត់ទទួលប្រាក់មិនទាន់អាចប្រើបាន។ សូមទាក់ទងអ្នកគ្រប់គ្រងវេទិកា។",
+    "Cài đặt nhận tiền chưa khả dụng. Liên hệ quản trị nền tảng."
+  ],
+  "商家收款资料无效，请检查银行、户名和账号。": [
+    "Invalid receiving details. Check the bank, account holder and account number.",
+    "Butiran tidak sah. Semak bank, pemegang akaun dan nombor akaun.",
+    "ข้อมูลรับเงินไม่ถูกต้อง โปรดตรวจธนาคาร ชื่อบัญชี และเลขบัญชี",
+    "ព័ត៌មានទទួលប្រាក់មិនត្រឹមត្រូវ។ សូមពិនិត្យធនាគារ ម្ចាស់គណនី និងលេខគណនី។",
+    "Thông tin nhận tiền không hợp lệ. Kiểm tra ngân hàng, tên và số tài khoản."
+  ],
+  "收款资料已更新，请刷新后重新编辑。": [
+    "Receiving details changed. Refresh before editing again.",
+    "Butiran telah berubah. Muat semula sebelum menyunting.",
+    "ข้อมูลรับเงินเปลี่ยนแล้ว โปรดรีเฟรชก่อนแก้ไขอีกครั้ง",
+    "ព័ត៌មានទទួលប្រាក់បានផ្លាស់ប្ដូរ។ សូមផ្ទុកឡើងវិញមុនកែ។",
+    "Thông tin nhận tiền đã thay đổi. Tải lại trước khi chỉnh sửa."
+  ],
+  "商家收款方式与资料": [
+    "Merchant payment methods and details",
+    "Kaedah dan butiran bayaran peniaga",
+    "วิธีและข้อมูลรับเงินของร้านค้า",
+    "វិធី និងព័ត៌មានទទួលប្រាក់របស់អ្នកលក់",
+    "Phương thức và thông tin nhận tiền của cửa hàng"
+  ],
+  "自行选择银行、电子钱包、USDT或收款链接，顾客下单后按你的资料付款。": [
+    "Choose bank transfer, e-wallet, USDT or a payment link. Customers use your details after ordering.",
+    "Pilih pindahan bank, e-dompet, USDT atau pautan bayaran. Pelanggan menggunakan butiran anda selepas membuat pesanan.",
+    "เลือกโอนธนาคาร กระเป๋าเงิน USDT หรือลิงก์ชำระ ลูกค้าจะชำระตามข้อมูลของคุณหลังสั่งซื้อ",
+    "ជ្រើសធនាគារ កាបូបអេឡិចត្រូនិក USDT ឬតំណទូទាត់។ អតិថិជនទូទាត់តាមព័ត៌មានអ្នកក្រោយបញ្ជាទិញ។",
+    "Chọn chuyển khoản, ví điện tử, USDT hoặc liên kết thanh toán. Khách dùng thông tin của bạn sau khi đặt hàng."
+  ],
+  "银行转账": [
+    "Bank transfer",
+    "Pindahan bank",
+    "โอนธนาคาร",
+    "ផ្ទេរតាមធនាគារ",
+    "Chuyển khoản ngân hàng"
+  ],
+  "电子钱包": [
+    "E-wallet",
+    "E-dompet",
+    "กระเป๋าเงินอิเล็กทรอนิกส์",
+    "កាបូបអេឡិចត្រូនិក",
+    "Ví điện tử"
+  ],
+  "电子钱包名称": [
+    "E-wallet name",
+    "Nama e-dompet",
+    "ชื่อกระเป๋าเงิน",
+    "ឈ្មោះកាបូបអេឡិចត្រូនិក",
+    "Tên ví điện tử"
+  ],
+  "电子钱包账号（选填）": [
+    "E-wallet account (optional)",
+    "Akaun e-dompet (pilihan)",
+    "บัญชีกระเป๋าเงิน (ไม่บังคับ)",
+    "គណនីកាបូបអេឡិចត្រូនិក (ជាជម្រើស)",
+    "Tài khoản ví (không bắt buộc)"
+  ],
+  "电子钱包收款二维码（选填）": [
+    "E-wallet payment QR (optional)",
+    "QR bayaran e-dompet (pilihan)",
+    "QR รับเงิน (ไม่บังคับ)",
+    "QR ទទួលប្រាក់កាបូបអេឡិចត្រូនិក (ជាជម្រើស)",
+    "Mã QR nhận tiền (không bắt buộc)"
+  ],
+  "USDT收款": [
+    "USDT payment",
+    "Bayaran USDT",
+    "รับชำระ USDT",
+    "ទទួលប្រាក់ USDT",
+    "Nhận thanh toán USDT"
+  ],
+  "USDT网络": [
+    "USDT network",
+    "Rangkaian USDT",
+    "เครือข่าย USDT",
+    "បណ្ដាញ USDT",
+    "Mạng USDT"
+  ],
+  "请选择网络": [
+    "Select a network",
+    "Pilih rangkaian",
+    "เลือกเครือข่าย",
+    "ជ្រើសបណ្ដាញ",
+    "Chọn mạng"
+  ],
+  "USDT收款地址": [
+    "USDT receiving address",
+    "Alamat penerimaan USDT",
+    "ที่อยู่รับ USDT",
+    "អាសយដ្ឋានទទួល USDT",
+    "Địa chỉ nhận USDT"
+  ],
+  "订单以MYR计价，USDT金额及网络须与顾客确认，不自动换汇。": [
+    "Orders are priced in MYR. Agree the USDT amount and network with the customer; no automatic conversion.",
+    "Pesanan dalam MYR. Sahkan jumlah dan rangkaian USDT dengan pelanggan; tiada pertukaran automatik.",
+    "ราคาคำสั่งซื้อเป็น MYR โปรดยืนยันยอด USDT และเครือข่ายกับลูกค้า ไม่มีการแปลงเงินอัตโนมัติ",
+    "ការបញ្ជាទិញគិតជា MYR។ ត្រូវបញ្ជាក់ចំនួន USDT និងបណ្ដាញជាមួយអតិថិជន មិនប្ដូរប្រាក់ស្វ័យប្រវត្តិទេ។",
+    "Đơn hàng tính bằng MYR. Xác nhận số USDT và mạng với khách; không tự động đổi tiền."
+  ],
+  "收款链接": [
+    "Payment link",
+    "Pautan bayaran",
+    "ลิงก์ชำระเงิน",
+    "តំណទូទាត់",
+    "Liên kết thanh toán"
+  ],
+  "商家收款链接（HTTPS）": [
+    "Merchant payment link (HTTPS)",
+    "Pautan bayaran peniaga (HTTPS)",
+    "ลิงก์ชำระเงินร้านค้า (HTTPS)",
+    "តំណទូទាត់អ្នកលក់ (HTTPS)",
+    "Liên kết nhận tiền của cửa hàng (HTTPS)"
+  ],
+  "付款给商家": [
+    "Pay the merchant",
+    "Bayar kepada peniaga",
+    "ชำระให้ร้านค้า",
+    "ទូទាត់ទៅអ្នកលក់",
+    "Thanh toán cho người bán"
+  ],
+  "选择付款方式": [
+    "Choose payment method",
+    "Pilih kaedah bayaran",
+    "เลือกวิธีชำระเงิน",
+    "ជ្រើសវិធីទូទាត់",
+    "Chọn phương thức thanh toán"
+  ],
+  "打开商家收款链接": [
+    "Open merchant payment link",
+    "Buka pautan bayaran peniaga",
+    "เปิดลิงก์ชำระเงินของร้านค้า",
+    "បើកតំណទូទាត់របស់អ្នកលក់",
+    "Mở liên kết thanh toán của người bán"
+  ],
+  "收款链接及二维码必须使用有效的HTTPS网址。": [
+    "Payment and QR links must use valid HTTPS URLs.",
+    "Pautan bayaran dan QR mesti menggunakan URL HTTPS yang sah.",
+    "ลิงก์ชำระเงินและ QR ต้องเป็น HTTPS ที่ถูกต้อง",
+    "តំណទូទាត់ និង QR ត្រូវប្រើ URL HTTPS ត្រឹមត្រូវ។",
+    "Liên kết thanh toán và QR phải dùng URL HTTPS hợp lệ."
+  ],
+  "请填写电子钱包名称及账号，或上传真实收款二维码。": [
+    "Enter the e-wallet name and account, or upload a genuine payment QR.",
+    "Masukkan nama dan akaun e-dompet, atau muat naik QR bayaran sebenar.",
+    "กรอกชื่อและบัญชีกระเป๋าเงิน หรืออัปโหลด QR รับเงินจริง",
+    "បញ្ចូលឈ្មោះ និងគណនីកាបូប ឬផ្ទុក QR ទទួលប្រាក់ពិតប្រាកដ។",
+    "Nhập tên và tài khoản ví, hoặc tải lên mã QR nhận tiền thực."
+  ],
+  "USDT网络或收款地址无效，请核对后保存。": [
+    "Invalid USDT network or receiving address. Check before saving.",
+    "Rangkaian atau alamat USDT tidak sah. Semak sebelum menyimpan.",
+    "เครือข่ายหรือที่อยู่ USDT ไม่ถูกต้อง โปรดตรวจสอบก่อนบันทึก",
+    "បណ្ដាញ ឬអាសយដ្ឋាន USDT មិនត្រឹមត្រូវ។ សូមពិនិត្យមុនរក្សាទុក។",
+    "Mạng hoặc địa chỉ USDT không hợp lệ. Kiểm tra trước khi lưu."
   ]
 }

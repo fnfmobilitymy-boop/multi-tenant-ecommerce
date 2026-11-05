@@ -1,4 +1,5 @@
-import { stripeAutomationEnabled } from "./features";
+import { CustomerBankTransfer } from "./merchant-receiving";
+import { stripeAutomationEnabled, stripeConnectEnabled } from "./features";
 import { contentField, localizedContent, localizedItem } from "./content";
 import { useI18n } from "./i18n";
 import { useEffect, useState, useMemo } from "react";
@@ -58,7 +59,7 @@ export function Storefront() {
   useEffect(() => {
     let active = true;
     setOnlineEnabled(false);
-    if (supabase && stripeAutomationEnabled)
+    if (supabase && stripeAutomationEnabled && stripeConnectEnabled)
       api<{
         online_enabled: boolean;
       }>("payments/store-options", { slug })
@@ -855,6 +856,7 @@ export function Storefront() {
                 <strong>{t("总金额")}</strong>
                 <strong>{money(result.order.total, locale)}</strong>
               </div>
+              {result.order.status === "pending" && <CustomerBankTransfer info={result.payment_instructions} reference={result.order.reference} />}
               <OrderAccess reference={result.order.reference} token={sessionStorage.getItem("ezshop:order:" + result.order.reference) || ""} />
               <OrderPayment
                 slug={slug}

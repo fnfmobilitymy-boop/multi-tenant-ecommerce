@@ -363,7 +363,7 @@ function MerchantPage({
   if (data.merchant.subscription_access === false) return <main className="store-shell">
     <Brand to="/merchant" /><h1>{t("Pro试用或订阅已到期，请先续费。")}</h1>
     <p>{t("历史资料已保留，续费后可继续使用。")}</p>
-    {!data.merchant.role || data.merchant.role === "owner" ? <><MerchantPayments plan={data.merchant.plan} /><SubscriptionApplication /></> : <p>{t("请联系店铺所有者续费。")}</p>}
+    {!data.merchant.role || data.merchant.role === "owner" ? <><MerchantPayments plan={data.merchant.plan} showManualSettings={false} /><SubscriptionApplication /></> : <p>{t("请联系店铺所有者续费。")}</p>}
     <button className="button secondary" onClick={logout}>{t("退出登录")}</button><ErrorBox error={error} />
   </main>;
   if (data.merchant.role === "agent")

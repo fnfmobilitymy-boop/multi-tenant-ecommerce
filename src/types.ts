@@ -80,6 +80,7 @@ export interface Item {
   quantity: number;
 }
 export interface OrderResult {
+  payment_instructions?: import("./merchant-receiving").ReceivingInstructions;
   order: Order;
   items: Item[];
   store?: Merchant;
