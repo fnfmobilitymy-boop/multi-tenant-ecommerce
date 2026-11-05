@@ -1,3 +1,4 @@
+import {paymentReadiness} from "../supabase/functions/_shared/payment-readiness";
 import Stripe from 'stripe';import {describe,it,expect} from 'vitest';
 import {appUrl,stripeRedirect,paymentEvent,subscriptionSnapshot,validateProCheckout,proTrialEnd} from '../supabase/functions/_shared/payment-security';
 describe('支付安全边界',()=>{
@@ -35,4 +36,10 @@ it('绑卡只沿用原试用截止，不重新赠送七天，过期后不再试�
  expect(proTrialEnd('2026-11-08T00:00:00Z',now)).toBe(Date.parse('2026-11-08T00:00:00Z')/1000);
  expect(proTrialEnd('2026-11-04T00:00:00Z',now)).toBeUndefined();
  expect(proTrialEnd(undefined,now)).toBeUndefined();
+});
+
+it('Stripe配置检查只返回模式和布尔值，不泄露凭据也不声称真实支付通过',()=>{
+ const config:Record<string,string>={STRIPE_SECRET_KEY:'sk_test_private_fixture',STRIPE_PRO_PRICE_ID:'price_private_fixture',STRIPE_PRO_TAX_RATE_ID:'txr_private_fixture',STRIPE_WEBHOOK_SECRET:'whsec_private_fixture'};
+ const result=paymentReadiness(name=>config[name]);expect(result).toEqual({mode:'test',configured:true,payment_verified:false});expect(JSON.stringify(result)).not.toContain('private_fixture');
+ config.STRIPE_SECRET_KEY='sk_live_private_fixture';expect(paymentReadiness(name=>config[name]).mode).toBe('live');delete config.STRIPE_WEBHOOK_SECRET;expect(paymentReadiness(name=>config[name]).configured).toBe(false);expect(paymentReadiness(()=>undefined)).toEqual({mode:'unconfigured',configured:false,payment_verified:false});
 });

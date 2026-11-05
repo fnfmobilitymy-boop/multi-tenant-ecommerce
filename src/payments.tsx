@@ -50,6 +50,10 @@ export function MerchantPayments({
   showManualSettings?: boolean;
 }) {
   const { t, locale, errorText } = useI18n();
+  const [readiness, setReadiness] = useState<{
+    mode: string;
+    configured: boolean;
+  } | null>(null);
   const [data, setData] = useState<PaymentStatus | null>(null),
     [error, setError] = useState(""),
     [connectError, setConnectError] = useState(""),
@@ -65,7 +69,12 @@ export function MerchantPayments({
     }
   }
   useEffect(() => {
-    if (supabase && stripeAutomationEnabled) load();
+    if (supabase && stripeAutomationEnabled) {
+      load();
+      api<{ mode: string; configured: boolean }>("payments/readiness", {})
+        .then(setReadiness)
+        .catch(() => setReadiness({ mode: "unknown", configured: false }));
+    }
   }, []);
   async function action(
     name: string,
@@ -145,6 +154,20 @@ export function MerchantPayments({
       ) : (
         <>
           <ErrorBox error={error} />
+          {readiness && (
+            <div className="soft-note" role="status">
+              {t(
+                readiness.mode === "test"
+                  ? "Stripe 测试模式：不会产生真实收款，暂未完成正式支付验收。"
+                  : readiness.mode === "live"
+                    ? "Stripe 正式模式：将产生真实扣款；到账以 Stripe 记录为准。"
+                    : "暂时无法确认 Stripe 模式，请联系平台管理员。",
+              )}
+              {readiness.mode !== "unknown" && !readiness.configured && (
+                <p>{t("Stripe 配置尚不完整，当前不能确认自动订阅已就绪。")}</p>
+              )}
+            </div>
+          )}
           {!data && !error && <Loading />}
           {data && (
             <>

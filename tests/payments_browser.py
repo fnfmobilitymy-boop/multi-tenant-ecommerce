@@ -39,6 +39,7 @@ try:
                 if name=='order-summary':return reply({'online_enabled':state['online'],'requires_review':state['review'],'order_status':'paid' if state['paid'] else 'pending'})
             if url.path=='/functions/v1/payments':
                 calls.append(body['action'])
+                if body['action']=='readiness':return reply({'mode':'test','configured':True,'payment_verified':False})
                 if body['action']=='order-checkout':
                     assert body['reference']=='EZ-TEST' and body['token']=='test-order-access-token'
                     # Malicious/unexpected hosted URL must be refused before navigation.
@@ -50,6 +51,7 @@ try:
         page.goto(base)
         page.get_by_role('button',name='收款与订阅',exact=True).click()
         page.get_by_text('尚未开通收款',exact=True).wait_for()
+        page.get_by_text('Stripe 测试模式：不会产生真实收款，暂未完成正式支付验收。',exact=True).wait_for()
         page.get_by_role('button',name='开通商家收款账户',exact=True).click()
         connect_panel=page.locator('section.card').filter(has=page.get_by_role('heading',name='店铺线上收款',exact=True))
         connect_panel.get_by_role('alert').wait_for()

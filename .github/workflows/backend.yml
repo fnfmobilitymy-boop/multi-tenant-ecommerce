@@ -71,6 +71,7 @@ jobs:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
           SUPABASE_YES: "true"
           APP_URL: ${{ vars.APP_URL }}
+          STRIPE_AUTOMATION_ENABLED: ${{ vars.VITE_STRIPE_AUTOMATION_ENABLED }}
           STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
           STRIPE_PRO_PRICE_ID: ${{ secrets.STRIPE_PRO_PRICE_ID }}
           STRIPE_PRO_TAX_RATE_ID: ${{ secrets.STRIPE_PRO_TAX_RATE_ID }}
@@ -81,6 +82,9 @@ jobs:
           NOTIFICATION_JOB_SECRET: ${{ secrets.NOTIFICATION_JOB_SECRET }}
         run: |
           test -n "$SUPABASE_ACCESS_TOKEN" || { echo '缺少 Secret SUPABASE_ACCESS_TOKEN'; exit 1; }
+          if [ "$STRIPE_AUTOMATION_ENABLED" = "true" ]; then
+            node scripts/check-stripe-config.mjs
+          fi
           node scripts/write-service-config.mjs
           supabase secrets set --env-file "$RUNNER_TEMP/ezshop-services.env" --remote="$SUPABASE_PROJECT_REF"
           rm "$RUNNER_TEMP/ezshop-services.env"

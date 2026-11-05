@@ -1,3 +1,4 @@
+import {paymentReadiness} from "../_shared/payment-readiness.ts";
 import {connectFailure} from "../_shared/connect-errors.ts";
 import Stripe from 'npm:stripe@23.1.0';
 import {createClient} from 'npm:@supabase/supabase-js@2.118.0';
@@ -9,13 +10,15 @@ Deno.serve(async(req:Request)=>{
  if(origin&&origin!==root.origin)return reply({error:'Origin not allowed'},403);
  if(req.method==='OPTIONS')return new Response(null,{status:204,headers});
  if(req.method!=='POST')return reply({error:'POST required'},405);
+ let body:any;try{body=await req.json()}catch{return reply({error:'Invalid JSON'},400)}
+ if(body?.action==='readiness')return reply(paymentReadiness(name=>Deno.env.get(name)));
  const key=Deno.env.get('STRIPE_SECRET_KEY');if(!key)return reply({error:'支付服务尚未配置，当前不会发起付款或订阅。'},503);
  const stripe=new Stripe(key,{httpClient:Stripe.createFetchHttpClient()});
  const service=createClient(Deno.env.get('SUPABASE_URL')!,Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,{auth:{persistSession:false}});
  const rpc=async(route:string,payload:unknown={})=>{const {data,error}=await service.rpc('ezshop_payment_api',{route,payload});if(error)throw error;return data};
  let operation="";
  try{
-  const body=await req.json();const action=body.action;
+  const action=body?.action;
   if(["connect-onboarding","connect-refresh"].includes(action))operation=action;
   if(action==='order-checkout'){
    if(typeof body.reference!=='string'||typeof body.token!=='string'||body.reference.length>100||body.token.length>200)return reply({error:'订单访问凭证无效'},400);

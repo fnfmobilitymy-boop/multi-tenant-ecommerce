@@ -5024,5 +5024,33 @@
     "ร้านค้ายังไม่ได้เผยแพร่สินค้า โปรดกลับมาใหม่ภายหลัง",
     "អ្នកលក់មិនទាន់ផ្សព្វផ្សាយទំនិញទេ។ សូមមកម្តងទៀតពេលក្រោយ។",
     "Người bán chưa đăng sản phẩm. Vui lòng quay lại sau."
+  ],
+  "Stripe 测试模式：不会产生真实收款，暂未完成正式支付验收。": [
+    "Stripe test mode: no real payments are collected. Production payment verification is still pending.",
+    "Mod ujian Stripe: tiada bayaran sebenar dikutip. Pengesahan pembayaran produksi masih belum selesai.",
+    "โหมดทดสอบ Stripe: ไม่มีการรับเงินจริง ยังไม่ผ่านการตรวจสอบการชำระเงินจริง",
+    "របៀបសាកល្បង Stripe៖ មិនមានការទទួលប្រាក់ពិតទេ។ ការផ្ទៀងផ្ទាត់ការទូទាត់ពិតនៅមិនទាន់បានបញ្ចប់។",
+    "Chế độ thử nghiệm Stripe: không thu tiền thật. Việc xác minh thanh toán chính thức chưa hoàn tất."
+  ],
+  "Stripe 正式模式：将产生真实扣款；到账以 Stripe 记录为准。": [
+    "Stripe live mode: real charges apply. Confirm receipt against Stripe records.",
+    "Mod langsung Stripe: caj sebenar dikenakan. Sahkan penerimaan melalui rekod Stripe.",
+    "โหมดใช้งานจริง Stripe: มีการเรียกเก็บเงินจริง ตรวจสอบการรับเงินจากบันทึก Stripe",
+    "របៀបប្រើប្រាស់ពិត Stripe៖ នឹងមានការគិតប្រាក់ពិត។ ផ្ទៀងផ្ទាត់ប្រាក់ចូលតាមកំណត់ត្រា Stripe។",
+    "Chế độ chính thức Stripe: sẽ thu tiền thật. Xác nhận tiền nhận theo hồ sơ Stripe."
+  ],
+  "暂时无法确认 Stripe 模式，请联系平台管理员。": [
+    "Stripe mode could not be confirmed. Contact the platform administrator.",
+    "Mod Stripe tidak dapat disahkan. Hubungi pentadbir platform.",
+    "ยังไม่สามารถยืนยันโหมด Stripe ได้ โปรดติดต่อผู้ดูแลแพลตฟอร์ม",
+    "មិនអាចបញ្ជាក់របៀប Stripe បានទេ។ សូមទាក់ទងអ្នកគ្រប់គ្រងវេទិកា។",
+    "Chưa thể xác nhận chế độ Stripe. Hãy liên hệ quản trị viên nền tảng."
+  ],
+  "Stripe 配置尚不完整，当前不能确认自动订阅已就绪。": [
+    "Stripe configuration is incomplete. Automatic subscriptions cannot yet be confirmed as ready.",
+    "Konfigurasi Stripe belum lengkap. Langganan automatik belum dapat disahkan sedia.",
+    "การตั้งค่า Stripe ยังไม่ครบถ้วน ยังไม่สามารถยืนยันความพร้อมของการสมัครอัตโนมัติได้",
+    "ការកំណត់ Stripe មិនទាន់ពេញលេញទេ។ មិនទាន់អាចបញ្ជាក់ថាការជាវស្វ័យប្រវត្តិរួចរាល់បានទេ។",
+    "Cấu hình Stripe chưa đầy đủ. Chưa thể xác nhận đăng ký tự động đã sẵn sàng."
   ]
 }
