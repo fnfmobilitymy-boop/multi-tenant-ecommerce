@@ -1,3 +1,4 @@
+import { Bookkeeping } from "./bookkeeping";
 import { SubscriptionApplication } from "./platform-billing";
 import { ContentEditor } from "./content-editor";
 import { I18nProvider, LanguageToolbar, useI18n } from "./i18n";
@@ -38,7 +39,8 @@ type Tab =
   | "team"
   | "notifications"
   | "payouts"
-  | "payments";
+  | "payments"
+  | "books";
 export function MerchantApp() {
   const [tab, setTab] = useState<Tab>(() => {
     const query = new URLSearchParams(window.location.search);
@@ -139,6 +141,14 @@ function MerchantPage({
           ...versions,
           price: Math.round(Number(form.price) * 100),
           stock: Number(form.stock),
+          ...(form.unit_cost === undefined
+            ? {}
+            : {
+                unit_cost:
+                  form.unit_cost === ""
+                    ? null
+                    : Math.round(Number(form.unit_cost) * 100),
+              }),
           category: String(form.category || "全部商品"),
           published: form.published === "on" ? 1 : 0,
           featured: form.featured === "on" ? 1 : 0,
@@ -212,6 +222,7 @@ function MerchantPage({
     { id: "agents", name: "代理与佣金", icon: Users },
     { id: "settings", name: "店铺设置", icon: Settings },
     { id: "notifications", name: "邮件通知", icon: ShoppingBag },
+    { id: "books", name: "收支与利润", icon: Wallet },
     { id: "payments", name: "收款与订阅", icon: Wallet },
     { id: "payouts", name: "佣金结算", icon: Wallet },
     { id: "team", name: "团队与权限", icon: Users },
@@ -360,28 +371,46 @@ function MerchantPage({
         </section>
       </div>
     );
-  if (data.merchant.subscription_access === false) return <main className="store-shell">
-    <Brand to="/merchant" /><h1>{t("Pro试用或订阅已到期，请先续费。")}</h1>
-    <p>{t("历史资料已保留，续费后可继续使用。")}</p>
-    {!data.merchant.role || data.merchant.role === "owner" ? <><MerchantPayments plan={data.merchant.plan} showManualSettings={false} /><SubscriptionApplication /></> : <p>{t("请联系店铺所有者续费。")}</p>}
-    <button className="button secondary" onClick={logout}>{t("退出登录")}</button><ErrorBox error={error} />
-  </main>;
+  if (data.merchant.subscription_access === false)
+    return (
+      <main className="store-shell">
+        <Brand to="/merchant" />
+        <h1>{t("Pro试用或订阅已到期，请先续费。")}</h1>
+        <p>{t("历史资料已保留，续费后可继续使用。")}</p>
+        {!data.merchant.role || data.merchant.role === "owner" ? (
+          <>
+            <MerchantPayments
+              plan={data.merchant.plan}
+              showManualSettings={false}
+            />
+            <SubscriptionApplication />
+          </>
+        ) : (
+          <p>{t("请联系店铺所有者续费。")}</p>
+        )}
+        <button className="button secondary" onClick={logout}>
+          {t("退出登录")}
+        </button>
+        <ErrorBox error={error} />
+      </main>
+    );
   if (data.merchant.role === "agent")
     return <Affiliate data={data} logout={logout} />;
   const role = data.merchant.role || "owner";
   const visibleTabs = tabs.filter(
     (t) =>
       t.id === "dashboard" ||
-      (t.id === "team" ||
-            t.id === "settings" ||
-            t.id === "agents" ||
-            t.id === "notifications" ||
-            t.id === "payouts" ||
-            t.id === "payments"
-          ? role === "owner"
-          : t.id === "products"
-            ? ["owner", "manager", "inventory"].includes(role)
-            : ["owner", "manager", "orders"].includes(role)),
+      (t.id === "books" ||
+      t.id === "team" ||
+      t.id === "settings" ||
+      t.id === "agents" ||
+      t.id === "notifications" ||
+      t.id === "payouts" ||
+      t.id === "payments"
+        ? role === "owner"
+        : t.id === "products"
+          ? ["owner", "manager", "inventory"].includes(role)
+          : ["owner", "manager", "orders"].includes(role)),
   );
   const paid = data.orders.filter((o) => o.status === "paid"),
     pending = data.orders.filter((o) => o.status === "pending"),
@@ -485,7 +514,14 @@ function MerchantPage({
           </div>
         </header>
         <main className="workspace">
-          {data.merchant.trial_ends_at && new Date(data.merchant.trial_ends_at).getTime() > Date.now() && data.merchant.plan !== "pro" && <div className="soft-note">{t("Pro免费试用截止：")}{dateLabel(data.merchant.trial_ends_at, locale)}</div>}
+          {data.merchant.trial_ends_at &&
+            new Date(data.merchant.trial_ends_at).getTime() > Date.now() &&
+            data.merchant.plan !== "pro" && (
+              <div className="soft-note">
+                {t("Pro免费试用截止：")}
+                {dateLabel(data.merchant.trial_ends_at, locale)}
+              </div>
+            )}
           <ErrorBox error={error} />
           {notice && (
             <div className="success" role="status">
@@ -661,9 +697,13 @@ function MerchantPage({
               </section>
             </>
           )}
+          {tab === "books" && <Bookkeeping />}
           {tab === "payments" && (
             <>
-              <MerchantPayments plan={data.merchant.plan} trialEndsAt={data.merchant.trial_ends_at} />
+              <MerchantPayments
+                plan={data.merchant.plan}
+                trialEndsAt={data.merchant.trial_ends_at}
+              />
               <SubscriptionApplication />
             </>
           )}
@@ -1018,6 +1058,29 @@ function MerchantPage({
                     {t("不同规格分别建立商品，各自设置价格及库存。")}
                   </small>
                 </label>
+                {data.merchant.bookkeeping_enabled &&
+                  ["owner", "manager"].includes(
+                    data.merchant.role || "owner",
+                  ) && (
+                    <label>
+                      {t("单位成本（MYR）")}
+                      <input
+                        name="unit_cost"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        max="1000000"
+                        defaultValue={
+                          editing?.unit_cost == null
+                            ? ""
+                            : editing.unit_cost / 100
+                        }
+                      />
+                      <small>
+                        {t("留空表示成本未知，不会当作零成本计算利润。")}
+                      </small>
+                    </label>
+                  )}
                 <div className="form-grid">
                   <label>
                     {t("价格（MYR）")}

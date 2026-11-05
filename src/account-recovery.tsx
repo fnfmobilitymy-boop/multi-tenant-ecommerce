@@ -8,7 +8,8 @@ export function RecoveryListener() {
   const navigate = useNavigate();
   const consumed = useRef(false);
   useEffect(() => {
-    if (!supabase) return;
+    if (!supabase || /\/shop\/[^/]+(?:\/|$)/.test(window.location.pathname))
+      return;
     let timer: ReturnType<typeof setTimeout> | undefined;
     if (initialPasswordRecovery && !consumed.current) {
       consumed.current = true;

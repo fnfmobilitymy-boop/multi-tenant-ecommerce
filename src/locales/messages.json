@@ -4436,5 +4436,558 @@
     "เครือข่ายหรือที่อยู่ USDT ไม่ถูกต้อง โปรดตรวจสอบก่อนบันทึก",
     "បណ្ដាញ ឬអាសយដ្ឋាន USDT មិនត្រឹមត្រូវ។ សូមពិនិត្យមុនរក្សាទុក។",
     "Mạng hoặc địa chỉ USDT không hợp lệ. Kiểm tra trước khi lưu."
+  ],
+  "收支与利润": [
+    "Income, expenses and profit",
+    "Pendapatan, belanja dan untung",
+    "รายรับ รายจ่าย และกำไร",
+    "ចំណូល ចំណាយ និងប្រាក់ចំណេញ",
+    "Thu chi và lợi nhuận"
+  ],
+  "我的购买记录": [
+    "My purchases",
+    "Pembelian saya",
+    "ประวัติการซื้อ",
+    "ការទិញរបស់ខ្ញុំ",
+    "Lịch sử mua hàng"
+  ],
+  "录入收支": [
+    "Record income or expense",
+    "Catat pendapatan atau belanja",
+    "บันทึกรายรับรายจ่าย",
+    "កត់ត្រាចំណូល ឬចំណាយ",
+    "Ghi thu chi"
+  ],
+  "统计范围": [
+    "Reporting period",
+    "Tempoh laporan",
+    "ช่วงรายงาน",
+    "រយៈពេលរបាយការណ៍",
+    "Kỳ báo cáo"
+  ],
+  "全部记录": [
+    "All records",
+    "Semua rekod",
+    "ทั้งหมด",
+    "កំណត់ត្រាទាំងអស់",
+    "Tất cả bản ghi"
+  ],
+  "按月": [
+    "Monthly",
+    "Bulanan",
+    "รายเดือน",
+    "ប្រចាំខែ",
+    "Theo tháng"
+  ],
+  "按日": [
+    "Daily",
+    "Harian",
+    "รายวัน",
+    "ប្រចាំថ្ងៃ",
+    "Theo ngày"
+  ],
+  "月份": [
+    "Month",
+    "Bulan",
+    "เดือน",
+    "ខែ",
+    "Tháng"
+  ],
+  "日期": [
+    "Date",
+    "Tarikh",
+    "วันที่",
+    "កាលបរិច្ឆេទ",
+    "Ngày"
+  ],
+  "收入": [
+    "Income",
+    "Pendapatan",
+    "รายรับ",
+    "ចំណូល",
+    "Thu nhập"
+  ],
+  "支出": [
+    "Expense",
+    "Belanja",
+    "รายจ่าย",
+    "ចំណាយ",
+    "Chi phí"
+  ],
+  "说明": [
+    "Description",
+    "Keterangan",
+    "รายละเอียด",
+    "ការពិពណ៌នា",
+    "Mô tả"
+  ],
+  "说明及参考号": [
+    "Description and reference",
+    "Keterangan dan rujukan",
+    "รายละเอียดและเลขอ้างอิง",
+    "ការពិពណ៌នា និងលេខយោង",
+    "Mô tả và mã tham chiếu"
+  ],
+  "参考号（选填）": [
+    "Reference (optional)",
+    "Rujukan (pilihan)",
+    "เลขอ้างอิง (ไม่บังคับ)",
+    "លេខយោង (ជាជម្រើស)",
+    "Mã tham chiếu (không bắt buộc)"
+  ],
+  "已作废": [
+    "Voided",
+    "Dibatalkan",
+    "ยกเลิกรายการแล้ว",
+    "បានទុកជាមោឃៈ",
+    "Đã vô hiệu"
+  ],
+  "作废": [
+    "Void entry",
+    "Batalkan rekod",
+    "ยกเลิกรายการ",
+    "ទុកកំណត់ត្រាជាមោឃៈ",
+    "Vô hiệu bản ghi"
+  ],
+  "请填写作废原因。": [
+    "Enter a reason for voiding this entry.",
+    "Masukkan sebab pembatalan rekod.",
+    "ระบุเหตุผลที่ยกเลิกรายการ",
+    "សូមបញ្ចូលមូលហេតុទុកកំណត់ត្រាជាមោឃៈ។",
+    "Nhập lý do vô hiệu bản ghi."
+  ],
+  "日期未记录": [
+    "Date not recorded",
+    "Tarikh tidak direkodkan",
+    "ไม่ได้บันทึกวันที่",
+    "មិនបានកត់ត្រាកាលបរិច្ឆេទ",
+    "Chưa ghi ngày"
+  ],
+  "成本及收款日期": [
+    "Costs and receipt date",
+    "Kos dan tarikh terimaan",
+    "ต้นทุนและวันที่รับเงิน",
+    "ថ្លៃដើម និងថ្ងៃទទួលប្រាក់",
+    "Giá vốn và ngày nhận tiền"
+  ],
+  "单位成本（MYR）": [
+    "Unit cost (MYR)",
+    "Kos seunit (MYR)",
+    "ต้นทุนต่อหน่วย (MYR)",
+    "ថ្លៃដើមក្នុងមួយឯកតា (MYR)",
+    "Giá vốn mỗi đơn vị (MYR)"
+  ],
+  "历史收款日期（选填）": [
+    "Historical receipt date (optional)",
+    "Tarikh terimaan lama (pilihan)",
+    "วันที่รับเงินย้อนหลัง (ไม่บังคับ)",
+    "ថ្ងៃទទួលប្រាក់ចាស់ (ជាជម្រើស)",
+    "Ngày nhận tiền trước đây (không bắt buộc)"
+  ],
+  "更正原因": [
+    "Reason for correction",
+    "Sebab pembetulan",
+    "เหตุผลที่แก้ไข",
+    "មូលហេតុកែតម្រូវ",
+    "Lý do điều chỉnh"
+  ],
+  "待补成本": [
+    "Costs needed",
+    "Kos diperlukan",
+    "รอกรอกต้นทุน",
+    "ត្រូវបំពេញថ្លៃដើម",
+    "Cần bổ sung giá vốn"
+  ],
+  "订单收款": [
+    "Order receipts",
+    "Terimaan pesanan",
+    "เงินรับจากคำสั่งซื้อ",
+    "ប្រាក់ចូលពីការបញ្ជាទិញ",
+    "Tiền thu đơn hàng"
+  ],
+  "退款支出": [
+    "Refunds paid",
+    "Bayaran balik",
+    "เงินคืน",
+    "ប្រាក់បានសងវិញ",
+    "Tiền hoàn trả"
+  ],
+  "佣金提现": [
+    "Commission payouts",
+    "Pembayaran komisen",
+    "จ่ายค่าคอมมิชชัน",
+    "ការបង់កម្រៃជើងសា",
+    "Chi trả hoa hồng"
+  ],
+  "日常支出": [
+    "Operating expense",
+    "Belanja operasi",
+    "ค่าใช้จ่ายดำเนินงาน",
+    "ចំណាយប្រតិបត្តិការ",
+    "Chi phí hoạt động"
+  ],
+  "邮寄支出": [
+    "Shipping expense",
+    "Belanja penghantaran",
+    "ค่าจัดส่ง",
+    "ចំណាយដឹកជញ្ជូន",
+    "Chi phí vận chuyển"
+  ],
+  "广告费": [
+    "Advertising",
+    "Iklan",
+    "ค่าโฆษณา",
+    "ថ្លៃផ្សាយពាណិជ្ជកម្ម",
+    "Chi phí quảng cáo"
+  ],
+  "手续费": [
+    "Fees",
+    "Fi",
+    "ค่าธรรมเนียม",
+    "ថ្លៃសេវា",
+    "Phí dịch vụ"
+  ],
+  "进货付款（仅现金流）": [
+    "Inventory purchases (cash flow only)",
+    "Belian stok (aliran tunai sahaja)",
+    "ซื้อสต็อก (กระแสเงินสดเท่านั้น)",
+    "ការទិញស្តុក (លំហូរសាច់ប្រាក់ប៉ុណ្ណោះ)",
+    "Thanh toán nhập hàng (chỉ dòng tiền)"
+  ],
+  "其他收入": [
+    "Other income",
+    "Pendapatan lain",
+    "รายได้อื่น",
+    "ចំណូលផ្សេង",
+    "Thu nhập khác"
+  ],
+  "投入资金（不计利润）": [
+    "Capital introduced (not profit)",
+    "Modal dimasukkan (bukan untung)",
+    "เงินทุนที่นำเข้า (ไม่นับกำไร)",
+    "ទុនបញ្ចូល (មិនរាប់ជាចំណេញ)",
+    "Vốn góp (không tính lợi nhuận)"
+  ],
+  "手动录入收入": [
+    "Manually recorded income",
+    "Pendapatan dicatat manual",
+    "รายรับที่กรอกเอง",
+    "ចំណូលកត់ត្រាដោយដៃ",
+    "Thu nhập nhập thủ công"
+  ],
+  "已录入支出": [
+    "Recorded expenses",
+    "Belanja direkodkan",
+    "รายจ่ายที่บันทึก",
+    "ចំណាយបានកត់ត្រា",
+    "Chi phí đã ghi"
+  ],
+  "商品销售成本": [
+    "Cost of goods sold",
+    "Kos barang dijual",
+    "ต้นทุนสินค้าที่ขาย",
+    "ថ្លៃដើមទំនិញបានលក់",
+    "Giá vốn hàng bán"
+  ],
+  "代理佣金成本": [
+    "Agent commission cost",
+    "Kos komisen ejen",
+    "ต้นทุนค่าคอมมิชชันตัวแทน",
+    "ថ្លៃកម្រៃជើងសាភ្នាក់ងារ",
+    "Chi phí hoa hồng đại lý"
+  ],
+  "现金收支结余": [
+    "Net recorded cash flow",
+    "Aliran tunai bersih direkodkan",
+    "กระแสเงินสดสุทธิที่บันทึก",
+    "លំហូរសាច់ប្រាក់សុទ្ធកត់ត្រា",
+    "Chênh lệch thu chi đã ghi"
+  ],
+  "经营利润估算": [
+    "Estimated operating profit",
+    "Anggaran untung operasi",
+    "กำไรดำเนินงานโดยประมาณ",
+    "ចំណេញប្រតិបត្តិការប៉ាន់ស្មាន",
+    "Lợi nhuận kinh doanh ước tính"
+  ],
+  "顾客登录": [
+    "Customer login",
+    "Log masuk pelanggan",
+    "เข้าสู่ระบบลูกค้า",
+    "ចូលគណនីអតិថិជន",
+    "Đăng nhập khách hàng"
+  ],
+  "注册顾客账号": [
+    "Create customer account",
+    "Daftar akaun pelanggan",
+    "สมัครบัญชีลูกค้า",
+    "បង្កើតគណនីអតិថិជន",
+    "Tạo tài khoản khách hàng"
+  ],
+  "请输入顾客账号邮箱": [
+    "Enter your customer account email",
+    "Masukkan e-mel akaun pelanggan",
+    "กรอกอีเมลบัญชีลูกค้า",
+    "បញ្ចូលអ៊ីមែលគណនីអតិថិជន",
+    "Nhập email tài khoản khách hàng"
+  ],
+  "顾客账号暂不可用，请使用订单查询凭证。": [
+    "Customer accounts are unavailable. Use your order access code.",
+    "Akaun pelanggan tidak tersedia. Gunakan kod akses pesanan.",
+    "บัญชีลูกค้ายังไม่พร้อม โปรดใช้รหัสเข้าถึงคำสั่งซื้อ",
+    "គណនីអតិថិជនមិនអាចប្រើបាន។ សូមប្រើលេខកូដចូលការបញ្ជាទិញ។",
+    "Tài khoản khách chưa khả dụng. Hãy dùng mã truy cập đơn hàng."
+  ],
+  "已付款消费": [
+    "Paid spending",
+    "Perbelanjaan dibayar",
+    "ยอดซื้อที่ชำระแล้ว",
+    "ចំណាយបានទូទាត់",
+    "Chi tiêu đã thanh toán"
+  ],
+  "已购买件数": [
+    "Purchased units",
+    "Unit dibeli",
+    "จำนวนชิ้นที่ซื้อ",
+    "ចំនួនឯកតាបានទិញ",
+    "Số sản phẩm đã mua"
+  ],
+  "已退款金额": [
+    "Refunded amount",
+    "Jumlah dipulangkan",
+    "ยอดคืนเงิน",
+    "ចំនួនប្រាក់បានសង",
+    "Số tiền đã hoàn"
+  ],
+  "待付款订单": [
+    "Unpaid orders",
+    "Pesanan belum dibayar",
+    "คำสั่งซื้อรอชำระ",
+    "ការបញ្ជាទិញមិនទាន់ទូទាត់",
+    "Đơn chờ thanh toán"
+  ],
+  "数量": [
+    "Quantity",
+    "Kuantiti",
+    "จำนวน",
+    "ចំនួន",
+    "Số lượng"
+  ],
+  "关联以前的访客订单": [
+    "Link earlier guest orders",
+    "Pautkan pesanan tetamu terdahulu",
+    "เชื่อมคำสั่งซื้อเดิมแบบผู้เยี่ยมชม",
+    "ភ្ជាប់ការបញ្ជាទិញភ្ញៀវពីមុន",
+    "Liên kết đơn đã đặt khi chưa đăng nhập"
+  ],
+  "关联订单": [
+    "Link order",
+    "Pautkan pesanan",
+    "เชื่อมคำสั่งซื้อ",
+    "ភ្ជាប់ការបញ្ជាទិញ",
+    "Liên kết đơn hàng"
+  ],
+  "订单已关联到你的账号。": [
+    "Order linked to your account.",
+    "Pesanan dipautkan ke akaun anda.",
+    "เชื่อมคำสั่งซื้อกับบัญชีแล้ว",
+    "បានភ្ជាប់ការបញ្ជាទិញទៅគណនីអ្នក។",
+    "Đã liên kết đơn hàng với tài khoản."
+  ],
+  "如果该邮箱已注册，我们会发送重设密码链接。": [
+    "If this email is registered, a password reset link will be sent.",
+    "Jika e-mel ini berdaftar, pautan tetapan semula kata laluan akan dihantar.",
+    "หากอีเมลนี้ลงทะเบียนแล้ว ระบบจะส่งลิงก์ตั้งรหัสผ่านใหม่",
+    "បើអ៊ីមែលនេះបានចុះឈ្មោះ នឹងផ្ញើតំណកំណត់ពាក្យសម្ងាត់ឡើងវិញ។",
+    "Nếu email đã đăng ký, liên kết đặt lại mật khẩu sẽ được gửi."
+  ],
+  "请先登录顾客账号。": [
+    "Please log in to your customer account.",
+    "Sila log masuk ke akaun pelanggan.",
+    "โปรดเข้าสู่บัญชีลูกค้า",
+    "សូមចូលគណនីអតិថិជន។",
+    "Vui lòng đăng nhập tài khoản khách hàng."
+  ],
+  "请先验证邮箱，再查看购买记录。": [
+    "Verify your email before viewing purchase history.",
+    "Sahkan e-mel sebelum melihat sejarah pembelian.",
+    "ยืนยันอีเมลก่อนดูประวัติการซื้อ",
+    "សូមផ្ទៀងផ្ទាត់អ៊ីមែលមុនមើលប្រវត្តិការទិញ។",
+    "Xác minh email trước khi xem lịch sử mua hàng."
+  ],
+  "订单无法关联，请核对凭证及账号邮箱。": [
+    "Unable to link this order. Check the access code and account email.",
+    "Tidak dapat memaut pesanan. Semak kod akses dan e-mel akaun.",
+    "เชื่อมคำสั่งซื้อไม่ได้ โปรดตรวจรหัสและอีเมลบัญชี",
+    "មិនអាចភ្ជាប់ការបញ្ជាទិញ។ សូមពិនិត្យលេខកូដ និងអ៊ីមែលគណនី។",
+    "Không thể liên kết đơn. Kiểm tra mã truy cập và email tài khoản."
+  ],
+  "商品成本无效。": [
+    "Invalid product cost.",
+    "Kos produk tidak sah.",
+    "ต้นทุนสินค้าไม่ถูกต้อง",
+    "ថ្លៃដើមទំនិញមិនត្រឹមត្រូវ។",
+    "Giá vốn sản phẩm không hợp lệ."
+  ],
+  "请填写成本及更正原因。": [
+    "Enter costs and a reason for correction.",
+    "Masukkan kos dan sebab pembetulan.",
+    "กรอกต้นทุนและเหตุผลแก้ไข",
+    "សូមបញ្ចូលថ្លៃដើម និងមូលហេតុកែតម្រូវ។",
+    "Nhập giá vốn và lý do điều chỉnh."
+  ],
+  "记录不存在或已经作废。": [
+    "Entry not found or already voided.",
+    "Rekod tidak ditemui atau sudah dibatalkan.",
+    "ไม่พบรายการหรือยกเลิกแล้ว",
+    "រកមិនឃើញកំណត់ត្រា ឬបានទុកជាមោឃៈ។",
+    "Bản ghi không tồn tại hoặc đã vô hiệu."
+  ],
+  "商品不属于此订单。": [
+    "Item does not belong to this order.",
+    "Item bukan milik pesanan ini.",
+    "สินค้าไม่อยู่ในคำสั่งซื้อนี้",
+    "ទំនិញមិនមែនរបស់ការបញ្ជាទិញនេះ។",
+    "Sản phẩm không thuộc đơn hàng này."
+  ],
+  "月份格式无效。": [
+    "Invalid month format.",
+    "Format bulan tidak sah.",
+    "รูปแบบเดือนไม่ถูกต้อง",
+    "ទម្រង់ខែមិនត្រឹមត្រូវ។",
+    "Định dạng tháng không hợp lệ."
+  ],
+  "收支日期必须是已发生的日期。": [
+    "Use an actual date that is not in the future.",
+    "Gunakan tarikh sebenar yang bukan pada masa hadapan.",
+    "ใช้วันที่เกิดรายการจริง ไม่ใช่วันในอนาคต",
+    "ប្រើថ្ងៃកើតឡើងពិតប្រាកដ មិនមែនថ្ងៃអនាគត។",
+    "Dùng ngày phát sinh thực tế, không phải ngày tương lai."
+  ],
+  "收支资料无效，请核对金额、日期及说明。": [
+    "Invalid entry. Check the amount, date and description.",
+    "Rekod tidak sah. Semak jumlah, tarikh dan keterangan.",
+    "รายการไม่ถูกต้อง โปรดตรวจยอด วันที่ และรายละเอียด",
+    "កំណត់ត្រាមិនត្រឹមត្រូវ។ ពិនិត្យចំនួនប្រាក់ ថ្ងៃ និងការពិពណ៌នា។",
+    "Thu chi không hợp lệ. Kiểm tra số tiền, ngày và mô tả."
+  ],
+  "重复收支请求的资料不一致，请刷新后重试。": [
+    "Repeated entry details differ. Refresh and try again.",
+    "Butiran rekod berulang berbeza. Muat semula dan cuba lagi.",
+    "ข้อมูลคำขอซ้ำไม่ตรงกัน รีเฟรชแล้วลองอีกครั้ง",
+    "ព័ត៌មានសំណើម្តងទៀតខុសគ្នា។ ផ្ទុកឡើងវិញ ហើយសាកម្តងទៀត។",
+    "Nội dung yêu cầu lặp khác nhau. Tải lại rồi thử lại."
+  ],
+  "订单收款、退款及佣金自动记录，支出和成本由商家补充。": [
+    "Order receipts, refunds and commissions are recorded automatically. Add your costs and expenses.",
+    "Terimaan pesanan, bayaran balik dan komisen direkod automatik. Tambahkan kos dan belanja anda.",
+    "บันทึกรับเงิน คืนเงิน และค่าคอมมิชชันอัตโนมัติ ร้านค้าเพิ่มต้นทุนและรายจ่าย",
+    "ប្រាក់ចូល សងប្រាក់ និងកម្រៃជើងសាកត់ត្រាស្វ័យប្រវត្តិ។ អ្នកលក់បំពេញថ្លៃដើម និងចំណាយ។",
+    "Tiền thu, hoàn tiền và hoa hồng được ghi tự động. Người bán bổ sung giá vốn và chi phí."
+  ],
+  "进货付款和投入资金只影响现金流；商品成本按成交快照计算，避免重复计入利润。": [
+    "Inventory purchases and capital affect cash flow only. Product costs use the sale snapshot to avoid double counting profit.",
+    "Belian stok dan modal hanya menjejaskan aliran tunai. Kos produk menggunakan rekod semasa jualan untuk mengelak kiraan berganda.",
+    "ซื้อสต็อกและเงินทุนมีผลต่อกระแสเงินสดเท่านั้น ต้นทุนสินค้าใช้ข้อมูลตอนขายเพื่อไม่คิดซ้ำในกำไร",
+    "ការទិញស្តុក និងទុនប៉ះពាល់តែលំហូរសាច់ប្រាក់។ ថ្លៃដើមប្រើទិន្នន័យពេលលក់ ដើម្បីកុំគិតចំណេញស្ទួន។",
+    "Tiền nhập hàng và vốn góp chỉ ảnh hưởng dòng tiền. Giá vốn dùng dữ liệu lúc bán để tránh tính trùng lợi nhuận."
+  ],
+  "佣金按已付款订单计入利润，提现只影响现金流。": [
+    "Commission affects profit when orders are paid; payouts affect cash flow only.",
+    "Komisen menjejaskan untung apabila pesanan dibayar; pembayaran komisen hanya menjejaskan aliran tunai.",
+    "ค่าคอมมิชชันคิดในกำไรเมื่อชำระคำสั่งซื้อ การจ่ายออกมีผลต่อกระแสเงินสดเท่านั้น",
+    "កម្រៃជើងសាប៉ះពាល់ចំណេញពេលទូទាត់ការបញ្ជាទិញ ការបង់ចេញប៉ះពាល់តែលំហូរសាច់ប្រាក់។",
+    "Hoa hồng tính vào lợi nhuận khi đơn đã thanh toán; chi trả chỉ ảnh hưởng dòng tiền."
+  ],
+  "存在缺少成本的订单，补录后才能计算利润。": [
+    "Some orders have missing costs. Enter them before calculating profit.",
+    "Sesetengah pesanan tiada kos. Masukkan kos untuk mengira untung.",
+    "บางคำสั่งซื้อขาดต้นทุน ต้องกรอกก่อนคำนวณกำไร",
+    "ការបញ្ជាទិញខ្លះខ្វះថ្លៃដើម។ បំពេញសិនដើម្បីគណនាចំណេញ។",
+    "Một số đơn thiếu giá vốn. Bổ sung để tính lợi nhuận."
+  ],
+  "历史记录缺少真实日期，日期筛选不含这些记录，可在订单成本中补录。": [
+    "Some historical dates are unknown and excluded from date filters. Add verified dates in order costs.",
+    "Tarikh lama yang tidak diketahui tidak termasuk dalam penapis tarikh. Tambah tarikh sah dalam kos pesanan.",
+    "บางรายการเก่าไม่มีวันที่จริง จึงไม่รวมในตัวกรองวันที่ กรอกวันที่ที่ตรวจสอบแล้วในต้นทุนคำสั่งซื้อ",
+    "ថ្ងៃប្រវត្តិខ្លះមិនស្គាល់ និងមិនចូលតម្រងថ្ងៃ។ បំពេញថ្ងៃបានផ្ទៀងផ្ទាត់ក្នុងថ្លៃដើមការបញ្ជាទិញ។",
+    "Một số ngày cũ chưa rõ nên không tính trong bộ lọc ngày. Bổ sung ngày đã xác minh trong giá vốn đơn hàng."
+  ],
+  "汇总包含全部符合条件的记录，流水列表最多显示最近200笔。": [
+    "Totals cover all matching records; the ledger shows the latest 200 entries.",
+    "Jumlah merangkumi semua rekod sepadan; lejar memaparkan 200 rekod terkini.",
+    "ยอดรวมครอบคลุมทุกรายการที่ตรงเงื่อนไข บัญชีแสดงล่าสุด 200 รายการ",
+    "សរុបរាប់កំណត់ត្រាត្រូវគ្នាទាំងអស់ បញ្ជីបង្ហាញចុងក្រោយ 200។",
+    "Tổng tính mọi bản ghi phù hợp; sổ hiển thị 200 bản ghi gần nhất."
+  ],
+  "订单收入、退款和佣金已自动记录，请勿重复录入。": [
+    "Order income, refunds and commissions are already automatic. Do not enter them again.",
+    "Pendapatan pesanan, bayaran balik dan komisen sudah automatik. Jangan masukkan semula.",
+    "รายได้คำสั่งซื้อ คืนเงิน และค่าคอมมิชชันบันทึกอัตโนมัติแล้ว อย่ากรอกซ้ำ",
+    "ចំណូលការបញ្ជាទិញ សងប្រាក់ និងកម្រៃជើងសាកត់ត្រាស្វ័យប្រវត្តិរួចហើយ។ កុំបញ្ចូលស្ទួន។",
+    "Thu đơn hàng, hoàn tiền và hoa hồng đã được ghi tự động. Không nhập lại."
+  ],
+  "仅显示此店铺与你账号关联的订单，未付款不计入消费。": [
+    "Only this store’s orders linked to your account appear. Unpaid orders are excluded from spending.",
+    "Hanya pesanan kedai ini yang dipaut ke akaun anda dipaparkan. Pesanan belum dibayar tidak dikira sebagai perbelanjaan.",
+    "แสดงคำสั่งซื้อร้านนี้ที่เชื่อมกับบัญชีคุณเท่านั้น ยอดที่ยังไม่ชำระไม่นับเป็นค่าใช้จ่าย",
+    "បង្ហាញតែការបញ្ជាទិញហាងនេះដែលភ្ជាប់គណនីអ្នក។ មិនទាន់ទូទាត់មិនរាប់ជាចំណាយ។",
+    "Chỉ hiện đơn của cửa hàng này liên kết với tài khoản bạn. Đơn chưa trả tiền không tính vào chi tiêu."
+  ],
+  "汇总统计全部关联订单，列表最多显示最近200笔。": [
+    "Totals cover all linked orders; the list shows the latest 200.",
+    "Jumlah merangkumi semua pesanan dipaut; senarai memaparkan 200 terkini.",
+    "ยอดรวมครอบคลุมทุกคำสั่งซื้อที่เชื่อม รายการแสดงล่าสุด 200",
+    "សរុបរាប់ការបញ្ជាទិញភ្ជាប់ទាំងអស់ បញ្ជីបង្ហាញចុងក្រោយ 200។",
+    "Tổng tính mọi đơn đã liên kết; danh sách hiển thị 200 đơn gần nhất."
+  ],
+  "需要订单查询凭证，且订单邮箱须与你已验证的账号邮箱一致。": [
+    "Use the order access code. The order email must match your verified account email.",
+    "Gunakan kod akses pesanan. E-mel pesanan mesti sama dengan e-mel akaun yang disahkan.",
+    "ใช้รหัสเข้าถึงคำสั่งซื้อ อีเมลคำสั่งซื้อต้องตรงกับอีเมลบัญชีที่ยืนยันแล้ว",
+    "ប្រើលេខកូដការបញ្ជាទិញ។ អ៊ីមែលការបញ្ជាទិញត្រូវដូចអ៊ីមែលគណនីបានផ្ទៀងផ្ទាត់។",
+    "Dùng mã truy cập đơn. Email đơn hàng phải trùng email tài khoản đã xác minh."
+  ],
+  "留空表示成本未知，不会当作零成本计算利润。": [
+    "Leave blank if cost is unknown. It will not be treated as zero when calculating profit.",
+    "Biarkan kosong jika kos tidak diketahui. Kos tidak akan dianggap sifar untuk mengira untung.",
+    "เว้นว่างหากไม่ทราบต้นทุน จะไม่นับเป็นต้นทุนศูนย์เพื่อคำนวณกำไร",
+    "ទុកទទេបើមិនស្គាល់ថ្លៃដើម។ មិនចាត់ទុកជាសូន្យពេលគណនាចំណេញទេ។",
+    "Để trống nếu chưa rõ giá vốn. Không coi là giá vốn bằng không khi tính lợi nhuận."
+  ],
+  "请选择统计日期。": [
+    "Select a reporting date.",
+    "Pilih tarikh laporan.",
+    "เลือกวันที่รายงาน",
+    "ជ្រើសថ្ងៃរបាយការណ៍។",
+    "Chọn ngày báo cáo."
+  ],
+  "订单成本已更新，请刷新后重试。": [
+    "Order costs have changed. Refresh and try again.",
+    "Kos pesanan telah berubah. Muat semula dan cuba lagi.",
+    "ต้นทุนคำสั่งซื้อเปลี่ยนแล้ว รีเฟรชแล้วลองอีกครั้ง",
+    "ថ្លៃដើមការបញ្ជាទិញបានផ្លាស់ប្ដូរ។ ផ្ទុកឡើងវិញ ហើយសាកម្តងទៀត។",
+    "Giá vốn đơn đã thay đổi. Tải lại rồi thử lại."
+  ],
+  "本次订单将自动保存到你的顾客账号。": [
+    "This order will be saved to your customer account automatically.",
+    "Pesanan ini akan disimpan secara automatik ke akaun pelanggan anda.",
+    "คำสั่งซื้อนี้จะบันทึกในบัญชีลูกค้าของคุณอัตโนมัติ",
+    "ការបញ្ជាទិញនេះនឹងរក្សាទុកក្នុងគណនីអតិថិជនអ្នកស្វ័យប្រវត្តិ។",
+    "Đơn này sẽ tự động được lưu vào tài khoản khách hàng của bạn."
+  ],
+  "登录顾客账号可跨设备查看购买记录，也可以访客下单。": [
+    "Log in to view purchases across devices, or continue as a guest.",
+    "Log masuk untuk melihat pembelian merentas peranti, atau teruskan sebagai tetamu.",
+    "เข้าสู่ระบบเพื่อดูประวัติข้ามอุปกรณ์ หรือสั่งซื้อแบบผู้เยี่ยมชมได้",
+    "ចូលគណនីដើម្បីមើលការទិញឆ្លងឧបករណ៍ ឬបន្តជាភ្ញៀវ។",
+    "Đăng nhập để xem lịch sử trên nhiều thiết bị, hoặc tiếp tục mua không cần tài khoản."
+  ],
+  "注册请求已提交，请查看邮箱完成验证后登录。": [
+    "Registration request submitted. Check your email for verification before logging in.",
+    "Permintaan pendaftaran dihantar. Semak e-mel untuk pengesahan sebelum log masuk.",
+    "ส่งคำขอลงทะเบียนแล้ว โปรดตรวจอีเมลเพื่อยืนยันก่อนเข้าสู่ระบบ",
+    "បានដាក់សំណើចុះឈ្មោះ។ សូមពិនិត្យអ៊ីមែលដើម្បីផ្ទៀងផ្ទាត់មុនចូលគណនី។",
+    "Đã gửi yêu cầu đăng ký. Kiểm tra email để xác minh trước khi đăng nhập."
   ]
 }

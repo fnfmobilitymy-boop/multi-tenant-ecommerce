@@ -1,3 +1,5 @@
+import { CustomerCheckoutHint } from "./customer-account";
+import { storeApi as api } from "./customer-store-api";
 import { CustomerBankTransfer } from "./merchant-receiving";
 import { stripeAutomationEnabled, stripeConnectEnabled } from "./features";
 import { contentField, localizedContent, localizedItem } from "./content";
@@ -17,7 +19,7 @@ import {
   CheckCircle2,
   Package,
 } from "lucide-react";
-import { api, money, statusLabel, supabase } from "./api";
+import { money, statusLabel, supabase } from "./api";
 import { OrderAccess } from "./order-lookup";
 import { OrderPayment } from "./payments";
 import { getCart, putCart, setQuantity } from "./cart";
@@ -55,6 +57,15 @@ export function Storefront() {
         : null,
     [rawData, locale],
   );
+  useEffect(() => {
+    const clear = () => {
+      setResult(null);
+      if (window.location.pathname.endsWith("/order-result"))
+        setError("缺少此订单的访问凭证，请联系商家核实订单。");
+    };
+    window.addEventListener("ezshop:customer-signout", clear);
+    return () => window.removeEventListener("ezshop:customer-signout", clear);
+  }, []);
   const [onlineEnabled, setOnlineEnabled] = useState(false);
   useEffect(() => {
     let active = true;
@@ -117,10 +128,16 @@ export function Storefront() {
         return;
       }
       api<OrderResult>("order-result", { slug, reference: ref, token })
-        .then((value) => { if (active) setResult(value); })
-        .catch((e) => { if (active) setError(e.message); });
+        .then((value) => {
+          if (active) setResult(value);
+        })
+        .catch((e) => {
+          if (active) setError(e.message);
+        });
     }
-    return () => { active = false; };
+    return () => {
+      active = false;
+    };
   }, [location.pathname, location.search, slug, kind]);
   function update(id: number, q: number) {
     setQuantity(slug, id, q);
@@ -262,7 +279,12 @@ export function Storefront() {
         <Link to={base} className="store-name">
           {data.store.name}
         </Link>
-        <Link to={base + "/track"} className="text-button">{t("查询订单")}</Link>
+        <Link to={base + "/account"} className="text-button">
+          {t("我的购买记录")}
+        </Link>
+        <Link to={base + "/track"} className="text-button">
+          {t("查询订单")}
+        </Link>
         <Link
           className="cart-link"
           to={base + "/cart"}
@@ -274,7 +296,11 @@ export function Storefront() {
       </header>
       <main className="store-shell">
         <ErrorBox error={error} />
-        {data.store.subscription_access === false && <div className="soft-note">{t("店铺暂停接收新订单，已有订单仍可查询。")}</div>}
+        {data.store.subscription_access === false && (
+          <div className="soft-note">
+            {t("店铺暂停接收新订单，已有订单仍可查询。")}
+          </div>
+        )}
         {feedback && (
           <div className="success" role="status">
             {t(feedback)} · <Link to={base + "/cart"}>{t("查看购物车 →")}</Link>
@@ -500,6 +526,7 @@ export function Storefront() {
           ) : (
             <Empty>{t("此商品不存在、尚未发布或不属于当前店铺。")}</Empty>
           ))}
+        {kind === "checkout" && <CustomerCheckoutHint slug={slug} />}
         {(kind === "cart" || kind === "checkout") && (
           <>
             <Link className="back-link" to={base}>
@@ -856,8 +883,20 @@ export function Storefront() {
                 <strong>{t("总金额")}</strong>
                 <strong>{money(result.order.total, locale)}</strong>
               </div>
-              {result.order.status === "pending" && <CustomerBankTransfer info={result.payment_instructions} reference={result.order.reference} />}
-              <OrderAccess reference={result.order.reference} token={sessionStorage.getItem("ezshop:order:" + result.order.reference) || ""} />
+              {result.order.status === "pending" && (
+                <CustomerBankTransfer
+                  info={result.payment_instructions}
+                  reference={result.order.reference}
+                />
+              )}
+              <OrderAccess
+                reference={result.order.reference}
+                token={
+                  sessionStorage.getItem(
+                    "ezshop:order:" + result.order.reference,
+                  ) || ""
+                }
+              />
               <OrderPayment
                 slug={slug}
                 reference={result.order.reference}

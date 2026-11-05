@@ -13,9 +13,24 @@ export const supabase =
     ? createClient(
         normalizeSupabaseUrl(import.meta.env.VITE_SUPABASE_URL),
         import.meta.env.VITE_SUPABASE_ANON_KEY,
+        {
+          auth: {
+            detectSessionInUrl:
+              typeof window === "undefined" ||
+              !/\/shop\/[^/]+(?:\/|$)/.test(window.location.pathname),
+          },
+        },
       )
     : null;
 export async function api<T>(path: string, data?: unknown): Promise<T> {
+  if (supabase && path.startsWith("books/")) {
+    const { data: result, error } = await supabase.rpc("ezshop_books_api", {
+      route: path.slice(6),
+      payload: data || {},
+    });
+    if (error) throw new Error(error.message);
+    return result as T;
+  }
   if (supabase && path.startsWith("platform-billing/")) {
     const { data: result, error } = await supabase.rpc(
       "ezshop_platform_billing_api",

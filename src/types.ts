@@ -1,6 +1,7 @@
 import type { ContentTranslations } from "./content";
 export interface Merchant {
   plan?: "free" | "pro";
+  bookkeeping_enabled?: boolean;
   subscription_access?: boolean;
   trial_ends_at?: string;
   content_translations?: ContentTranslations;
@@ -19,6 +20,7 @@ export interface Merchant {
   courier?: string;
 }
 export interface Product {
+  unit_cost?: number | null;
   content_translations?: ContentTranslations;
   id: number;
   merchant_id?: number;

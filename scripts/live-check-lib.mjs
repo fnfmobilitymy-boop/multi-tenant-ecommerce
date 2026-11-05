@@ -83,15 +83,16 @@ export async function liveChecks(env, fetcher = fetch) {
   manifest = database.result;
   checks.push({
     id: "database_migrations",
-    ok: manifest?.database_ready === true && manifest?.features?.trial_access === true && manifest?.features?.merchant_receiving === true,
+    ok:
+      manifest?.database_ready === true &&
+      manifest?.features?.trial_access === true &&
+      manifest?.features?.merchant_receiving === true &&
+      manifest?.features?.customer_accounts === true &&
+      manifest?.features?.bookkeeping === true,
     http: database.http,
   });
   const functions = await Promise.all(
-    [
-      "payments",
-      "stripe-webhook",
-      "send-notifications",
-    ].map(async (name) => {
+    ["payments", "stripe-webhook", "send-notifications"].map(async (name) => {
       const response = await probe(name, "/functions/v1/" + name, "OPTIONS");
       return {
         id: name,

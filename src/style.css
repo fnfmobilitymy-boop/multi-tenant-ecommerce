@@ -1917,3 +1917,5 @@ td { font-size: 1rem; }
 @media (max-width: 650px) {
   .language-toolbar { padding-inline: 16px; }
 }
+
+.metric { overflow-wrap: anywhere; }
