@@ -1392,6 +1392,7 @@ tr:last-child td {
     margin-bottom: 25px;
   }
   .store-nav {
+    flex-wrap: wrap;
     padding: 18px;
   }
   .store-name {

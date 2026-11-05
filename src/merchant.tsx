@@ -859,7 +859,6 @@ function MerchantPage({
                   <ContentEditor
                     kind="store"
                     initial={data.merchant.content_translations}
-                    onBusy={imageUploading}
                   />
                 ) : (
                   <div className="soft-note">
@@ -1059,7 +1058,6 @@ function MerchantPage({
                   <ContentEditor
                     kind="product"
                     initial={editing?.content_translations}
-                    onBusy={imageUploading}
                   />
                 ) : (
                   <div className="soft-note">

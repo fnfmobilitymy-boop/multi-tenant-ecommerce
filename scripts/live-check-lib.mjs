@@ -90,7 +90,6 @@ export async function liveChecks(env, fetcher = fetch) {
     [
       "payments",
       "stripe-webhook",
-      "translate-content",
       "send-notifications",
     ].map(async (name) => {
       const response = await probe(name, "/functions/v1/" + name, "OPTIONS");

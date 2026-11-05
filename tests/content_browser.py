@@ -44,15 +44,9 @@ with tempfile.TemporaryDirectory() as directory:
                 native={'zh':'中文','en':'English','ms':'Bahasa Melayu','th':'ไทย','km':'ខ្មែរ','vi':'Tiếng Việt'}[language]
                 dialog.get_by_label(native+' · Product name',exact=True).fill(name)
                 dialog.get_by_label(native+' · Product description',exact=True).fill(description)
-            dialog.get_by_role('button',name='Generate missing translations',exact=True).click()
-            dialog.get_by_role('alert').filter(has_text='Automatic translation is not configured').wait_for()
+            assert dialog.get_by_role('button',name='Generate missing translations',exact=True).count()==0
             assert dialog.get_by_label('Tiếng Việt · Product name',exact=True).input_value()=='Áo Việt'
-            # Isolated mock verifies draft merge; it does not call Google or save a real translation.
-            page.route('**/api/content-translate',lambda route:route.fulfill(status=200,content_type='application/json',body=json.dumps({'translations':{code:{'name':'Should not overwrite','description':'Should not overwrite','category':'Category '+code} for code in languages}})))
-            dialog.get_by_role('button',name='Generate missing translations',exact=True).click()
-            dialog.get_by_role('status').filter(has_text='Translation drafts generated').wait_for()
-            assert dialog.get_by_label('Tiếng Việt · Product name',exact=True).input_value()=='Áo Việt'
-            assert dialog.get_by_label('Tiếng Việt · Category',exact=True).input_value()=='Category vi'
+            dialog.get_by_label('Tiếng Việt · Category',exact=True).fill('Category vi')
 
             dialog.get_by_role('button',name='Save',exact=True).click();dialog.wait_for(state='hidden')
             page.reload();assert page.locator('.language-selector select').input_value()=='en','Manual preference was overwritten by browser default'
@@ -80,7 +74,24 @@ with tempfile.TemporaryDirectory() as directory:
                 db.execute("update products set content_translations='{}'")
             choice.select_option('en');customer.get_by_text('English Shirt × 1',exact=False).wait_for()
             customer.reload();customer.get_by_text('English Shirt × 1',exact=False).wait_for()
+            reference=customer.evaluate("new URL(location.href).searchParams.get('ref')")
+            with customer.expect_download() as download:
+                customer.get_by_role('button',name='Download order access code',exact=True).click()
+            saved=Path(directory)/'access.txt';download.value.save_as(saved)
+            saved_text=saved.read_text();assert reference in saved_text
+            token=saved_text.split('Order access code: ')[1].splitlines()[0]
+            fresh=context('en-MY').new_page();fresh.on('pageerror',lambda e:errors.append(str(e)))
+            fresh.goto(base+'/shop/content-store/track')
+            fresh.get_by_label('Order number',exact=True).fill(reference)
+            fresh.get_by_label('Order access code',exact=True).fill('wrong-private-code')
+            fresh.get_by_role('button',name='Track order',exact=True).click()
+            fresh.get_by_role('alert').wait_for();assert fresh.get_by_text('English Shirt × 1',exact=False).count()==0
+            fresh.get_by_label('Order access code',exact=True).fill(token)
+            fresh.get_by_role('button',name='Track order',exact=True).click()
+            fresh.get_by_text('English Shirt × 1',exact=False).wait_for()
+            assert token not in fresh.url
+            fresh.reload();fresh.get_by_text('English Shirt × 1',exact=False).wait_for()
             assert not errors,errors
-            browser.close();print('PASS: 商家/顾客浏览器语言默认、手选优先、六语商品名称介绍、购物车跨语言、自动翻译未配置提示、订单语言快照及个人资料原文。')
+            browser.close();print('PASS: 商家/顾客浏览器语言默认、手选优先、六语商品名称介绍、购物车跨语言、无自动翻译入口、跨设备凭证查询和错误凭证拦截、订单语言快照及个人资料原文。')
     finally:
         server.terminate();server.wait(timeout=5)

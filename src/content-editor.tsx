@@ -1,8 +1,6 @@
-import { useEffect, useId, useRef, useState } from "react";
+import { useState } from "react";
 import { LANGUAGES, type Locale } from "./i18n-core";
 import { useI18n } from "./i18n";
-import { api } from "./api";
-import { ErrorBox } from "./ui";
 import type { ContentTranslations, ContentFields } from "./content";
 const labels = {
   name: "商品名称",
@@ -13,84 +11,17 @@ const labels = {
 export function ContentEditor({
   kind,
   initial = {},
-  onBusy,
 }: {
   kind: "store" | "product";
   initial?: ContentTranslations;
-  onBusy: (id: string, busy: boolean) => void;
 }) {
-  const { t } = useI18n(),
-    id = useId(),
-    generation = useRef(0);
-  const [versions, setVersions] = useState(initial),
-    [language, setLanguage] = useState<Locale>("en"),
-    [busy, setBusy] = useState(false),
-    [error, setError] = useState(""),
-    [notice, setNotice] = useState("");
+  const { t } = useI18n();
+  const [versions, setVersions] = useState(initial);
+  const [language, setLanguage] = useState<Locale>("en");
   const fields: (keyof ContentFields)[] =
     kind === "store"
       ? ["name", "description"]
       : ["name", "description", "category", "variant"];
-  useEffect(() => {
-    generation.current++;
-    return () => {
-      generation.current++;
-      onBusy(id, false);
-    };
-  }, []);
-  async function generate(button: HTMLButtonElement) {
-    const form = button.form;
-    if (!form) return;
-    const source = Object.fromEntries(
-      fields.map((field) => [
-        field,
-        (
-          form.elements.namedItem(field) as
-            | HTMLInputElement
-            | HTMLTextAreaElement
-            | null
-        )?.value || "",
-      ]),
-    );
-    if (!source.name.trim()) {
-      setError("请先填写原文名称和介绍。");
-      return;
-    }
-    const current = generation.current;
-    setBusy(true);
-    onBusy(id, true);
-    setError("");
-    setNotice("");
-    try {
-      const result = await api<{ translations: ContentTranslations }>(
-        "content-translate",
-        { kind, fields: source },
-      );
-      if (current === generation.current) {
-        setVersions((previous) =>
-          Object.fromEntries(
-            LANGUAGES.map(({ code }) => [
-              code,
-              Object.fromEntries(
-                fields.map((field) => [
-                  field,
-                  previous[code]?.[field]?.trim()
-                    ? previous[code]![field]
-                    : result.translations[code]?.[field] || "",
-                ]),
-              ),
-            ]),
-          ),
-        );
-        setNotice("译文草稿已生成，请核对后保存。");
-      }
-    } catch (e) {
-      if (current === generation.current) setError((e as Error).message);
-    } finally {
-      onBusy(id, false);
-      if (current === generation.current) setBusy(false);
-    }
-  }
   return (
     <fieldset className="content-editor">
       <legend>{t("顾客内容的多语言版本")}</legend>
@@ -117,20 +48,7 @@ export function ContentEditor({
             ))}
           </select>
         </label>
-        <button
-          type="button"
-          className="button secondary"
-          disabled={busy}
-          onClick={(e) => generate(e.currentTarget)}
-        >
-          {busy ? t("正在生成译文…") : t("自动生成缺少的译文")}
-        </button>
       </div>
-      <small>
-        {t(
-          "自动生成需要已配置的翻译服务；不会覆盖已填写的译文，保存前请核对。",
-        )}
-      </small>
       {fields.map((field) => {
         const label =
           kind === "store"
@@ -192,12 +110,6 @@ export function ContentEditor({
           </label>
         );
       })}
-      <ErrorBox error={error} />
-      {notice && (
-        <p className="success" role="status">
-          {t(notice)}
-        </p>
-      )}
     </fieldset>
   );
 }

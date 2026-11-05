@@ -4009,5 +4009,54 @@
     "ต้องมีสิทธิ์ผู้ดูแลแพลตฟอร์ม",
     "ត្រូវការសិទ្ធិអ្នកគ្រប់គ្រងវេទិកា",
     "Yêu cầu quyền quản trị nền tảng"
+  ],
+  "查询订单": [
+    "Track order",
+    "Semak pesanan",
+    "ตรวจสอบคำสั่งซื้อ",
+    "ពិនិត្យការបញ្ជាទិញ",
+    "Tra cứu đơn hàng"
+  ],
+  "输入订单编号和下单后保存的专属查询凭证。": [
+    "Enter your order number and the private access code saved after checkout.",
+    "Masukkan nombor pesanan dan kod akses peribadi yang disimpan selepas membuat pesanan.",
+    "กรอกหมายเลขคำสั่งซื้อและรหัสส่วนตัวที่บันทึกไว้หลังสั่งซื้อ",
+    "បញ្ចូលលេខការបញ្ជាទិញ និងលេខកូដចូលប្រើឯកជនដែលបានរក្សាទុកក្រោយបញ្ជាទិញ។",
+    "Nhập mã đơn hàng và mã truy cập riêng đã lưu sau khi đặt hàng."
+  ],
+  "订单查询凭证": [
+    "Order access code",
+    "Kod akses pesanan",
+    "รหัสเข้าถึงคำสั่งซื้อ",
+    "លេខកូដចូលប្រើការបញ្ជាទិញ",
+    "Mã truy cập đơn hàng"
+  ],
+  "无法查询订单，请核对店铺、订单编号及查询凭证后重试。": [
+    "Unable to find this order. Check the store, order number and access code, then try again.",
+    "Pesanan tidak dapat ditemui. Semak kedai, nombor pesanan dan kod akses, kemudian cuba lagi.",
+    "ไม่พบคำสั่งซื้อ โปรดตรวจสอบร้านค้า หมายเลขคำสั่งซื้อ และรหัสเข้าถึง แล้วลองอีกครั้ง",
+    "មិនអាចរកការបញ្ជាទិញបានទេ។ សូមពិនិត្យហាង លេខការបញ្ជាទិញ និងលេខកូដចូលប្រើ រួចព្យាយាមម្ដងទៀត។",
+    "Không thể tìm đơn hàng. Hãy kiểm tra cửa hàng, mã đơn hàng và mã truy cập rồi thử lại."
+  ],
+  "查询凭证等同订单密码，请勿公开。遗失后请联系商家核实身份。": [
+    "Treat this code as your order password. Keep it private. If lost, contact the merchant to verify your identity.",
+    "Kod ini ialah kata laluan pesanan anda. Jangan kongsikan secara terbuka. Jika hilang, hubungi peniaga untuk mengesahkan identiti.",
+    "รหัสนี้เป็นเสมือนรหัสผ่านคำสั่งซื้อ โปรดเก็บเป็นความลับ หากสูญหายให้ติดต่อร้านค้าเพื่อยืนยันตัวตน",
+    "លេខកូដនេះដូចជាពាក្យសម្ងាត់ការបញ្ជាទិញ។ សូមរក្សាជាឯកជន។ បើបាត់ សូមទាក់ទងអ្នកលក់ដើម្បីផ្ទៀងផ្ទាត់អត្តសញ្ញាណ។",
+    "Hãy giữ kín mã này như mật khẩu đơn hàng. Nếu mất, hãy liên hệ người bán để xác minh danh tính."
+  ],
+  "保存查询凭证后，可在其他设备查询此订单及发货记录。": [
+    "Save your access code to check this order and shipment details on another device.",
+    "Simpan kod akses untuk menyemak pesanan dan butiran penghantaran pada peranti lain.",
+    "บันทึกรหัสเข้าถึงเพื่อดูคำสั่งซื้อและข้อมูลการจัดส่งบนอุปกรณ์อื่น",
+    "រក្សាទុកលេខកូដចូលប្រើ ដើម្បីពិនិត្យការបញ្ជាទិញ និងព័ត៌មានដឹកជញ្ជូនលើឧបករណ៍ផ្សេង។",
+    "Lưu mã truy cập để xem đơn hàng và thông tin giao hàng trên thiết bị khác."
+  ],
+  "下载订单查询凭证": [
+    "Download order access code",
+    "Muat turun kod akses pesanan",
+    "ดาวน์โหลดรหัสเข้าถึงคำสั่งซื้อ",
+    "ទាញយកលេខកូដចូលប្រើការបញ្ជាទិញ",
+    "Tải mã truy cập đơn hàng"
   ]
 }

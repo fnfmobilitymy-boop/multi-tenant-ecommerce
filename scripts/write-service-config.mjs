@@ -10,7 +10,6 @@ const names = [
   "RESEND_API_KEY",
   "MAIL_FROM",
   "NOTIFICATION_JOB_SECRET",
-  "GOOGLE_TRANSLATE_API_KEY",
 ];
 const site =
   process.env.APP_URL ||

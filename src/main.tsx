@@ -4,6 +4,7 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { PlatformApp } from "./platform";
 import { MerchantApp } from "./merchant";
+import { OrderLookup } from "./order-lookup";
 import { Storefront } from "./storefront";
 import { Join } from "./management";
 import {
@@ -36,6 +37,7 @@ function LocalizedRoutes() {
         <Route path="/join" element={<Join />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/shop/:slug/track" element={<OrderLookup />} />
         <Route path="/shop/:slug" element={<Storefront />} />
         <Route path="/shop/:slug/product/:productId" element={<Storefront />} />
         <Route path="/shop/:slug/cart" element={<Storefront />} />

@@ -16,6 +16,7 @@ import {
   Package,
 } from "lucide-react";
 import { api, money, statusLabel, supabase } from "./api";
+import { OrderAccess } from "./order-lookup";
 import { OrderPayment } from "./payments";
 import { getCart, putCart, setQuantity } from "./cart";
 import type { CartLine, Merchant, OrderResult, Product } from "./types";
@@ -97,6 +98,7 @@ export function Storefront() {
     };
   }, [slug]);
   useEffect(() => {
+    let active = true;
     setError("");
     setFeedback("");
     setQty(1);
@@ -113,9 +115,10 @@ export function Storefront() {
         return;
       }
       api<OrderResult>("order-result", { slug, reference: ref, token })
-        .then(setResult)
-        .catch((e) => setError(e.message));
+        .then((value) => { if (active) setResult(value); })
+        .catch((e) => { if (active) setError(e.message); });
     }
+    return () => { active = false; };
   }, [location.pathname, location.search, slug, kind]);
   function update(id: number, q: number) {
     setQuantity(slug, id, q);
@@ -257,6 +260,7 @@ export function Storefront() {
         <Link to={base} className="store-name">
           {data.store.name}
         </Link>
+        <Link to={base + "/track"} className="text-button">{t("查询订单")}</Link>
         <Link
           className="cart-link"
           to={base + "/cart"}
@@ -849,6 +853,7 @@ export function Storefront() {
                 <strong>{t("总金额")}</strong>
                 <strong>{money(result.order.total, locale)}</strong>
               </div>
+              <OrderAccess reference={result.order.reference} token={sessionStorage.getItem("ezshop:order:" + result.order.reference) || ""} />
               <OrderPayment
                 slug={slug}
                 reference={result.order.reference}

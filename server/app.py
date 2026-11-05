@@ -362,7 +362,7 @@ class Handler(BaseHTTPRequestHandler):
             for a in agents:
                 a.pop('invite_token', None)
             return self.reply({'merchant': safe_merchant, 'products': products, 'orders': orders, 'agents': agents})
-        if path=='/api/content-translate' and method=='POST':return self.reply({'error':'自动翻译服务尚未配置或暂时不可用，请手动填写译文。'},503)
+        if path=='/api/content-translate' and method=='POST':return self.reply({'error':'自动翻译已移除，请手动填写内容。'},410)
         allowed = role=='owner' or (role in ('manager','inventory') and path.startswith('/api/products')) or (role in ('manager','orders') and path.startswith('/api/orders/'))
         if not allowed:
             return self.reply({'error': '当前角色没有此操作权限'}, 403)
