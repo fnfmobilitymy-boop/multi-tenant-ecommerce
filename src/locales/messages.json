@@ -4177,5 +4177,33 @@
     "ต้องอัปเกรดการตั้งค่าทดลองใช้ ระบบจะไม่เรียกเก็บเงิน",
     "ត្រូវធ្វើបច្ចុប្បន្នភាពការកំណត់សាកល្បង។ នឹងមិនគិតប្រាក់ទេ។",
     "Cần nâng cấp cấu hình dùng thử. Sẽ không thu tiền."
+  ],
+  "商家收款开通失败，请联系平台核查Stripe请求日志。": [
+    "Merchant payment setup failed. Ask the platform to check the Stripe request logs.",
+    "Persediaan bayaran peniaga gagal. Minta platform menyemak log permintaan Stripe.",
+    "เปิดรับชำระเงินไม่สำเร็จ โปรดให้แพลตฟอร์มตรวจสอบบันทึกคำขอ Stripe",
+    "ការបើកទទួលប្រាក់បរាជ័យ។ សូមឱ្យវេទិកាពិនិត្យកំណត់ហេតុសំណើ Stripe។",
+    "Thiết lập nhận tiền thất bại. Hãy nhờ nền tảng kiểm tra nhật ký yêu cầu Stripe."
+  ],
+  "平台尚未启用Stripe Connect，请先在Stripe测试或正式环境完成Connect设置。": [
+    "Stripe Connect is not enabled for this platform. Complete Connect setup in the matching Stripe test or live environment.",
+    "Stripe Connect belum diaktifkan untuk platform. Lengkapkan persediaan Connect dalam persekitaran ujian atau langsung yang sepadan.",
+    "แพลตฟอร์มยังไม่เปิด Stripe Connect โปรดตั้งค่า Connect ในโหมดทดสอบหรือโหมดจริงให้ตรงกัน",
+    "វេទិកាមិនទាន់បើក Stripe Connect ទេ។ សូមបំពេញការកំណត់ Connect ក្នុងបរិស្ថានសាកល្បង ឬពិតប្រាកដដែលត្រូវគ្នា។",
+    "Nền tảng chưa bật Stripe Connect. Hoàn tất thiết lập trong môi trường thử nghiệm hoặc chính thức tương ứng."
+  ],
+  "Stripe Connect平台设置尚未完成，请核对平台资料、责任及入驻设置。": [
+    "Stripe Connect platform setup is incomplete. Check the platform profile, responsibilities and onboarding settings.",
+    "Persediaan platform Stripe Connect belum lengkap. Semak profil, tanggungjawab dan tetapan pendaftaran.",
+    "ยังตั้งค่าแพลตฟอร์ม Stripe Connect ไม่ครบ โปรดตรวจสอบข้อมูลแพลตฟอร์ม ความรับผิดชอบ และการสมัคร",
+    "ការកំណត់វេទិកា Stripe Connect មិនទាន់ពេញលេញទេ។ សូមពិនិត្យប្រវត្តិរូប ទំនួលខុសត្រូវ និងការចុះឈ្មោះ។",
+    "Thiết lập Stripe Connect chưa hoàn tất. Kiểm tra hồ sơ nền tảng, trách nhiệm và cấu hình đăng ký."
+  ],
+  "Stripe Connect未允许当前平台为该国家开通收款，请核对平台与商家国家的支持范围。": [
+    "Stripe Connect does not allow this platform to onboard this country. Check supported platform and merchant countries.",
+    "Stripe Connect tidak membenarkan platform mendaftarkan negara ini. Semak negara platform dan peniaga yang disokong.",
+    "Stripe Connect ไม่อนุญาตให้แพลตฟอร์มนี้เปิดรับเงินสำหรับประเทศนี้ โปรดตรวจสอบประเทศที่รองรับ",
+    "Stripe Connect មិនអនុញ្ញាតឱ្យវេទិកានេះបើកទទួលប្រាក់សម្រាប់ប្រទេសនេះទេ។ សូមពិនិត្យប្រទេសវេទិកា និងអ្នកលក់ដែលគាំទ្រ។",
+    "Stripe Connect không cho phép nền tảng mở tài khoản cho quốc gia này. Hãy kiểm tra các quốc gia được hỗ trợ."
   ]
 }

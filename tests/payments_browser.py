@@ -49,11 +49,16 @@ try:
         page.goto(base)
         page.get_by_role('button',name='收款与订阅',exact=True).click()
         page.get_by_text('尚未开通收款',exact=True).wait_for()
+        page.get_by_role('button',name='开通商家收款账户',exact=True).click()
+        connect_panel=page.locator('section.card').filter(has=page.get_by_role('heading',name='店铺线上收款',exact=True))
+        connect_panel.get_by_role('alert').wait_for()
+        billing_panel=page.locator('.overview-grid section.card').nth(1)
+        assert billing_panel.get_by_role('alert').count()==0
         page.get_by_role('button',name='查看价格并订阅 Pro',exact=True).click()
-        page.get_by_role('alert').filter(has_text='支付服务尚未配置').wait_for()
+        billing_panel.get_by_role('alert').filter(has_text='支付服务尚未配置').wait_for()
         assert 'subscription-checkout' in calls
         page.locator('.language-selector select').select_option('en')
-        page.get_by_role('alert').filter(has_text='Payment service is not configured').wait_for()
+        billing_panel.get_by_role('alert').filter(has_text='Payment service is not configured').wait_for()
         page.get_by_role('heading',name='Payments & subscription',exact=True).wait_for()
         page.evaluate("sessionStorage.setItem('ezshop:order:EZ-TEST','test-order-access-token')")
         page.goto(base+'/shop/test-store/order-result?ref=EZ-TEST&payment_return=1')

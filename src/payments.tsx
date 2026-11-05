@@ -42,6 +42,8 @@ export function MerchantPayments({ plan = "", trialEndsAt }: { plan?: string; tr
   const { t, locale, errorText } = useI18n();
   const [data, setData] = useState<PaymentStatus | null>(null),
     [error, setError] = useState(""),
+    [connectError, setConnectError] = useState(""),
+    [billingError, setBillingError] = useState(""),
     [busy, setBusy] = useState(false),
     [review, setReview] = useState<Review | null>(null);
   async function load() {
@@ -60,7 +62,8 @@ export function MerchantPayments({ plan = "", trialEndsAt }: { plan?: string; tr
     kind?: "checkout" | "connect" | "billing",
   ) {
     setBusy(true);
-    setError("");
+    const setActionError = name === "connect" || name === "refresh" ? setConnectError : setBillingError;
+    setActionError("");
     try {
       const result = await api<{
         url?: string;
@@ -68,7 +71,8 @@ export function MerchantPayments({ plan = "", trialEndsAt }: { plan?: string; tr
       if (kind) window.location.assign(stripeRedirect(result.url, kind));
       else await load();
     } catch (e) {
-      setError((e as Error).message);
+      setActionError((e as Error).message);
+    } finally {
       setBusy(false);
     }
   }
@@ -110,6 +114,7 @@ export function MerchantPayments({ plan = "", trialEndsAt }: { plan?: string; tr
                 {data.subscription_access !== false && <section className="card payment-panel">
                   <Wallet className="purple" size={27} />
                   <h2>{t("店铺线上收款")}</h2>
+                  <ErrorBox error={connectError} />
                   <p>
                     {t(
                       "通过 Stripe Connect 绑定你自己的收款账户，顾客商品款归属该账户。",
@@ -160,6 +165,7 @@ export function MerchantPayments({ plan = "", trialEndsAt }: { plan?: string; tr
                 <section className="card payment-panel">
                   <ShieldCheck className="purple" size={27} />
                   <h2>{t("EZShop 套餐与账单")}</h2>
+                  <ErrorBox error={billingError} />
                   <p>
                     {t(
                       "这笔费用是商家使用 EZShop 的订阅服务费，与顾客购买商品的款项分开。",

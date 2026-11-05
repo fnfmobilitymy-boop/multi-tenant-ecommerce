@@ -1,3 +1,4 @@
+import {connectFailure} from "../_shared/connect-errors.ts";
 import Stripe from 'npm:stripe@23.1.0';
 import {createClient} from 'npm:@supabase/supabase-js@2.118.0';
 import {appUrl,stripeRedirect,validateProCheckout,proTrialEnd} from '../_shared/payment-security.ts';
@@ -12,8 +13,10 @@ Deno.serve(async(req:Request)=>{
  const stripe=new Stripe(key,{httpClient:Stripe.createFetchHttpClient()});
  const service=createClient(Deno.env.get('SUPABASE_URL')!,Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,{auth:{persistSession:false}});
  const rpc=async(route:string,payload:unknown={})=>{const {data,error}=await service.rpc('ezshop_payment_api',{route,payload});if(error)throw error;return data};
+ let operation="";
  try{
   const body=await req.json();const action=body.action;
+  if(["connect-onboarding","connect-refresh"].includes(action))operation=action;
   if(action==='order-checkout'){
    if(typeof body.reference!=='string'||typeof body.token!=='string'||body.reference.length>100||body.token.length>200)return reply({error:'订单访问凭证无效'},400);
    let order=await rpc('service/order-claim',{reference:body.reference,token:body.token});
@@ -69,5 +72,8 @@ Deno.serve(async(req:Request)=>{
    await rpc('service/save-billing-session',{attempt_id:attempt.id,session_id:session.id});return reply({url:stripeRedirect(session.url,'checkout')});
   }
   return reply({error:'不支持此操作'},404);
- }catch{return reply({error:'支付服务暂时无法完成请求。请勿重复付款，请重试或联系平台管理员。'},502)}
+ }catch(error){
+  if(operation){const failure=connectFailure(error);console.warn('connect_failure',JSON.stringify({operation,code:failure.code,request_id:failure.request_id}));return reply(failure,502)}
+  return reply({error:'支付服务暂时无法完成请求。请勿重复付款，请重试或联系平台管理员。'},502)
+ }
 });
