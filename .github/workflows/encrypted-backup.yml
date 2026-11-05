@@ -1,0 +1,35 @@
+name: EZShop · 加密数据库与图片备份
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '20 18 * * *'
+permissions:
+  contents: read
+concurrency:
+  group: ezshop-encrypted-backup
+  cancel-in-progress: false
+jobs:
+  backup:
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'workflow_dispatch' || vars.EZSHOP_BACKUP_SCHEDULE_ENABLED == 'true')
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: 导出、加密与校验，不修改数据库
+        env:
+          SUPABASE_PROJECT_REF: ${{ vars.SUPABASE_PROJECT_REF }}
+          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          SUPABASE_BACKUP_DB_URL: ${{ secrets.SUPABASE_BACKUP_DB_URL }}
+          BACKUP_ENCRYPTION_PASSPHRASE: ${{ secrets.BACKUP_ENCRYPTION_PASSPHRASE }}
+          BACKUP_OUTPUT_DIR: ${{ runner.temp }}/ezshop-backup-output
+        run: node scripts/create-encrypted-backup.mjs
+      - name: 仅保存加密文件（7天后自动删除，请及时下载）
+        uses: actions/upload-artifact@v4
+        with:
+          name: ezshop-encrypted-backup-${{ github.run_id }}
+          path: ${{ runner.temp }}/ezshop-backup-output/*.ezbackup
+          if-no-files-found: error
+          retention-days: 7

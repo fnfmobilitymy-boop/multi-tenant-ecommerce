@@ -36,6 +36,8 @@ jobs:
           npm run test:i18n
           npm run build:upgrade
           git diff --exit-code -- supabase/upgrade-after-004.sql
+      - name: 加密备份与隔离PostgreSQL恢复
+        run: node tests/postgres_backup_restore.mjs
       - name: 本地后端集成测试
         run: |
           npm run test:api
