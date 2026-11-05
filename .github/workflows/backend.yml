@@ -1,5 +1,13 @@
 name: EZShop · 后端检查与手动升级
 on:
+  workflow_call:
+    inputs:
+      action:
+        required: true
+        type: string
+      confirm:
+        required: true
+        type: string
   workflow_dispatch:
     inputs:
       action:

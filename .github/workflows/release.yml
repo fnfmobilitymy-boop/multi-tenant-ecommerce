@@ -1,0 +1,29 @@
+name: EZShop · 一次更新网站与后端
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 输入DEPLOY更新已有数据库项目的后端函数及网站；不执行数据库迁移，不创建付款
+        required: true
+        type: string
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: ezshop-complete-release
+  cancel-in-progress: false
+jobs:
+  backend:
+    if: inputs.confirm == 'DEPLOY' && github.ref == 'refs/heads/main'
+    uses: ./.github/workflows/backend.yml
+    with:
+      action: deploy-functions
+      confirm: DEPLOY_FUNCTIONS
+    secrets: inherit
+  website:
+    needs: backend
+    uses: ./.github/workflows/pages.yml
+    with:
+      confirm: DEPLOY
+    secrets: inherit

@@ -2,7 +2,7 @@ name: EZShop · 加密数据库与图片备份
 on:
   workflow_dispatch:
   schedule:
-    - cron: '20 18 * * *'
+    - cron: "20 18 * * *"
 permissions:
   contents: read
 concurrency:
