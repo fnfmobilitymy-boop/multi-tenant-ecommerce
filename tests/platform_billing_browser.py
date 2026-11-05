@@ -18,7 +18,7 @@ try:
         options={'headless':True,'args':['--no-sandbox']}
         if os.environ.get('EZSHOP_CHROMIUM'):options['executable_path']=os.environ['EZSHOP_CHROMIUM']
         browser=p.chromium.launch(**options)
-        def context(admin):
+        def context(admin,expired=False):
             result=browser.new_context(locale='zh-CN')
             def intercept(route):
                 url=urlparse(route.request.url)
@@ -26,7 +26,7 @@ try:
                 body=route.request.post_data_json if route.request.method=='POST' else {};payload=body.get('payload',{})
                 def reply(value,status=200):return route.fulfill(status=status,content_type='application/json',body=json.dumps(value))
                 if url.path.endswith('/rpc/ezshop_api'):
-                    if body['route']=='dashboard':return reply({'merchant':{'id':1 if admin else 2,'name':'Test Admin' if admin else 'Test Merchant','slug':'test','phone':'','description':'','role':'owner','is_admin':admin,'plan':'free' if admin else state['plan']},'products':[],'orders':[],'agents':[]})
+                    if body['route']=='dashboard':return reply({'merchant':{'id':1 if admin else 2,'name':'Test Admin' if admin else 'Test Merchant','slug':'test','phone':'','description':'','role':'owner','is_admin':admin,'plan':'free' if admin else state['plan'],'subscription_access':not expired},'products':[],'orders':[],'agents':[]})
                     if body['route']=='platform':return reply({'merchants':[]}) if admin else reply({'message':'需要平台管理员权限'},403)
                 if url.path.endswith('/rpc/ezshop_payment_api'):return reply({'merchant_id':1 if admin else 2,'plan':state['plan'],'charges_enabled':False,'payouts_enabled':False,'billing':{},'reviews':[]})
                 if url.path.endswith('/rpc/ezshop_platform_billing_api'):
@@ -58,5 +58,6 @@ try:
         dialog.get_by_role('button',name='确认到账并开通服务',exact=True).click();assert state['approve_calls']==0
         dialog.get_by_label('已核对银行、钱包或 Stripe 的真实到账',exact=True).check();dialog.get_by_role('button',name='确认到账并开通服务',exact=True).click();dialog.wait_for(state='hidden');assert state['plan']=='pro'
         section.get_by_role('button',name='刷新记录',exact=True).click();section.get_by_text('已核实并开通',exact=True).wait_for()
+        expired=context(False,True).new_page();expired.goto('http://127.0.0.1:3108');expired.get_by_role('heading',name='Pro试用或订阅已到期，请先续费。',exact=True).wait_for();assert expired.get_by_role('button',name='商品管理',exact=True).count()==0;expired.get_by_role('heading',name='平台订阅申请',exact=True).wait_for()
         assert not errors,errors;browser.close();print('PASS: 平台自填金额申请、银行资料、提交后不自动升级、管理员实际到账声明、开通期限及平台双语范围。全部远端接口已模拟。')
 finally:server.shutdown();server.server_close()

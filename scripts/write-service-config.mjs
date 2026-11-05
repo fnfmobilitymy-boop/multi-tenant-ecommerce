@@ -5,6 +5,7 @@ if (!root) throw new Error("Only run in the deployment workflow");
 const names = [
   "STRIPE_SECRET_KEY",
   "STRIPE_PRO_PRICE_ID",
+  "STRIPE_PRO_TAX_RATE_ID",
   "STRIPE_WEBHOOK_SECRET",
   "STRIPE_CONNECT_WEBHOOK_SECRET",
   "RESEND_API_KEY",

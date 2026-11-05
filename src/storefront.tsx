@@ -1,3 +1,4 @@
+import { stripeAutomationEnabled } from "./features";
 import { contentField, localizedContent, localizedItem } from "./content";
 import { useI18n } from "./i18n";
 import { useEffect, useState, useMemo } from "react";
@@ -57,7 +58,7 @@ export function Storefront() {
   useEffect(() => {
     let active = true;
     setOnlineEnabled(false);
-    if (supabase)
+    if (supabase && stripeAutomationEnabled)
       api<{
         online_enabled: boolean;
       }>("payments/store-options", { slug })
@@ -272,6 +273,7 @@ export function Storefront() {
       </header>
       <main className="store-shell">
         <ErrorBox error={error} />
+        {data.store.subscription_access === false && <div className="soft-note">{t("店铺暂停接收新订单，已有订单仍可查询。")}</div>}
         {feedback && (
           <div className="success" role="status">
             {t(feedback)} · <Link to={base + "/cart"}>{t("查看购物车 →")}</Link>

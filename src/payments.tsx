@@ -1,3 +1,4 @@
+import { stripeAutomationEnabled } from "./features";
 import { intlLocale, useI18n } from "./i18n";
 import { useEffect, useRef, useState } from "react";
 import { CreditCard, ShieldCheck, Wallet, RefreshCw } from "lucide-react";
@@ -11,7 +12,9 @@ interface Review {
   resolved: boolean;
 }
 interface PaymentStatus {
+  subscription_access?: boolean;
   manual_billing_enabled?: boolean;
+  trial_ends_at?: string;
   merchant_id: number;
   account_id?: string;
   charges_enabled: boolean;
@@ -35,7 +38,7 @@ const reviewLabel: Record<string, string> = {
   partial_refund_or_mismatch: "部分退款或退款金额需核查",
   payment_disputed: "顾客发起支付争议",
 };
-export function MerchantPayments() {
+export function MerchantPayments({ plan = "", trialEndsAt }: { plan?: string; trialEndsAt?: string }) {
   const { t, locale, errorText } = useI18n();
   const [data, setData] = useState<PaymentStatus | null>(null),
     [error, setError] = useState(""),
@@ -50,7 +53,7 @@ export function MerchantPayments() {
     }
   }
   useEffect(() => {
-    if (supabase) load();
+    if (supabase && stripeAutomationEnabled) load();
   }, []);
   async function action(
     name: string,
@@ -69,6 +72,21 @@ export function MerchantPayments() {
       setBusy(false);
     }
   }
+  if (!stripeAutomationEnabled) return <>
+    <div className="page-heading"><div><h1>{t("收款与订阅")}</h1><p>{t("商品款付给商家，平台服务费付给 EZShop。")}</p></div><Wallet className="purple" size={25} /></div>
+    <div className="overview-grid">
+      <section className="card payment-panel"><h2>{t("商品订单收款")}</h2>
+        <span className="badge pending">{t("人工核实收款")}</span>
+        <p>{t("顾客下单后，请与顾客安排付款，并在核实实际到账后确认收款。")}</p>
+        <small>{t("提交订单不会自动扣款，商家确认到账前订单保持待付款。")}</small>
+      </section>
+      <section className="card payment-panel"><h2>{t("EZShop 套餐与账单")}</h2>
+        {trialEndsAt && new Date(trialEndsAt).getTime() > Date.now() && <p>{t("Pro免费试用截止：")}{new Date(trialEndsAt).toLocaleString(intlLocale(locale))}</p>}
+        <strong>{t("当前方案：")}{plan === "pro" ? "Pro" : plan === "free" ? "Free" : "—"}</strong>
+        <p>{t("使用下方平台订阅申请付款，平台核实到账后开通服务。")}</p>
+      </section>
+    </div>
+  </>;
   return (
     <>
       <div className="page-heading">
@@ -89,7 +107,7 @@ export function MerchantPayments() {
           {data && (
             <>
               <div className="overview-grid">
-                <section className="card payment-panel">
+                {data.subscription_access !== false && <section className="card payment-panel">
                   <Wallet className="purple" size={27} />
                   <h2>{t("店铺线上收款")}</h2>
                   <p>
@@ -138,7 +156,7 @@ export function MerchantPayments() {
                       "卡支付及 FPX 以你的账户实际开通情况为准。平台不会收集银行卡密码。",
                     )}
                   </small>
-                </section>
+                </section>}
                 <section className="card payment-panel">
                   <ShieldCheck className="purple" size={27} />
                   <h2>{t("EZShop 套餐与账单")}</h2>
@@ -147,6 +165,8 @@ export function MerchantPayments() {
                       "这笔费用是商家使用 EZShop 的订阅服务费，与顾客购买商品的款项分开。",
                     )}
                   </p>
+                  <p>{t("Pro：MYR 99.90/月，另加6%税费，共MYR 105.89/月。")}</p>
+                  {data.trial_ends_at && new Date(data.trial_ends_at).getTime() > Date.now() && <p>{t("Pro免费试用截止：")}{new Date(data.trial_ends_at).toLocaleString(intlLocale(locale))}</p>}
                   <strong>
                     {t("当前方案：")}
                     {data.plan === "pro" ? "Pro" : "Free"}
@@ -176,8 +196,7 @@ export function MerchantPayments() {
                     </p>
                   )}
                   <div className="row">
-                    {!data.manual_billing_enabled &&
-                    (!data.billing.customer_id ||
+                    {(!data.billing.customer_id ||
                       ["none", "canceled", "incomplete_expired"].includes(
                         data.billing.status || "none",
                       )) ? (
@@ -321,6 +340,7 @@ export function OrderPayment({
     [busy, setBusy] = useState(false);
   const generation = useRef(0);
   async function load() {
+    if (!stripeAutomationEnabled) return;
     const current = generation.current;
     try {
       const next = await api<OrderSummary>("payments/order-summary", {
@@ -336,7 +356,7 @@ export function OrderPayment({
     }
   }
   useEffect(() => {
-    if (!supabase) return;
+    if (!supabase || !stripeAutomationEnabled) return;
     generation.current++;
     setSummary(null);
     let active = true;
@@ -367,14 +387,14 @@ export function OrderPayment({
       setBusy(false);
     }
   }
-  if (!summary) return null;
+  if (!summary && stripeAutomationEnabled) return null;
   return (
     <div style={{ margin: "22px 0" }}>
-      {summary.requires_review ? (
+      {summary?.requires_review ? (
         <ErrorBox
           error={t("付款需要商家核查，请勿重复付款。请联系商家处理。")}
         />
-      ) : status === "pending" && summary.online_enabled ? (
+      ) : status === "pending" && summary?.online_enabled ? (
         <>
           <button className="button full" disabled={busy} onClick={pay}>
             <CreditCard size={17} />

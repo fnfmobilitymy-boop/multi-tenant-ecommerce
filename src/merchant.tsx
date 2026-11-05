@@ -360,6 +360,12 @@ function MerchantPage({
         </section>
       </div>
     );
+  if (data.merchant.subscription_access === false) return <main className="store-shell">
+    <Brand to="/merchant" /><h1>{t("Pro试用或订阅已到期，请先续费。")}</h1>
+    <p>{t("历史资料已保留，续费后可继续使用。")}</p>
+    {!data.merchant.role || data.merchant.role === "owner" ? <><MerchantPayments plan={data.merchant.plan} /><SubscriptionApplication /></> : <p>{t("请联系店铺所有者续费。")}</p>}
+    <button className="button secondary" onClick={logout}>{t("退出登录")}</button><ErrorBox error={error} />
+  </main>;
   if (data.merchant.role === "agent")
     return <Affiliate data={data} logout={logout} />;
   const role = data.merchant.role || "owner";
@@ -479,6 +485,7 @@ function MerchantPage({
           </div>
         </header>
         <main className="workspace">
+          {data.merchant.trial_ends_at && new Date(data.merchant.trial_ends_at).getTime() > Date.now() && data.merchant.plan !== "pro" && <div className="soft-note">{t("Pro免费试用截止：")}{dateLabel(data.merchant.trial_ends_at, locale)}</div>}
           <ErrorBox error={error} />
           {notice && (
             <div className="success" role="status">
@@ -656,7 +663,7 @@ function MerchantPage({
           )}
           {tab === "payments" && (
             <>
-              <MerchantPayments />
+              <MerchantPayments plan={data.merchant.plan} trialEndsAt={data.merchant.trial_ends_at} />
               <SubscriptionApplication />
             </>
           )}

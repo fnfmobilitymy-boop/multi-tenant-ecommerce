@@ -1,5 +1,5 @@
 import Stripe from 'stripe';import {describe,it,expect} from 'vitest';
-import {appUrl,stripeRedirect,paymentEvent,subscriptionSnapshot} from '../supabase/functions/_shared/payment-security';
+import {appUrl,stripeRedirect,paymentEvent,subscriptionSnapshot,validateProCheckout,proTrialEnd} from '../supabase/functions/_shared/payment-security';
 describe('支付安全边界',()=>{
  it('只使用配置的网站根 URL，禁止外部查询参数和凭证',()=>{
   expect(appUrl('https://example.test/shop').toString()).toBe('https://example.test/shop/');expect(()=>appUrl(undefined)).toThrow();expect(()=>appUrl('https://user:pass@example.test/')).toThrow();expect(()=>appUrl('https://example.test/?return=https://evil.test')).toThrow();
@@ -20,4 +20,19 @@ describe('支付安全边界',()=>{
   const sub={id:'sub_fixture',customer:'cus_fixture',status:'active',metadata:{ezshop_merchant_id:'1'},items:{data:[{quantity:1,current_period_end:2000000000,price:{id:'price_fixture',currency:'myr'}}]},latest_invoice:{status:'open'}};
   expect(subscriptionSnapshot(sub).invoice_paid).toBe(false);sub.latest_invoice.status='paid';expect(subscriptionSnapshot(sub).invoice_paid).toBe(true);expect(()=>subscriptionSnapshot({...sub,metadata:{}})).toThrow();expect(()=>subscriptionSnapshot({...sub,items:{data:[]}})).toThrow();
  });
+});
+
+it('Pro 价格及外加6%税率来自 Stripe，拒绝错误金额、币种、含税或停用税率',()=>{
+ const price={active:true,currency:'myr',unit_amount:9990,recurring:{interval:'month',interval_count:1}};
+ const tax={id:'txr_fixture',active:true,percentage:6,inclusive:false};
+ expect(()=>validateProCheckout(price,tax)).not.toThrow();
+ for(const patch of [{percentage:8},{inclusive:true},{active:false}])expect(()=>validateProCheckout(price,{...tax,...patch})).toThrow();
+ for(const patch of [{currency:'usd'},{unit_amount:9900},{tax_behavior:'inclusive'},{recurring:null},{recurring:{interval:'year',interval_count:1}}])expect(()=>validateProCheckout({...price,...patch},tax)).toThrow();
+});
+
+it('绑卡只沿用原试用截止，不重新赠送七天，过期后不再试用',()=>{
+ const now=Date.parse('2026-11-05T00:00:00Z');
+ expect(proTrialEnd('2026-11-08T00:00:00Z',now)).toBe(Date.parse('2026-11-08T00:00:00Z')/1000);
+ expect(proTrialEnd('2026-11-04T00:00:00Z',now)).toBeUndefined();
+ expect(proTrialEnd(undefined,now)).toBeUndefined();
 });

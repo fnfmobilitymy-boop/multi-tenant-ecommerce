@@ -26,3 +26,15 @@ export function subscriptionSnapshot(subscription:RecordValue):RecordValue{
  if(!Number.isSafeInteger(period)||period<0||(['active','trialing'].includes(subscription.status)&&period===0))throw new Error('Invalid subscription period');
  return {merchant_id:merchant,customer_id:idOf(subscription.customer),subscription_id:subscription.id,price_id:price.id,status:subscription.status,period_end:period,invoice_paid:subscription.latest_invoice?.status==='paid'||subscription.latest_invoice?.paid===true};
 }
+
+// The configured Stripe tax rate is authoritative for invoice calculation.
+// Never accept an amount or tax rate from the browser.
+export function validateProCheckout(price: RecordValue, tax: RecordValue): void {
+ if(!price.active || price.currency!=='myr' || price.unit_amount!==9990 || price.tax_behavior==='inclusive' || !price.recurring || price.recurring.interval_count!==1 || price.recurring.interval!=='month')throw new Error('Invalid Pro price');
+ if(!tax.active || tax.percentage!==6 || tax.inclusive!==false || typeof tax.id!=='string' || !tax.id.startsWith('txr_'))throw new Error('Invalid Pro tax rate');
+}
+
+export function proTrialEnd(value: unknown, now = Date.now()): number | undefined {
+ const ending = typeof value === 'string' ? Date.parse(value) : NaN;
+ return Number.isFinite(ending) && ending > now + 60000 ? Math.floor(ending / 1000) : undefined;
+}

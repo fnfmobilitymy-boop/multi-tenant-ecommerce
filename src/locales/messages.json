@@ -4058,5 +4058,124 @@
     "ดาวน์โหลดรหัสเข้าถึงคำสั่งซื้อ",
     "ទាញយកលេខកូដចូលប្រើការបញ្ជាទិញ",
     "Tải mã truy cập đơn hàng"
+  ],
+  "商品订单收款": [
+    "Product order payments",
+    "Bayaran pesanan produk",
+    "การรับชำระค่าสินค้า",
+    "ការទទួលប្រាក់សម្រាប់ការបញ្ជាទិញទំនិញ",
+    "Thu tiền đơn hàng"
+  ],
+  "人工核实收款": [
+    "Manually verified payments",
+    "Bayaran disahkan secara manual",
+    "ตรวจสอบการชำระเงินด้วยตนเอง",
+    "ផ្ទៀងផ្ទាត់ការទទួលប្រាក់ដោយដៃ",
+    "Xác minh thanh toán thủ công"
+  ],
+  "顾客下单后，请与顾客安排付款，并在核实实际到账后确认收款。": [
+    "Arrange payment with the customer after ordering, then confirm receipt only after verifying the funds.",
+    "Aturkan bayaran dengan pelanggan selepas pesanan dibuat, kemudian sahkan penerimaan selepas menyemak wang diterima.",
+    "หลังลูกค้าสั่งซื้อ ให้ตกลงวิธีชำระเงิน และยืนยันรับเงินหลังตรวจสอบยอดเงินจริงแล้วเท่านั้น",
+    "ក្រោយអតិថិជនបញ្ជាទិញ សូមរៀបចំការទូទាត់ ហើយបញ្ជាក់ការទទួលប្រាក់ក្រោយផ្ទៀងផ្ទាត់ប្រាក់ចូលពិតប្រាកដ។",
+    "Sau khi khách đặt hàng, hãy thỏa thuận thanh toán và chỉ xác nhận sau khi kiểm tra tiền thực nhận."
+  ],
+  "提交订单不会自动扣款，商家确认到账前订单保持待付款。": [
+    "Placing an order does not charge automatically. It stays pending until the merchant confirms payment.",
+    "Pesanan tidak mencaj secara automatik. Status kekal menunggu bayaran sehingga peniaga mengesahkan penerimaan.",
+    "การส่งคำสั่งซื้อจะไม่หักเงินอัตโนมัติ สถานะจะรอชำระจนกว่าร้านค้ายืนยันรับเงิน",
+    "ការដាក់បញ្ជាទិញមិនកាត់ប្រាក់ស្វ័យប្រវត្តិទេ។ ស្ថានភាពនៅរង់ចាំរហូតអ្នកលក់បញ្ជាក់ការទទួលប្រាក់។",
+    "Đặt hàng không tự động trừ tiền. Đơn vẫn chờ thanh toán cho đến khi người bán xác nhận."
+  ],
+  "使用下方平台订阅申请付款，平台核实到账后开通服务。": [
+    "Use the subscription application below. The platform activates service after verifying payment.",
+    "Gunakan permohonan langganan di bawah. Platform mengaktifkan perkhidmatan selepas mengesahkan bayaran.",
+    "ใช้แบบฟอร์มสมัครบริการด้านล่าง แพลตฟอร์มจะเปิดบริการหลังตรวจสอบการรับเงิน",
+    "ប្រើពាក្យសុំជាវខាងក្រោម។ វេទិកានឹងបើកសេវាក្រោយផ្ទៀងផ្ទាត់ការទទួលប្រាក់។",
+    "Sử dụng yêu cầu đăng ký bên dưới. Nền tảng sẽ kích hoạt sau khi xác minh tiền nhận."
+  ],
+  "自动线上付款暂未开放，请联系商家安排付款。": [
+    "Online payment is not enabled. Contact the merchant to arrange payment.",
+    "Bayaran dalam talian belum diaktifkan. Hubungi peniaga untuk mengatur bayaran.",
+    "ยังไม่เปิดชำระเงินออนไลน์ โปรดติดต่อร้านค้าเพื่อตกลงการชำระเงิน",
+    "ការទូទាត់អនឡាញមិនទាន់បើកទេ។ សូមទាក់ទងអ្នកលក់ដើម្បីរៀបចំការទូទាត់។",
+    "Thanh toán trực tuyến chưa được bật. Hãy liên hệ người bán để thanh toán."
+  ],
+  "订阅税率尚未配置，当前不会扣费。": [
+    "Subscription tax is not configured. No charge will be made.",
+    "Cukai langganan belum dikonfigurasi. Tiada caj akan dibuat.",
+    "ยังไม่ได้ตั้งค่าภาษีสมาชิก ระบบจะไม่เรียกเก็บเงิน",
+    "មិនទាន់កំណត់ពន្ធការជាវទេ។ នឹងមិនគិតប្រាក់ទេ។",
+    "Chưa cấu hình thuế đăng ký. Sẽ không thu tiền."
+  ],
+  "订阅价格或6%税率配置无效，当前不会扣费。": [
+    "The subscription price or 6% tax rate is invalid. No charge will be made.",
+    "Harga langganan atau kadar cukai 6% tidak sah. Tiada caj akan dibuat.",
+    "ราคาสมาชิกหรืออัตราภาษี 6% ไม่ถูกต้อง ระบบจะไม่เรียกเก็บเงิน",
+    "តម្លៃការជាវ ឬអត្រាពន្ធ 6% មិនត្រឹមត្រូវទេ។ នឹងមិនគិតប្រាក់ទេ។",
+    "Giá đăng ký hoặc thuế suất 6% không hợp lệ. Sẽ không thu tiền."
+  ],
+  "订阅会话税率需更新，请联系平台处理。": [
+    "The checkout tax rate needs updating. Please contact the platform.",
+    "Kadar cukai pembayaran perlu dikemas kini. Sila hubungi platform.",
+    "ต้องอัปเดตอัตราภาษีในหน้าชำระเงิน โปรดติดต่อแพลตฟอร์ม",
+    "ត្រូវធ្វើបច្ចុប្បន្នភាពអត្រាពន្ធការទូទាត់។ សូមទាក់ទងវេទិកា។",
+    "Cần cập nhật thuế suất phiên thanh toán. Vui lòng liên hệ nền tảng."
+  ],
+  "Pro试用或订阅已到期，请先续费。": [
+    "Your Pro trial or subscription has ended. Please renew to continue.",
+    "Percubaan atau langganan Pro telah tamat. Sila perbaharui untuk meneruskan.",
+    "การทดลองใช้หรือสมาชิก Pro หมดอายุแล้ว โปรดต่ออายุเพื่อใช้งานต่อ",
+    "ការសាកល្បង ឬការជាវ Pro បានផុតកំណត់។ សូមបន្តការជាវដើម្បីប្រើបន្ត។",
+    "Dùng thử hoặc đăng ký Pro đã hết hạn. Vui lòng gia hạn để tiếp tục."
+  ],
+  "历史资料已保留，续费后可继续使用。": [
+    "Your existing data is retained. Renew to continue using it.",
+    "Data sedia ada dikekalkan. Perbaharui untuk terus menggunakannya.",
+    "ข้อมูลเดิมยังถูกเก็บไว้ ต่ออายุเพื่อใช้งานต่อ",
+    "ទិន្នន័យចាស់ត្រូវបានរក្សាទុក។ បន្តការជាវដើម្បីប្រើបន្ត។",
+    "Dữ liệu cũ được giữ lại. Gia hạn để tiếp tục sử dụng."
+  ],
+  "请联系店铺所有者续费。": [
+    "Please ask the store owner to renew.",
+    "Sila minta pemilik kedai memperbaharui langganan.",
+    "โปรดให้เจ้าของร้านต่ออายุสมาชิก",
+    "សូមស្នើម្ចាស់ហាងបន្តការជាវ។",
+    "Vui lòng nhờ chủ cửa hàng gia hạn."
+  ],
+  "Pro免费试用截止：": [
+    "Pro trial ends: ",
+    "Percubaan Pro tamat: ",
+    "สิ้นสุดทดลองใช้ Pro: ",
+    "ការសាកល្បង Pro បញ្ចប់៖ ",
+    "Dùng thử Pro kết thúc: "
+  ],
+  "Pro：MYR 99.90/月，另加6%税费，共MYR 105.89/月。": [
+    "Pro: MYR 99.90/month plus 6% tax, totaling MYR 105.89/month.",
+    "Pro: MYR 99.90/bulan ditambah cukai 6%, jumlah MYR 105.89/bulan.",
+    "Pro: MYR 99.90/เดือน บวกภาษี 6% รวม MYR 105.89/เดือน",
+    "Pro៖ MYR 99.90/ខែ បូកពន្ធ 6% សរុប MYR 105.89/ខែ។",
+    "Pro: MYR 99.90/tháng cộng thuế 6%, tổng MYR 105.89/tháng."
+  ],
+  "店铺暂停接收新订单，已有订单仍可查询。": [
+    "This store is not accepting new orders. Existing orders can still be tracked.",
+    "Kedai ini tidak menerima pesanan baharu. Pesanan sedia ada masih boleh disemak.",
+    "ร้านค้านี้หยุดรับคำสั่งซื้อใหม่ ยังตรวจสอบคำสั่งซื้อเดิมได้",
+    "ហាងនេះផ្អាកទទួលការបញ្ជាទិញថ្មី។ នៅតែអាចពិនិត្យការបញ្ជាទិញចាស់បាន។",
+    "Cửa hàng tạm ngừng nhận đơn mới. Vẫn có thể tra cứu đơn đã đặt."
+  ],
+  "店铺暂停接收新订单，请联系商家。": [
+    "This store is not accepting new orders. Please contact the merchant.",
+    "Kedai ini tidak menerima pesanan baharu. Sila hubungi peniaga.",
+    "ร้านค้านี้หยุดรับคำสั่งซื้อใหม่ โปรดติดต่อร้านค้า",
+    "ហាងនេះផ្អាកទទួលការបញ្ជាទិញថ្មី។ សូមទាក់ទងអ្នកលក់។",
+    "Cửa hàng tạm ngừng nhận đơn mới. Vui lòng liên hệ người bán."
+  ],
+  "试用配置尚未升级，当前不会扣费。": [
+    "Trial configuration needs upgrading. No charge will be made.",
+    "Konfigurasi percubaan perlu dinaik taraf. Tiada caj akan dibuat.",
+    "ต้องอัปเกรดการตั้งค่าทดลองใช้ ระบบจะไม่เรียกเก็บเงิน",
+    "ត្រូវធ្វើបច្ចុប្បន្នភាពការកំណត់សាកល្បង។ នឹងមិនគិតប្រាក់ទេ។",
+    "Cần nâng cấp cấu hình dùng thử. Sẽ không thu tiền."
   ]
 }

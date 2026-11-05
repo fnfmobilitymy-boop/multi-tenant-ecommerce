@@ -27,7 +27,7 @@ it("只读检查拒绝服务端密钥并且不把可达状态冒充生产验收"
           url.endsWith("ezshop_api")
             ? { ok: true }
             : url.endsWith("ezshop_release_status")
-              ? { database_ready: true, features: {} }
+              ? { database_ready: true, features: { trial_access: true } }
               : {},
         ),
         { status: options.method === "OPTIONS" ? 405 : 200 },

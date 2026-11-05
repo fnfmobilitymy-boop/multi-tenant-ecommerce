@@ -53,6 +53,7 @@ jobs:
           python tests/content_browser.py
       - name: 隔离构建验证邮件界面
         env:
+          VITE_STRIPE_AUTOMATION_ENABLED: "true"
           VITE_SUPABASE_URL: https://auth-test.supabase.co
           VITE_SUPABASE_ANON_KEY: browser-test-public-key
         run: npm run build -- --outDir=auth-test-dist

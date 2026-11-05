@@ -634,3 +634,34 @@ describe("平台自填金额订阅与安全上线检查", () => {
     expect(job.items[0].name).toBe("Tên đã mua");
   });
 });
+
+it('七天试用固定截止；到期禁止经营及绕过入口，保留续费与已有订单查询', async()=>{
+ const id='dddddddd-dddd-4ddd-8ddd-dddddddddddd';
+ await db.query('insert into auth.users values($1,$2,$3)',[id,'trial@example.test',JSON.stringify({name:'Trial',slug:'trial-store'})]);
+ await user(id);
+ const fresh=await main('dashboard');const merchant=fresh.merchant.id;
+ expect(fresh.merchant.subscription_access).toBe(true);
+ const duration=(await db.query<{seconds:number}>('select extract(epoch from (trial_ends_at-now()))::float8 seconds from ezshop.merchants where id=$1',[merchant])).rows[0].seconds;
+ expect(duration).toBeGreaterThan(604700);expect(duration).toBeLessThanOrEqual(604800);
+ await main('products',{name:'Trial product',price:1000,stock:3,published:1});
+ const product=(await main('dashboard')).products[0];
+ await user('');
+ const placed=await main('checkout',{slug:'trial-store',customer:'Buyer',email:'buyer@example.test',phone:'0123456789',address:'KL',items:[{id:product.id,quantity:1}],checkout_key:'trial_order_idempotency_00001'});
+ await db.query("update ezshop.merchants set trial_ends_at=now()-interval '1 minute',plan='pro' where id=$1",[merchant]);
+ await user(id);
+ const expired=await main('dashboard');expect(expired.merchant.subscription_access).toBe(false);expect(expired.products).toEqual([]);expect(expired.orders).toEqual([]);
+ await expect(main('products',{name:'Bypass',price:1000,stock:3})).rejects.toThrow('到期');
+ expect((await db.query<{allowed:boolean}>('select public.ezshop_can_upload_media() allowed')).rows[0].allowed).toBe(false);
+ expect((await pay('owner-status')).trial_ends_at).toBeTruthy();
+ expect(await call('ezshop_platform_billing_api','view')).toHaveProperty('options');
+ await db.exec('set role authenticated');await expect(call('ezshop_subscription_api','products',{})).rejects.toThrow();await db.exec('reset role');
+ await user('');
+ const closed=await main('store',{slug:'trial-store'});expect(closed.products).toEqual([]);expect(closed.store.subscription_access).toBe(false);
+ await expect(main('checkout',{slug:'trial-store',customer:'Buyer',email:'buyer@example.test',phone:'0123456789',address:'KL',items:[{id:product.id,quantity:1}],checkout_key:'trial_order_idempotency_00002'})).rejects.toThrow('暂停');
+ expect((await main('order-result',{slug:'trial-store',reference:placed.reference,token:placed.access_token})).order.reference).toBe(placed.reference);
+ await db.query('insert into ezshop.billing_accounts(merchant_id,customer_id,status,invoice_paid,paid_through) values($1,\'cus_trial_fixture\',$2,true,now()+interval \'1 month\')',[merchant,'active']);
+ await user(id);expect((await main('dashboard')).merchant.subscription_access).toBe(true);
+ await db.query("update ezshop.billing_accounts set status='past_due',invoice_paid=false where merchant_id=$1",[merchant]);
+ expect((await main('dashboard')).merchant.subscription_access).toBe(false);
+ await user(owner);
+});

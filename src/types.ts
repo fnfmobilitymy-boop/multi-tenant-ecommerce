@@ -1,5 +1,8 @@
 import type { ContentTranslations } from "./content";
 export interface Merchant {
+  plan?: "free" | "pro";
+  subscription_access?: boolean;
+  trial_ends_at?: string;
   content_translations?: ContentTranslations;
   id: number;
   name: string;

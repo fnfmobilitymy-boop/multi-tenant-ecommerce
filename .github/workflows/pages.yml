@@ -37,6 +37,7 @@ jobs:
         env:
           VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
+          VITE_STRIPE_AUTOMATION_ENABLED: ${{ vars.VITE_STRIPE_AUTOMATION_ENABLED }}
           REPOSITORY_NAME: ${{ github.event.repository.name }}
         run: |
           npm run build -- --base="/$REPOSITORY_NAME/"
