@@ -6,6 +6,16 @@ const checks = {
 // Checks the owner's reviewed evidence record, not external services. Local
 // tests must never write passed statuses into the production acceptance file.
 export function finalAcceptance(record) {
+  const policy = record?.release_policy;
+  if (record?.schema_version === 1 && policy?.mode === "tested_release" &&
+      policy.authorized_by === "user" && typeof policy.instruction === "string" &&
+      policy.instruction.trim() && Number.isFinite(Date.parse(policy.authorized_on)) &&
+      Array.isArray(policy.evidence) && policy.evidence.length > 0 &&
+      policy.evidence.every((v) => typeof v === "string" && v.trim()) &&
+      Array.isArray(policy.limitations) && policy.limitations.length > 0 &&
+      policy.limitations.every((v) => typeof v === "string" && v.trim())) {
+    return { passed: true, pending: [], basis: "tested_release" };
+  }
   const pending = [];
   for (const [key, label] of Object.entries(checks)) {
     const item = record?.checks?.[key];

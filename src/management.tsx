@@ -1,3 +1,10 @@
+import {
+  useCommerceMoney,
+  useCommerceDate,
+  type Currency,
+  type CountryCode,
+  countryNames,
+} from "./commerce-currency";
 import { PlatformDetails } from "./platform-details";
 import { PlatformBillingAdmin } from "./platform-billing";
 import { useI18n } from "./i18n";
@@ -29,6 +36,7 @@ interface Audit {
   created: string;
 }
 export function Team() {
+  const dateLabel=useCommerceDate();
   const { t, locale, errorText } = useI18n();
   const [data, setData] = useState<{
       members: Member[];
@@ -244,6 +252,8 @@ interface PlatformMerchant {
   plan: string;
   status: string;
   orders_count: number;
+  currency?: Currency;
+  country_code?: CountryCode;
   sales: number;
 }
 export function Platform() {
@@ -310,6 +320,7 @@ export function Platform() {
             <thead>
               <tr>
                 <th>{t("商家")}</th>
+                <th>{t("商家国家／地区")}</th><th>{t("店铺币种")}</th>
                 <th>{locale === "en" ? "Business details" : "业务明细"}</th>
                 <th>{t("订单数")}</th>
                 <th>{t("已收款销售额")}</th>
@@ -324,6 +335,7 @@ export function Platform() {
                     {m.name}
                     <small>{m.email}</small>
                   </td>
+                  <td>{t(countryNames[m.country_code||"MY"])}</td><td>{m.currency||"MYR"}</td>
                   <td>
                     <button
                       className="text-button"
@@ -333,7 +345,7 @@ export function Platform() {
                     </button>
                   </td>
                   <td>{m.orders_count}</td>
-                  <td>{money(m.sales, locale)}</td>
+                  <td>{money(m.sales, locale, m.currency || "MYR")}</td>
                   <td>
                     <select
                       aria-label={m.name + t(" 方案")}
@@ -371,6 +383,8 @@ export function Affiliate({
   logout: () => void;
 }) {
   const { t, locale, errorText } = useI18n();
+  const money = useCommerceMoney(),
+    dateLabel = useCommerceDate();
   const a = data.agents[0],
     paid = data.orders.filter((o) => o.status === "paid"),
     earned = paid.reduce((s, o) => s + o.commission, 0),

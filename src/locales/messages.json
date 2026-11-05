@@ -5052,5 +5052,194 @@
     "การตั้งค่า Stripe ยังไม่ครบถ้วน ยังไม่สามารถยืนยันความพร้อมของการสมัครอัตโนมัติได้",
     "ការកំណត់ Stripe មិនទាន់ពេញលេញទេ។ មិនទាន់អាចបញ្ជាក់ថាការជាវស្វ័យប្រវត្តិរួចរាល់បានទេ។",
     "Cấu hình Stripe chưa đầy đủ. Chưa thể xác nhận đăng ký tự động đã sẵn sàng."
+  ],
+  "价格（{currency}）": [
+    "Price ({currency})",
+    "Harga ({currency})",
+    "ราคา ({currency})",
+    "តម្លៃ ({currency})",
+    "Giá ({currency})"
+  ],
+  "单位成本（{currency}）": [
+    "Unit cost ({currency})",
+    "Kos seunit ({currency})",
+    "ต้นทุนต่อหน่วย ({currency})",
+    "ថ្លៃដើមក្នុងមួយឯកតា ({currency})",
+    "Giá vốn mỗi đơn vị ({currency})"
+  ],
+  "每单邮费（{currency}）": [
+    "Shipping per order ({currency})",
+    "Pos setiap pesanan ({currency})",
+    "ค่าส่งต่อคำสั่งซื้อ ({currency})",
+    "ថ្លៃដឹកក្នុងមួយការបញ្ជាទិញ ({currency})",
+    "Phí giao mỗi đơn ({currency})"
+  ],
+  "申请金额（{currency}）": [
+    "Requested amount ({currency})",
+    "Amaun permohonan ({currency})",
+    "จำนวนเงินที่ขอ ({currency})",
+    "ចំនួនប្រាក់ស្នើសុំ ({currency})",
+    "Số tiền yêu cầu ({currency})"
+  ],
+  "订单以{currency}计价，USDT金额及网络须与顾客确认，不自动换汇。": [
+    "Orders are priced in {currency}. Agree the USDT amount and network with the customer; no automatic conversion.",
+    "Pesanan dalam {currency}. Sahkan jumlah dan rangkaian USDT dengan pelanggan; tiada pertukaran automatik.",
+    "ราคาคำสั่งซื้อเป็น {currency} โปรดยืนยันยอด USDT และเครือข่ายกับลูกค้า ไม่มีการแปลงเงินอัตโนมัติ",
+    "ការបញ្ជាទិញគិតជា {currency}។ ត្រូវបញ្ជាក់ចំនួន USDT និងបណ្ដាញជាមួយអតិថិជន មិនប្ដូរប្រាក់ស្វ័យប្រវត្តិទេ។",
+    "Đơn hàng tính bằng {currency}. Xác nhận số USDT và mạng với khách; không tự động đổi tiền."
+  ],
+  "马来西亚": [
+    "Malaysia",
+    "Malaysia",
+    "มาเลเซีย",
+    "ម៉ាឡេស៊ី",
+    "Malaysia"
+  ],
+  "新加坡": [
+    "Singapore",
+    "Singapura",
+    "สิงคโปร์",
+    "សិង្ហបុរី",
+    "Singapore"
+  ],
+  "泰国": [
+    "Thailand",
+    "Thailand",
+    "ประเทศไทย",
+    "ថៃ",
+    "Thái Lan"
+  ],
+  "柬埔寨": [
+    "Cambodia",
+    "Kemboja",
+    "กัมพูชา",
+    "កម្ពុជា",
+    "Campuchia"
+  ],
+  "越南": [
+    "Vietnam",
+    "Vietnam",
+    "เวียดนาม",
+    "វៀតណាម",
+    "Việt Nam"
+  ],
+  "商家国家／地区": [
+    "Merchant country / region",
+    "Negara / wilayah peniaga",
+    "ประเทศ / ภูมิภาคของผู้ค้า",
+    "ប្រទេស / តំបន់របស់អ្នកលក់",
+    "Quốc gia / khu vực người bán"
+  ],
+  "店铺币种": [
+    "Store currency",
+    "Mata wang kedai",
+    "สกุลเงินร้านค้า",
+    "រូបិយប័ណ្ណហាង",
+    "Tiền tệ cửa hàng"
+  ],
+  "设备地区仅作建议，请确认商家所在国家；语言切换不会改变交易币种。": [
+    "Device region is a suggestion. Confirm the merchant country; changing language does not change the transaction currency.",
+    "Wilayah peranti hanya cadangan. Sahkan negara peniaga; perubahan bahasa tidak mengubah mata wang transaksi.",
+    "ภูมิภาคอุปกรณ์เป็นเพียงคำแนะนำ โปรดยืนยันประเทศผู้ค้า การเปลี่ยนภาษาไม่เปลี่ยนสกุลเงินธุรกรรม",
+    "តំបន់ឧបករណ៍គ្រាន់តែជាការណែនាំ។ សូមបញ្ជាក់ប្រទេសអ្នកលក់ ការប្ដូរភាសាមិនប្ដូររូបិយប័ណ្ណប្រតិបត្តិការទេ។",
+    "Khu vực thiết bị chỉ là gợi ý. Hãy xác nhận quốc gia người bán; đổi ngôn ngữ không đổi tiền tệ giao dịch."
+  ],
+  "店铺已有商品或交易，国家及币种已锁定，不能直接转换历史金额。": [
+    "The store already has products or transactions. Country and currency are locked to preserve historical amounts.",
+    "Kedai sudah mempunyai produk atau transaksi. Negara dan mata wang dikunci untuk mengekalkan jumlah sejarah.",
+    "ร้านค้ามีสินค้าหรือธุรกรรมแล้ว ประเทศและสกุลเงินถูกล็อกเพื่อรักษายอดเดิม",
+    "ហាងមានទំនិញ ឬប្រតិបត្តិការហើយ។ ប្រទេសនិងរូបិយប័ណ្ណត្រូវបានចាក់សោ ដើម្បីរក្សាចំនួនប្រាក់ចាស់។",
+    "Cửa hàng đã có sản phẩm hoặc giao dịch. Quốc gia và tiền tệ được khóa để giữ nguyên số tiền lịch sử."
+  ],
+  "不同币种分别统计，不自动换汇。": [
+    "Currencies are totaled separately; no automatic conversion.",
+    "Mata wang dijumlahkan berasingan; tiada pertukaran automatik.",
+    "แยกยอดรวมแต่ละสกุลเงิน ไม่มีการแปลงเงินอัตโนมัติ",
+    "គណនាសរុបតាមរូបិយប័ណ្ណនីមួយៗ មិនប្ដូរប្រាក់ស្វ័យប្រវត្តិទេ។",
+    "Thống kê riêng từng tiền tệ, không tự động quy đổi."
+  ],
+  "为各地商家而生 ✦": [
+    "Built for merchants everywhere ✦",
+    "Dibina untuk peniaga di mana-mana ✦",
+    "สร้างเพื่อผู้ค้าทุกพื้นที่ ✦",
+    "បង្កើតសម្រាប់អ្នកលក់គ្រប់ទីកន្លែង ✦",
+    "Dành cho người bán khắp nơi ✦"
+  ],
+  "交易币种：{currency}": [
+    "Transaction currency: {currency}",
+    "Mata wang transaksi: {currency}",
+    "สกุลเงินธุรกรรม: {currency}",
+    "រូបិយប័ណ្ណប្រតិបត្តិការ៖ {currency}",
+    "Tiền tệ giao dịch: {currency}"
+  ],
+  "用心精选 · {country}": [
+    "CURATED WITH CARE · {country}",
+    "DIPILIH DENGAN TELITI · {country}",
+    "คัดสรรอย่างใส่ใจ · {country}",
+    "ជ្រើសរើសដោយយកចិត្តទុកដាក់ · {country}",
+    "TUYỂN CHỌN TẬN TÂM · {country}"
+  ],
+  "✦ {country}商家": [
+    "✦ Merchant in {country}",
+    "✦ Peniaga di {country}",
+    "✦ ผู้ค้าใน{country}",
+    "✦ អ្នកលក់នៅ{country}",
+    "✦ Người bán tại {country}"
+  ],
+  "配送国家：{country}。请确认收货地址、地区及邮编正确。": [
+    "Delivery country: {country}. Check the address, region and postal code.",
+    "Negara penghantaran: {country}. Semak alamat, wilayah dan poskod.",
+    "ประเทศจัดส่ง: {country} โปรดตรวจสอบที่อยู่ ภูมิภาค และรหัสไปรษณีย์",
+    "ប្រទេសដឹកជញ្ជូន៖ {country}។ សូមពិនិត្យអាសយដ្ឋាន តំបន់ និងលេខកូដប្រៃសណីយ៍។",
+    "Quốc gia giao hàng: {country}. Hãy kiểm tra địa chỉ, khu vực và mã bưu điện."
+  ],
+  "金额精度与币种不一致": [
+    "Amount precision does not match the currency.",
+    "Ketepatan jumlah tidak sepadan dengan mata wang.",
+    "จำนวนหลักทศนิยมไม่ตรงกับสกุลเงิน",
+    "ចំនួនខ្ទង់ទសភាគមិនត្រូវនឹងរូបិយប័ណ្ណទេ។",
+    "Số chữ số thập phân không phù hợp với tiền tệ."
+  ],
+  "币种已变化，请刷新后重新填写金额": [
+    "Currency changed. Refresh and enter the amount again.",
+    "Mata wang telah berubah. Muat semula dan masukkan jumlah lagi.",
+    "สกุลเงินเปลี่ยนแล้ว โปรดรีเฟรชและกรอกยอดใหม่",
+    "រូបិយប័ណ្ណបានផ្លាស់ប្ដូរ។ សូមផ្ទុកឡើងវិញ ហើយបញ្ចូលចំនួនប្រាក់ម្ដងទៀត។",
+    "Tiền tệ đã đổi. Hãy tải lại và nhập lại số tiền."
+  ],
+  "店铺已有商品、交易或邮费，请勿直接转换币种": [
+    "The store has products, transactions or shipping fees. Currency cannot be changed directly.",
+    "Kedai mempunyai produk, transaksi atau caj penghantaran. Mata wang tidak boleh ditukar terus.",
+    "ร้านค้ามีสินค้า ธุรกรรม หรือค่าจัดส่งแล้ว ไม่สามารถเปลี่ยนสกุลเงินโดยตรง",
+    "ហាងមានទំនិញ ប្រតិបត្តិការ ឬថ្លៃដឹកជញ្ជូនហើយ។ មិនអាចប្ដូររូបិយប័ណ្ណដោយផ្ទាល់បានទេ។",
+    "Cửa hàng đã có sản phẩm, giao dịch hoặc phí vận chuyển. Không thể đổi tiền tệ trực tiếp."
+  ],
+  "请填写商家所在国家的配送地址": [
+    "Enter a delivery address in the merchant country.",
+    "Masukkan alamat penghantaran di negara peniaga.",
+    "กรอกที่อยู่จัดส่งในประเทศของผู้ค้า",
+    "សូមបញ្ចូលអាសយដ្ឋានដឹកជញ្ជូនក្នុងប្រទេសអ្នកលក់។",
+    "Nhập địa chỉ giao hàng tại quốc gia người bán."
+  ],
+  "请填写有效的当地城市、地区及邮编": [
+    "Enter a valid local city, region and postal code.",
+    "Masukkan bandar, wilayah dan poskod tempatan yang sah.",
+    "กรอกเมือง ภูมิภาค และรหัสไปรษณีย์ท้องถิ่นให้ถูกต้อง",
+    "សូមបញ្ចូលទីក្រុង តំបន់ និងលេខកូដប្រៃសណីយ៍មូលដ្ឋានឱ្យត្រឹមត្រូវ។",
+    "Nhập thành phố, khu vực và mã bưu điện địa phương hợp lệ."
+  ],
+  "邮费须为币种最小单位整数": [
+    "Shipping must be an integer in the currency minor unit.",
+    "Pos mesti integer dalam unit terkecil mata wang.",
+    "ค่าจัดส่งต้องเป็นจำนวนเต็มในหน่วยย่อยของสกุลเงิน",
+    "ថ្លៃដឹកជញ្ជូនត្រូវជាចំនួនគត់នៃឯកតាតូចបំផុតរបស់រូបិយប័ណ្ណ។",
+    "Phí vận chuyển phải là số nguyên theo đơn vị nhỏ nhất của tiền tệ."
+  ],
+  "邮费超出允许范围": [
+    "Shipping fee exceeds the allowed range.",
+    "Caj pos melebihi julat dibenarkan.",
+    "ค่าจัดส่งเกินช่วงที่อนุญาต",
+    "ថ្លៃដឹកជញ្ជូនលើសជួរដែលបានអនុញ្ញាត។",
+    "Phí vận chuyển vượt phạm vi cho phép."
   ]
 }

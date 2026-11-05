@@ -51,6 +51,7 @@ jobs:
       - name: 顾客及商家六语与平台双语
         run: |
           VITE_SUPABASE_URL= VITE_SUPABASE_ANON_KEY= npm run build -- --outDir=local-test-dist
+          python tests/regional_browser.py
           python tests/i18n_browser.py
           python tests/content_browser.py
       - name: 隔离构建验证邮件界面
@@ -71,6 +72,7 @@ jobs:
           python tests/payments_browser.py
           python tests/platform_billing_browser.py
           python tests/customer_books_browser.py
+          EZSHOP_TEST_CURRENCY=VND python tests/customer_books_browser.py
           python tests/platform_details_browser.py
       - uses: actions/upload-artifact@v4
         if: always()
@@ -101,3 +103,15 @@ jobs:
           STRIPE_PRO_TAX_RATE_ID: ${{ secrets.STRIPE_PRO_TAX_RATE_ID }}
           STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
         run: node scripts/check-stripe-config.mjs
+
+  release_after_tests:
+    needs: [verify, stripe_configuration]
+    if: always() && github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.verify.result == 'success' && (needs.stripe_configuration.result == 'success' || needs.stripe_configuration.result == 'skipped')
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    uses: ./.github/workflows/release.yml
+    with:
+      confirm: DEPLOY
+    secrets: inherit

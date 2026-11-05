@@ -128,7 +128,7 @@ class Flow(unittest.TestCase):
         self.assertEqual(self.call(guest,'checkout',order,201)['total'],4000)
         self.call(a,'settings',dict(name='New Store',phone='+60123456789',description='Fresh local products'))
         public=self.call(guest,'store?slug=edit-a')['store']
-        self.assertEqual(public,dict(name='New Store',slug='edit-a',phone='+60123456789',description='Fresh local products',shipping_fee=0,courier='',content_translations={}))
+        self.assertEqual(public,dict(name='New Store',slug='edit-a',phone='+60123456789',description='Fresh local products',shipping_fee=0,courier='',content_translations={},country_code='MY',currency='MYR'))
         self.assertEqual(self.call(b,'dashboard')['merchant']['name'],'Edit B')
         self.call(a,'settings',dict(name='Bad',phone='javascript:alert(1)',description='x'),400)
         self.call(a,'settings',dict(name='New Store',phone='',description=''))

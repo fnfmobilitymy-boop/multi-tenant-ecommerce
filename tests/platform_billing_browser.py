@@ -27,7 +27,7 @@ try:
                 body=route.request.post_data_json if route.request.method=='POST' else {};payload=body.get('payload',{})
                 def reply(value,status=200):return route.fulfill(status=status,content_type='application/json',body=json.dumps(value))
                 if url.path.endswith('/rpc/ezshop_api'):
-                    if body['route']=='dashboard':return reply({'merchant':{'id':1 if admin else 2,'name':'Test Admin' if admin else 'Test Merchant','slug':'test','phone':'','description':'','role':'owner','is_admin':admin,'plan':'free' if admin else state['plan'],'subscription_access':not expired},'products':[],'orders':[],'agents':[]})
+                    if body['route']=='dashboard':return reply({'merchant':{'id':1 if admin else 2,'name':'Test Admin' if admin else 'Test Merchant','slug':'test','phone':'','description':'','role':'owner','is_admin':admin,'plan':'free' if admin else state['plan'],'subscription_access':not expired,'currency':'MYR' if admin else 'SGD','country_code':'MY' if admin else 'SG'},'products':[],'orders':[],'agents':[]})
                     if body['route']=='receiving':return reply({'receiving':receiving})
                     if body['route']=='receiving/save':
                         assert payload['bank_enabled'] and payload['wallet_enabled'] and payload['usdt_enabled'] and payload['link_enabled']
@@ -53,7 +53,7 @@ try:
                         state['approve_calls']+=1;state['plan']='pro';state['paid_until']='2026-12-05T00:00:00Z';state['requests'][0].update(status='approved',approved_until=state['paid_until']);return reply({'ok':True})
                 return route.abort()
             result.route('**/*',intercept);return result
-        merchant=context(False).new_page();merchant.on('pageerror',lambda e:errors.append(str(e)));merchant.goto('http://127.0.0.1:3108');merchant.get_by_role('button',name='收款与订阅',exact=True).click()
+        merchant=context(False).new_page();merchant.on('pageerror',lambda e:errors.append(str(e)));merchant.goto('http://127.0.0.1:3108');merchant.get_by_role('button',name='收款与订阅',exact=True).click();merchant.get_by_text('Pro：MYR 99.90/月，另加6%税费，共MYR 105.89/月。',exact=True).wait_for()
         assert merchant.get_by_role('button',name='平台管理',exact=True).count()==0
         denied=context(False).new_page();denied.goto('http://127.0.0.1:3108/platform');denied.get_by_role('heading',name='平台管理员登录',exact=True).wait_for();assert denied.get_by_role('button',name='核实并处理',exact=True).count()==0
         receiving_panel=merchant.locator('section.card').filter(has=merchant.get_by_role('heading',name='商家收款方式与资料',exact=True))

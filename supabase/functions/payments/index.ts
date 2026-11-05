@@ -32,7 +32,7 @@ Deno.serve(async(req:Request)=>{
     await rpc('service/expire-order-session',{session_id:existing.id,account_id:order.account_id});order=await rpc('service/order-claim',{reference:body.reference,token:body.token});
    }
    const result=new URL('shop/'+encodeURIComponent(order.slug)+'/order-result',root);result.searchParams.set('ref',order.reference);
-   const session=await stripe.checkout.sessions.create({mode:'payment',payment_intent_data:{metadata:{ezshop_order_reference:order.reference,ezshop_merchant_id:String(order.merchant_id)}},customer_email:order.email,client_reference_id:order.reference,allowed_payment_method_types:account.capabilities?.fpx_payments==='active'?['card','fpx']:['card'],line_items:[{price_data:{currency:'myr',unit_amount:order.amount,product_data:{name:order.store_name+' · '+order.reference}},quantity:1}],metadata:{ezshop_order_reference:order.reference,ezshop_merchant_id:String(order.merchant_id)},success_url:result.toString()+'&payment_return=1',cancel_url:result.toString()+'&payment_return=cancelled'}, {stripeAccount:order.account_id,idempotencyKey:'ezshop-order-'+order.id});
+   const session=await stripe.checkout.sessions.create({mode:'payment',payment_intent_data:{metadata:{ezshop_order_reference:order.reference,ezshop_merchant_id:String(order.merchant_id)}},customer_email:order.email,client_reference_id:order.reference,allowed_payment_method_types:account.country==='MY'&&order.currency==='myr'&&account.capabilities?.fpx_payments==='active'?['card','fpx']:['card'],line_items:[{price_data:{currency:order.currency,unit_amount:order.amount,product_data:{name:order.store_name+' · '+order.reference}},quantity:1}],metadata:{ezshop_order_reference:order.reference,ezshop_merchant_id:String(order.merchant_id)},success_url:result.toString()+'&payment_return=1',cancel_url:result.toString()+'&payment_return=cancelled'}, {stripeAccount:order.account_id,idempotencyKey:'ezshop-order-'+order.id});
    await rpc('service/save-order-session',{attempt_id:order.id,session_id:session.id});return reply({url:stripeRedirect(session.url,'checkout')});
   }
   const authorization=req.headers.get('Authorization');if(!authorization)return reply({error:'请先登录'},401);
@@ -41,9 +41,10 @@ Deno.serve(async(req:Request)=>{
   const {data:owner,error:ownerError}=await scoped.rpc('ezshop_payment_api',{route:'owner-status',payload:{}});if(ownerError)return reply({error:'需要商家所有者权限，或支付模块尚未启用。'},403);
   if(['connect-onboarding','connect-refresh'].includes(action)&&owner.subscription_access===false)return reply({error:'Pro试用或订阅已到期，请先续费。'},403);
   if(action==='connect-onboarding'){
+   if(!['MY','SG','TH'].includes(owner.country_code||'MY'))return reply({error:'此地区暂未接入Stripe Connect，请使用商家自填收款方式。'},409);
    let accountId=owner.account_id;
    if(!accountId){
-    const account=await stripe.accounts.create({type:'express',country:'MY',email:owner.email,capabilities:{card_payments:{requested:true},transfers:{requested:true}},metadata:{ezshop_merchant_id:String(owner.merchant_id)}},{idempotencyKey:'ezshop-connect-'+owner.merchant_id});accountId=account.id;await rpc('service/bind-account',{merchant_id:owner.merchant_id,account_id:accountId});
+    const account=await stripe.accounts.create({type:'express',country:owner.country_code||'MY',email:owner.email,capabilities:{card_payments:{requested:true},transfers:{requested:true}},metadata:{ezshop_merchant_id:String(owner.merchant_id)}},{idempotencyKey:'ezshop-connect-'+owner.merchant_id});accountId=account.id;await rpc('service/bind-account',{merchant_id:owner.merchant_id,account_id:accountId});
    }
    const link=await stripe.accountLinks.create({account:accountId,type:'account_onboarding',refresh_url:root.toString()+'?connect=refresh',return_url:root.toString()+'?connect=return'});return reply({url:stripeRedirect(link.url,'connect')});
   }

@@ -84,7 +84,9 @@ try {
   let ready = false;
   for (let i = 0; i < 60; i++) {
     try {
-      await docker(["exec", name, "pg_isready", "-U", "postgres"]);
+      // The image's temporary initialization server only opens a Unix socket.
+      // TCP readiness waits for the final server after initialization completes.
+      await docker(["exec", name, "pg_isready", "-h", "127.0.0.1", "-U", "postgres"]);
       ready = true;
       break;
     } catch {

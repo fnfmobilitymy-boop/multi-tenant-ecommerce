@@ -1,3 +1,7 @@
+import {
+  validCurrency,
+  type Currency,
+} from "../supabase/functions/_shared/currencies";
 import { useEffect, useRef, useState } from "react";
 import { api, dateLabel, money, statusLabel } from "./api";
 import { useI18n } from "./i18n";
@@ -23,6 +27,8 @@ const names: Record<string, [string, string]> = {
   identifier: ["收款账号", "Receiving account"],
   network: ["网络", "Network"],
   qr: ["二维码地址", "QR address"],
+  currency: ["币种", "Currency"],
+  country_code: ["国家代码", "Country code"],
   payment_instructions: ["下单时的收款资料", "Receiving details at checkout"],
   content_translations: ["多语言内容", "Localized content"],
   locale: ["订单语言", "Order language"],
@@ -222,12 +228,15 @@ export function PlatformDetails({
   merchant,
   close,
 }: {
-  merchant: { id: number; name: string };
+  merchant: { id: number; name: string; currency?: Currency };
   close: () => void;
 }) {
   const { t, locale } = useI18n();
   const L = (zh: string, en: string) => (locale === "en" ? en : zh);
   const label = (key: string) => (names[key] ? L(...names[key]) : key);
+  const [storeCurrency, setStoreCurrency] = useState<Currency>(
+    merchant.currency || "MYR",
+  );
   const [revision, setRevision] = useState(0);
   const [tab, setTab] = useState("overview"),
     [page, setPage] = useState(1),
@@ -248,7 +257,11 @@ export function PlatformDetails({
       page,
     })
       .then((result) => {
-        if (current === generation.current) setData(result);
+        if (current === generation.current) {
+          setData(result);
+          if ("merchant" in result && validCurrency(result.merchant.currency))
+            setStoreCurrency(result.merchant.currency);
+        }
       })
       .catch((e) => {
         if (current === generation.current) setError((e as Error).message);
@@ -257,13 +270,17 @@ export function PlatformDetails({
       generation.current++;
     };
   }, [merchant.id, tab, page, revision]);
-  function value(key: string, item: unknown): string {
+  function value(
+    key: string,
+    item: unknown,
+    currency: Currency = storeCurrency,
+  ): string {
     if (item === null || item === undefined || item === "")
       return key === "unit_cost" || key === "profit"
         ? L("未知／待补成本", "Unknown / costs needed")
         : "—";
     if (amounts.has(key) && typeof item === "number")
-      return money(item, locale);
+      return money(item, locale, currency);
     if (typeof item === "boolean" || key === "published" || key === "featured")
       return item ? L("是", "Yes") : L("否", "No");
     if (
@@ -278,7 +295,7 @@ export function PlatformDetails({
       ].includes(key) &&
       typeof item === "string"
     )
-      return item.length === 10 ? item : dateLabel(item, locale);
+      return item.length === 10 ? item : dateLabel(item, locale, storeCurrency);
     if (
       [
         "status",
@@ -306,7 +323,13 @@ export function PlatformDetails({
           .map(([key, item]) => (
             <div key={key}>
               <dt>{label(key)}</dt>
-              <dd>{value(key, item)}</dd>
+              <dd>
+                {value(
+                  key,
+                  item,
+                  validCurrency(row.currency) ? row.currency : storeCurrency,
+                )}
+              </dd>
             </div>
           ))}
       </dl>
@@ -449,7 +472,15 @@ export function PlatformDetails({
                     }
                   >
                     {columns[tab].map((key) => (
-                      <td key={key}>{value(key, row[key])}</td>
+                      <td key={key}>
+                        {value(
+                          key,
+                          row[key],
+                          validCurrency(row.currency)
+                            ? row.currency
+                            : storeCurrency,
+                        )}
+                      </td>
                     ))}
                     <td>
                       <button

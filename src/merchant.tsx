@@ -1,3 +1,11 @@
+import {
+  CommerceCurrency,
+  RegionFields,
+  initialRegion,
+  currencyFactor,
+  type Currency,
+} from "./commerce-currency";
+import { toMinor } from "../supabase/functions/_shared/currencies";
 import { Bookkeeping } from "./bookkeeping";
 import { SubscriptionApplication } from "./platform-billing";
 import { ContentEditor } from "./content-editor";
@@ -25,7 +33,13 @@ import {
   Copy,
   BarChart3,
 } from "lucide-react";
-import { api, money, statusLabel, dateLabel, supabase } from "./api";
+import {
+  api,
+  money as formatMoney,
+  statusLabel,
+  dateLabel as formatDate,
+  supabase,
+} from "./api";
 import type { Dashboard, Product, Order, OrderResult } from "./types";
 import { Brand, Empty, ErrorBox, Loading, Modal } from "./ui";
 import { Team, Affiliate, Notifications } from "./management";
@@ -74,6 +88,13 @@ function MerchantPage({
     [refunding, setRefunding] = useState(false),
     [filter, setFilter] = useState("all"),
     [query, setQuery] = useState("");
+  const [region, setRegion] = useState(initialRegion);
+  const currency = data?.merchant.currency || "MYR";
+  const money = (amount: number, loc: typeof locale) =>
+    formatMoney(amount, loc, currency);
+  const dateLabel = (date: string, loc: typeof locale) =>
+    formatDate(date, loc, currency);
+  const inputStep = currency === "VND" ? "1" : "0.01";
   const [uploads, setUploads] = useState<Record<string, boolean>>({});
   const uploading = Object.values(uploads).some(Boolean);
   function imageUploading(id: string, busy: boolean) {
@@ -85,7 +106,12 @@ function MerchantPage({
     });
   }
   async function refresh() {
-    setData(await api<Dashboard>("dashboard"));
+    const next = await api<Dashboard>("dashboard");
+    setData(next);
+    setRegion({
+      country: next.merchant.country_code || "MY",
+      currency: next.merchant.currency || "MYR",
+    });
   }
   useEffect(() => {
     refresh()
@@ -138,7 +164,8 @@ function MerchantPage({
         await api(editing ? "products/update" : "products", {
           ...form,
           ...versions,
-          price: Math.round(Number(form.price) * 100),
+          currency,
+          price: toMinor(form.price, currency),
           stock: Number(form.stock),
           ...(form.unit_cost === undefined
             ? {}
@@ -146,7 +173,7 @@ function MerchantPage({
                 unit_cost:
                   form.unit_cost === ""
                     ? null
-                    : Math.round(Number(form.unit_cost) * 100),
+                    : toMinor(form.unit_cost, currency),
               }),
           category: String(form.category || "全部商品"),
           published: form.published === "on" ? 1 : 0,
@@ -164,7 +191,7 @@ function MerchantPage({
           shipping_fee:
             form.shipping_fee === undefined
               ? data?.merchant.shipping_fee || 0
-              : Math.round(Number(form.shipping_fee) * 100),
+              : toMinor(form.shipping_fee, region.currency),
         });
       }
       await refresh();
@@ -247,7 +274,7 @@ function MerchantPage({
           </p>
           <div className="auth-art">
             <ShoppingBag size={95} strokeWidth={1} />
-            <span>{t("为马来西亚商家而生 ✦")}</span>
+            <span>{t("为各地商家而生 ✦")}</span>
           </div>
         </section>
         <section className="auth-panel">
@@ -261,6 +288,7 @@ function MerchantPage({
             </p>
             {register && (
               <>
+                <RegionFields value={region} onChange={setRegion} />
                 <label>
                   {t("店铺名称")}
                   <input
@@ -394,7 +422,11 @@ function MerchantPage({
       </main>
     );
   if (data.merchant.role === "agent")
-    return <Affiliate data={data} logout={logout} />;
+    return (
+      <CommerceCurrency currency={currency}>
+        <Affiliate data={data} logout={logout} />
+      </CommerceCurrency>
+    );
   const role = data.merchant.role || "owner";
   const visibleTabs = tabs.filter(
     (t) =>
@@ -459,937 +491,955 @@ function MerchantPage({
     </div>
   );
   return (
-    <div className="dashboard-layout">
-      <aside className="sidebar">
-        <Brand />
-        <span className="nav-caption">{t("商家工作台")}</span>
-        <nav>
-          {visibleTabs.map((entry) => (
-            <button
-              key={entry.id}
-              className={tab === entry.id ? "nav-item active" : "nav-item"}
-              onClick={() => {
-                setTab(entry.id);
-                setError("");
-                setNotice("");
-              }}
-            >
-              <entry.icon size={19} />
-              {t(entry.name)}
+    <CommerceCurrency currency={currency}>
+      <div className="dashboard-layout">
+        <aside className="sidebar">
+          <Brand />
+          <span className="nav-caption">{t("商家工作台")}</span>
+          <nav>
+            {visibleTabs.map((entry) => (
+              <button
+                key={entry.id}
+                className={tab === entry.id ? "nav-item active" : "nav-item"}
+                onClick={() => {
+                  setTab(entry.id);
+                  setError("");
+                  setNotice("");
+                }}
+              >
+                <entry.icon size={19} />
+                {t(entry.name)}
+              </button>
+            ))}
+          </nav>
+          <div className="sidebar-bottom">
+            <div className="upgrade-card">
+              <span>✦</span>
+              <strong>{t("你的生意，你的节奏。")}</strong>
+              <p>{t("分享店铺链接，让顾客随时随地下单。")}</p>
+            </div>
+            <button className="nav-item" onClick={logout}>
+              <LogOut size={18} />
+              {t("退出登录")}
             </button>
-          ))}
-        </nav>
-        <div className="sidebar-bottom">
-          <div className="upgrade-card">
-            <span>✦</span>
-            <strong>{t("你的生意，你的节奏。")}</strong>
-            <p>{t("分享店铺链接，让顾客随时随地下单。")}</p>
           </div>
-          <button className="nav-item" onClick={logout}>
-            <LogOut size={18} />
-            {t("退出登录")}
-          </button>
-        </div>
-      </aside>
-      <section className="dashboard-main">
-        <header className="dashboard-header">
-          <p>
-            {t("工作台")}
-            <ChevronRight size={14} />{" "}
-            <span>
-              {t(tabs.find((entry) => entry.id === tab)?.name || "工作台")}
-            </span>
-          </p>
-          <div className="profile">
-            <span>
-              {data.merchant.name}
-              <small>{t("商家账号")}</small>
-            </span>
-            <div className="avatar">{data.merchant.name.slice(0, 1)}</div>
-          </div>
-        </header>
-        <main className="workspace">
-          {data.merchant.trial_ends_at &&
-            new Date(data.merchant.trial_ends_at).getTime() > Date.now() &&
-            data.merchant.plan !== "pro" && (
-              <div className="soft-note">
-                {t("Pro免费试用截止：")}
-                {dateLabel(data.merchant.trial_ends_at, locale)}
+        </aside>
+        <section className="dashboard-main">
+          <header className="dashboard-header">
+            <p>
+              {t("工作台")}
+              <ChevronRight size={14} />{" "}
+              <span>
+                {t(tabs.find((entry) => entry.id === tab)?.name || "工作台")}
+              </span>
+            </p>
+            <div className="profile">
+              <span>
+                {data.merchant.name}
+                <small>{t("商家账号")}</small>
+              </span>
+              <div className="avatar">{data.merchant.name.slice(0, 1)}</div>
+            </div>
+          </header>
+          <main className="workspace">
+            {data.merchant.trial_ends_at &&
+              new Date(data.merchant.trial_ends_at).getTime() > Date.now() &&
+              data.merchant.plan !== "pro" && (
+                <div className="soft-note">
+                  {t("Pro免费试用截止：")}
+                  {dateLabel(data.merchant.trial_ends_at, locale)}
+                </div>
+              )}
+            <ErrorBox error={error} />
+            {notice && (
+              <div className="success" role="status">
+                <Check size={16} />
+                {t(notice)}
+                <button className="text-button" onClick={() => setNotice("")}>
+                  {t("关闭")}
+                </button>
               </div>
             )}
-          <ErrorBox error={error} />
-          {notice && (
-            <div className="success" role="status">
-              <Check size={16} />
-              {t(notice)}
-              <button className="text-button" onClick={() => setNotice("")}>
-                {t("关闭")}
-              </button>
-            </div>
-          )}
-          {tab === "dashboard" && (
-            <>
-              <div className="page-heading">
-                <div>
-                  <span className="eyebrow">{t("BUSINESS OVERVIEW")}</span>
-                  <h1>{t("生意总览")}</h1>
-                  <p>{t("每一笔订单，都是生意的新进展。")}</p>
+            {tab === "dashboard" && (
+              <>
+                <div className="page-heading">
+                  <div>
+                    <span className="eyebrow">{t("BUSINESS OVERVIEW")}</span>
+                    <h1>{t("生意总览")}</h1>
+                    <p>{t("每一笔订单，都是生意的新进展。")}</p>
+                  </div>
                 </div>
-              </div>
-              <div className="metric-grid">
-                {[
-                  {
-                    name: t("总销售额"),
-                    value: money(sales, locale),
-                    note: t("仅统计已确认付款订单"),
-                    icon: Wallet,
-                    color: "purple",
-                  },
-                  {
-                    name: t("订单总数"),
-                    value: data.orders.length,
-                    note: t("顾客提交的全部订单"),
-                    icon: ShoppingBag,
-                    color: "green",
-                  },
-                  {
-                    name: t("待收款金额"),
-                    value: money(
-                      pending.reduce((s, o) => s + o.total, 0),
-                      locale,
-                    ),
-                    note: t("{count} 笔订单等待付款", {
-                      count: pending.length,
-                    }),
-                    icon: Clock,
-                    color: "orange",
-                  },
-                  {
-                    name: t("代理佣金"),
-                    value: money(commission, locale),
-                    note: t("已付款订单累计佣金"),
-                    icon: Users,
-                    color: "blue",
-                  },
-                ].map((m) => (
-                  <section key={m.name} className="card metric">
-                    <div className="row between">
-                      <span>{m.name}</span>
-                      <span className={"metric-icon " + m.color}>
-                        <m.icon size={18} />
-                      </span>
-                    </div>
-                    <strong>{m.value}</strong>
-                    <small>{m.note}</small>
-                  </section>
-                ))}
-              </div>
-              <div className="overview-grid">
-                <section className="card">
-                  <div className="card-heading">
-                    <h2>{t("销售概况")}</h2>
-                    <span className="muted">{t("累计已付款订单")}</span>
-                  </div>
-                  <div className="sales-visual">
-                    <div className="sales-orbit">
-                      <BarChart3 size={48} strokeWidth={1.5} />
-                    </div>
-                    <div>
-                      <span className="muted">{t("已确认销售额")}</span>
-                      <h2>{money(sales, locale)}</h2>
-                      <p>
-                        {paid.length}
-                        {t("笔已付款 \u00B7")}
-                        {pending.length}
-                        {t("笔待付款")}
-                      </p>
-                      <small>{t("以商家实际核实到账记录为准")}</small>
-                    </div>
-                  </div>
-                </section>
-                <section className="card">
-                  <div className="card-heading">
-                    <h2>{t("快捷操作")}</h2>
-                    <span className="purple">✧</span>
-                  </div>
-                  <div className="quick-actions">
-                    {["owner", "manager", "inventory"].includes(role) && (
-                      <button onClick={addProduct}>
-                        <span>
-                          <Plus size={20} />
+                <div className="metric-grid">
+                  {[
+                    {
+                      name: t("总销售额"),
+                      value: money(sales, locale),
+                      note: t("仅统计已确认付款订单"),
+                      icon: Wallet,
+                      color: "purple",
+                    },
+                    {
+                      name: t("订单总数"),
+                      value: data.orders.length,
+                      note: t("顾客提交的全部订单"),
+                      icon: ShoppingBag,
+                      color: "green",
+                    },
+                    {
+                      name: t("待收款金额"),
+                      value: money(
+                        pending.reduce((s, o) => s + o.total, 0),
+                        locale,
+                      ),
+                      note: t("{count} 笔订单等待付款", {
+                        count: pending.length,
+                      }),
+                      icon: Clock,
+                      color: "orange",
+                    },
+                    {
+                      name: t("代理佣金"),
+                      value: money(commission, locale),
+                      note: t("已付款订单累计佣金"),
+                      icon: Users,
+                      color: "blue",
+                    },
+                  ].map((m) => (
+                    <section key={m.name} className="card metric">
+                      <div className="row between">
+                        <span>{m.name}</span>
+                        <span className={"metric-icon " + m.color}>
+                          <m.icon size={18} />
                         </span>
-                        <div>
-                          <strong>{t("添加新商品")}</strong>
-                          <small>{t("让顾客发现你的好产品")}</small>
-                        </div>
-                        <ArrowRight size={17} />
-                      </button>
-                    )}
-                    <button
-                      onClick={async () => {
-                        try {
-                          await navigator.clipboard.writeText(
-                            location.origin +
-                              import.meta.env.BASE_URL.replace(/\/$/, "") +
-                              shop,
-                          );
-                          setNotice("店铺链接已复制");
-                        } catch {
-                          setNotice(
-                            "店铺链接：" +
-                              location.origin +
-                              import.meta.env.BASE_URL.replace(/\/$/, "") +
-                              shop,
-                          );
-                        }
-                      }}
-                    >
-                      <span>
-                        <Copy size={19} />
-                      </span>
-                      <div>
-                        <strong>{t("分享店铺")}</strong>
-                        <small>{t("复制链接，开始接收订单")}</small>
                       </div>
-                      <ArrowRight size={17} />
-                    </button>
-                    {role === "owner" && (
+                      <strong>{m.value}</strong>
+                      <small>{m.note}</small>
+                    </section>
+                  ))}
+                </div>
+                <div className="overview-grid">
+                  <section className="card">
+                    <div className="card-heading">
+                      <h2>{t("销售概况")}</h2>
+                      <span className="muted">{t("累计已付款订单")}</span>
+                    </div>
+                    <div className="sales-visual">
+                      <div className="sales-orbit">
+                        <BarChart3 size={48} strokeWidth={1.5} />
+                      </div>
+                      <div>
+                        <span className="muted">{t("已确认销售额")}</span>
+                        <h2>{money(sales, locale)}</h2>
+                        <p>
+                          {paid.length}
+                          {t("笔已付款 \u00B7")}
+                          {pending.length}
+                          {t("笔待付款")}
+                        </p>
+                        <small>{t("以商家实际核实到账记录为准")}</small>
+                      </div>
+                    </div>
+                  </section>
+                  <section className="card">
+                    <div className="card-heading">
+                      <h2>{t("快捷操作")}</h2>
+                      <span className="purple">✧</span>
+                    </div>
+                    <div className="quick-actions">
+                      {["owner", "manager", "inventory"].includes(role) && (
+                        <button onClick={addProduct}>
+                          <span>
+                            <Plus size={20} />
+                          </span>
+                          <div>
+                            <strong>{t("添加新商品")}</strong>
+                            <small>{t("让顾客发现你的好产品")}</small>
+                          </div>
+                          <ArrowRight size={17} />
+                        </button>
+                      )}
                       <button
-                        onClick={() => {
-                          setModal("agent");
-                          setError("");
+                        onClick={async () => {
+                          try {
+                            await navigator.clipboard.writeText(
+                              location.origin +
+                                import.meta.env.BASE_URL.replace(/\/$/, "") +
+                                shop,
+                            );
+                            setNotice("店铺链接已复制");
+                          } catch {
+                            setNotice(
+                              "店铺链接：" +
+                                location.origin +
+                                import.meta.env.BASE_URL.replace(/\/$/, "") +
+                                shop,
+                            );
+                          }
                         }}
                       >
                         <span>
-                          <Users size={20} />
+                          <Copy size={19} />
                         </span>
                         <div>
-                          <strong>{t("添加销售代理")}</strong>
-                          <small>{t("与伙伴一起拓展生意")}</small>
+                          <strong>{t("分享店铺")}</strong>
+                          <small>{t("复制链接，开始接收订单")}</small>
                         </div>
                         <ArrowRight size={17} />
                       </button>
-                    )}
-                  </div>
-                </section>
-              </div>
-              <section className="card">
-                <div className="card-heading">
-                  <h2>{t("最近订单")}</h2>
-                  <button
-                    className="text-button"
-                    onClick={() => setTab("orders")}
-                  >
-                    {t("查看全部")}
-                    <ArrowRight size={14} />
-                  </button>
-                </div>
-                {orderTable(data.orders.slice(0, 5))}
-              </section>
-            </>
-          )}
-          {tab === "books" && <Bookkeeping />}
-          {tab === "payments" && (
-            <>
-              <MerchantPayments
-                plan={data.merchant.plan}
-                trialEndsAt={data.merchant.trial_ends_at}
-              />
-              <SubscriptionApplication />
-            </>
-          )}
-          {tab === "payouts" && <Payouts />}
-          {tab === "notifications" && <Notifications />}
-          {tab === "team" && <Team />}
-          {tab === "products" && (
-            <>
-              <div className="page-heading">
-                <div>
-                  <h1>{t("商品管理")}</h1>
-                  <p>{t("把好产品，带给更多顾客。")}</p>
-                </div>
-                <button className="button" onClick={addProduct}>
-                  <Plus size={17} />
-                  {t("添加商品")}
-                </button>
-              </div>
-              <div className="search">
-                <Search size={17} />
-                <input
-                  aria-label={t("搜索商品")}
-                  placeholder={t("搜索商品名称…")}
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                />
-              </div>
-              <div className="products-grid admin-products">
-                {data.products
-                  .filter((p) => p.name.includes(query))
-                  .map((p) => (
-                    <article className="card" key={p.id}>
-                      <div className="product-image">
-                        {p.image ? (
-                          <img src={p.image} alt={p.name} />
-                        ) : (
-                          <span>{p.emoji}</span>
-                        )}
-                        <span className="product-status">
-                          {p.published === 0 ? t("未发布") : t("已发布")}
-                        </span>
-                      </div>
-                      <div className="product-info">
-                        <small>
-                          {!p.category || p.category === "全部商品"
-                            ? t("全部商品")
-                            : p.category}
-                        </small>
-                        <h3>{p.name}</h3>
-                        <div className="row between">
-                          <strong className="purple">
-                            {money(p.price, locale)}
-                          </strong>
-                          <span className="muted">
-                            {t("库存")}
-                            {p.stock}
-                            {t("件")}
-                          </span>
-                        </div>
+                      {role === "owner" && (
                         <button
-                          className="button secondary full small-button"
                           onClick={() => {
-                            setEditing(p);
-                            setModal("product");
+                            setModal("agent");
                             setError("");
                           }}
                         >
-                          {t("编辑商品")}
-                        </button>
-                      </div>
-                    </article>
-                  ))}
-              </div>
-              {!data.products.length && (
-                <Empty>{t("还没有商品。点击「添加商品」开始。")}</Empty>
-              )}
-            </>
-          )}
-          {tab === "orders" && (
-            <>
-              <div className="page-heading">
-                <div>
-                  <h1>{t("订单管理")}</h1>
-                  <p>{t("每笔订单的进展，清楚掌握。")}</p>
-                </div>
-                <select
-                  aria-label={t("筛选订单")}
-                  value={filter}
-                  onChange={(e) => setFilter(e.target.value)}
-                >
-                  <option value="all">{t("全部状态")}</option>
-                  <option value="pending">{t("待付款")}</option>
-                  <option value="paid">{t("已付款")}</option>
-                  <option value="cancelled">{t("已取消")}</option>
-                  <option value="refunded">{t("已退款")}</option>
-                </select>
-              </div>
-              <div className="soft-note">
-                {t("确认收款前请核对实际到账，当前尚未连接自动支付回调。")}
-              </div>
-              <section className="card">
-                {orderTable(
-                  data.orders.filter(
-                    (o) => filter === "all" || o.status === filter,
-                  ),
-                )}
-              </section>
-            </>
-          )}
-          {tab === "agents" && (
-            <>
-              <div className="page-heading">
-                <div>
-                  <h1>{t("代理与佣金")}</h1>
-                  <p>{t("让每一份推广，都有清晰的回报。")}</p>
-                </div>
-                <button
-                  className="button"
-                  onClick={() => {
-                    setModal("agent");
-                    setError("");
-                  }}
-                >
-                  <Plus size={17} />
-                  {t("添加代理")}
-                </button>
-              </div>
-              <div className="soft-note">
-                {t(
-                  "当前支持推广链接、订单归属与已付款佣金统计。代理可通过团队邀请独立登录，并在专属门户申请佣金提现。",
-                )}
-              </div>
-              <section className="card table-scroll">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>{t("代理")}</th>
-                      <th>{t("佣金比例")}</th>
-                      <th>{t("订单数")}</th>
-                      <th>{t("已赚佣金")}</th>
-                      <th>{t("推广链接")}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {data.agents.map((a) => (
-                      <tr key={a.id}>
-                        <td>{a.name}</td>
-                        <td>{a.rate}%</td>
-                        <td>{a.orders_count}</td>
-                        <td>{money(a.earned, locale)}</td>
-                        <td>
-                          <span className="break-link">
-                            {location.origin +
-                              import.meta.env.BASE_URL.replace(/\/$/, "") +
-                              shop +
-                              "?agent=" +
-                              encodeURIComponent(a.code)}
+                          <span>
+                            <Users size={20} />
                           </span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-                {!data.agents.length && (
-                  <Empty>{t("添加第一位代理，生成专属销售链接。")}</Empty>
-                )}
-              </section>
-            </>
-          )}
-          {tab === "settings" && (
-            <>
-              <div className="page-heading">
-                <div>
-                  <h1>{t("店铺设置")}</h1>
-                  <p>{t("把你的店铺故事，告诉每一位顾客。")}</p>
-                </div>
-              </div>
-              <form className="card settings-form" onSubmit={save}>
-                <h2>{t("基本资料")}</h2>
-                <label>
-                  {t("店铺名称")}
-                  <input
-                    name="name"
-                    required
-                    maxLength={80}
-                    defaultValue={data.merchant.name}
-                  />
-                </label>
-                <label>
-                  {t("店铺简介")}
-                  <textarea
-                    name="description"
-                    maxLength={500}
-                    rows={4}
-                    defaultValue={data.merchant.description}
-                  />
-                </label>
-                {data.merchant.content_translations !== undefined ? (
-                  <ContentEditor
-                    kind="store"
-                    initial={data.merchant.content_translations}
-                  />
-                ) : (
-                  <div className="soft-note">
-                    {t("多语言内容尚未启用，请联系平台管理员。")}
-                  </div>
-                )}
-                <ImageUpload
-                  name="logo"
-                  label={t("商家 Logo")}
-                  initialValue={data.merchant.logo}
-                  onUploading={imageUploading}
-                />
-                <ImageUpload
-                  name="banner"
-                  label={t("商店 Banner")}
-                  initialValue={data.merchant.banner}
-                  onUploading={imageUploading}
-                  wide
-                />
-                <label>
-                  {t("公开 WhatsApp 联系电话")}
-                  <input
-                    name="phone"
-                    type="tel"
-                    pattern="[+]?[0-9]{8,15}"
-                    maxLength={16}
-                    placeholder="+60123456789"
-                    defaultValue={data.merchant.phone}
-                  />
-                </label>
-                <h2 style={{ marginTop: 28 }}>{t("配送及邮费")}</h2>
-                <label>
-                  {t("每单邮费（MYR）")}
-                  <input
-                    name="shipping_fee"
-                    type="number"
-                    min="0"
-                    max="10000"
-                    step="0.01"
-                    required
-                    defaultValue={(data.merchant.shipping_fee || 0) / 100}
-                  />
-                </label>
-                <p className="muted">
-                  {t(
-                    "由你自行设定，填 0 代表免邮。只影响新订单，邮费不计入代理佣金。",
-                  )}
-                </p>
-                <label>
-                  {t("常用快递公司")}
-                  <input
-                    name="courier"
-                    list="store-couriers"
-                    maxLength={100}
-                    defaultValue={data.merchant.courier}
-                    placeholder={t("可选择或自行填写")}
-                  />
-                </label>
-                <datalist id="store-couriers">
-                  {COURIERS.map((c) => (
-                    <option key={c} value={c} />
-                  ))}
-                </datalist>
-                <p className="muted">
-                  {t(
-                    "快递由你自行安排，实际公司及运单号可在发货时填写。系统不会自动报价或叫件。",
-                  )}
-                </p>
-                <p className="muted" style={{ marginTop: 20 }}>
-                  {t("简介及电话会显示在公开商店。")}
-                </p>
-                <div className="store-guide">
-                  <strong>{t("直播卖货，怎样用店铺接单？")}</strong>
-                  <ol>
-                    <li>{t("先在「商品管理」添加商品、价格和库存。")}</li>
-                    <li>
-                      {t(
-                        "把下方店铺链接放到 TikTok、Facebook 直播简介、置顶留言或 WhatsApp。",
+                          <div>
+                            <strong>{t("添加销售代理")}</strong>
+                            <small>{t("与伙伴一起拓展生意")}</small>
+                          </div>
+                          <ArrowRight size={17} />
+                        </button>
                       )}
-                    </li>
-                    <li>
-                      {t(
-                        "顾客点链接进入店铺下单，你在「订单管理」收款核实和安排发货。",
-                      )}
-                    </li>
-                  </ol>
-                  <p>
-                    {t(
-                      "目前不会自动导入社交平台的商品或订单；添加社交账号不等于接通平台订单。",
-                    )}
-                  </p>
+                    </div>
+                  </section>
                 </div>
-                <div className="soft-note">
-                  {t("店铺网址：")}
-                  <span className="break-link">
-                    {location.origin +
-                      import.meta.env.BASE_URL.replace(/\/$/, "") +
-                      shop}
-                  </span>
-                  <br />
-                  {t("交易币种：MYR \u00B7 马来西亚令吉")}
-                </div>
-                <button className="button" disabled={busy || uploading}>
-                  {t("保存店铺资料")}
-                </button>
-              </form>
-            </>
-          )}
-          <footer className="dashboard-footer">
-            © {new Date().getFullYear()}{" "}
-            {t("EZShop · Made for Malaysian businesses")}
-          </footer>
-        </main>
-      </section>
-      {modal && (
-        <Modal
-          title={
-            modal === "product"
-              ? editing
-                ? t("编辑商品")
-                : t("添加商品")
-              : t("添加销售代理")
-          }
-          close={() => {
-            setModal(null);
-            setError("");
-          }}
-        >
-          <form onSubmit={save}>
-            {modal === "product" ? (
-              <>
-                <label>
-                  {t("商品名称")}
-                  <input
-                    name="name"
-                    required
-                    maxLength={120}
-                    defaultValue={editing?.name}
-                  />
-                </label>
-                <label>
-                  {t("规格 / 款式（选填）")}
-                  <input
-                    name="variant"
-                    maxLength={100}
-                    defaultValue={editing?.variant}
-                    placeholder={t("例如：黑色 / M 或 500ml")}
-                  />
-                  <small>
-                    {t("不同规格分别建立商品，各自设置价格及库存。")}
-                  </small>
-                </label>
-                {data.merchant.bookkeeping_enabled &&
-                  ["owner", "manager"].includes(
-                    data.merchant.role || "owner",
-                  ) && (
-                    <label>
-                      {t("单位成本（MYR）")}
-                      <input
-                        name="unit_cost"
-                        type="number"
-                        min="0"
-                        step="0.01"
-                        max="1000000"
-                        defaultValue={
-                          editing?.unit_cost == null
-                            ? ""
-                            : editing.unit_cost / 100
-                        }
-                      />
-                      <small>
-                        {t("留空表示成本未知，不会当作零成本计算利润。")}
-                      </small>
-                    </label>
-                  )}
-                <div className="form-grid">
-                  <label>
-                    {t("价格（MYR）")}
-                    <input
-                      name="price"
-                      type="number"
-                      min="0.01"
-                      step="0.01"
-                      max="1000000"
-                      required
-                      defaultValue={editing ? editing.price / 100 : ""}
-                    />
-                  </label>
-                  <label>
-                    {t("可售库存")}
-                    <input
-                      name="stock"
-                      type="number"
-                      min="0"
-                      max="1000000"
-                      required
-                      defaultValue={editing?.stock ?? 10}
-                    />
-                  </label>
-                </div>
-                <label>
-                  {t("商品介绍")}
-                  <textarea
-                    name="description"
-                    maxLength={2000}
-                    rows={3}
-                    defaultValue={editing?.description}
-                  />
-                </label>
-                <label>
-                  {t("分类")}
-                  <input
-                    name="category"
-                    maxLength={80}
-                    defaultValue={editing?.category || ""}
-                    placeholder={t("全部商品")}
-                  />
-                </label>
-                {data.merchant.content_translations !== undefined ? (
-                  <ContentEditor
-                    kind="product"
-                    initial={editing?.content_translations}
-                  />
-                ) : (
-                  <div className="soft-note">
-                    {t("多语言内容尚未启用，请联系平台管理员。")}
+                <section className="card">
+                  <div className="card-heading">
+                    <h2>{t("最近订单")}</h2>
+                    <button
+                      className="text-button"
+                      onClick={() => setTab("orders")}
+                    >
+                      {t("查看全部")}
+                      <ArrowRight size={14} />
+                    </button>
                   </div>
-                )}
-                <ImageUpload
-                  name="image"
-                  label={t("商品图片")}
-                  initialValue={editing?.image}
-                  onUploading={imageUploading}
-                  wide
-                />
-                <label>
-                  {t("无图片时使用的图标")}
-                  <select name="emoji" defaultValue={editing?.emoji || "📦"}>
-                    {["📦", "🍪", "☕", "👕", "🎁", "🧴", "🍰"].map((e) => (
-                      <option key={e}>{e}</option>
-                    ))}
-                  </select>
-                </label>
-                <label className="checkbox-label">
-                  <input
-                    type="checkbox"
-                    name="published"
-                    defaultChecked={editing?.published !== 0}
-                  />
-                  {t("发布到顾客端店铺")}
-                </label>
-                <label className="checkbox-label">
-                  <input
-                    type="checkbox"
-                    name="featured"
-                    defaultChecked={editing?.featured === 1}
-                  />
-                  {t("列入热门精选")}
-                </label>
-                <p className="muted">
-                  {t("修改价格不影响已有订单；库存变动后请刷新再编辑。")}
-                </p>
-              </>
-            ) : (
-              <>
-                <label>
-                  {t("代理名称")}
-                  <input name="name" required maxLength={80} />
-                </label>
-                <label>
-                  {t("佣金比例（%）")}
-                  <input
-                    name="rate"
-                    type="number"
-                    min="0"
-                    max="100"
-                    step="1"
-                    required
-                    defaultValue={10}
-                  />
-                </label>
+                  {orderTable(data.orders.slice(0, 5))}
+                </section>
               </>
             )}
-            <ErrorBox error={error} />
-            <button className="button full" disabled={busy || uploading}>
-              {busy ? t("正在保存…") : t("保存")}
-            </button>
-          </form>
-        </Modal>
-      )}
-      {detail && (
-        <Modal title={t("订单详情")} close={() => setDetail(null)}>
-          <p className="purple">
-            {detail.order.reference} · {t(statusLabel(detail.order.status))}
-          </p>
-          <div className="order-info">
-            <div>
-              <small>{t("顾客")}</small>
-              <p>{detail.order.customer}</p>
-              <p>{detail.order.email}</p>
-              <p>{detail.order.phone}</p>
-            </div>
-            <div>
-              <small>{t("收货地址")}</small>
-              <p>{detail.order.address}</p>
-              <p>
-                {[detail.order.postcode, detail.order.city, detail.order.state]
-                  .filter(Boolean)
-                  .join(", ")}
-              </p>
-              <small>{t("订单备注")}</small>
-              <p>{detail.order.note || t("无")}</p>
-            </div>
-          </div>
-          {detail.items.map((i, n) => (
-            <div className="summary-line" key={n}>
-              <span>
-                {i.name} × {i.quantity}
-                <small>
-                  {money(i.price, locale)}
-                  {t("/ 件")}
-                </small>
-              </span>
-              <strong>{money(i.price * i.quantity, locale)}</strong>
-            </div>
-          ))}
-          <div className="summary-line">
-            <span>{t("商品小计")}</span>
-            <span>
-              {money(detail.order.subtotal ?? detail.order.total, locale)}
-            </span>
-          </div>
-          <div className="summary-line">
-            <span>{t("邮费")}</span>
-            <span>{money(detail.order.shipping || 0, locale)}</span>
-          </div>
-          <div className="summary-total">
-            <strong>{t("订单总额")}</strong>
-            <strong>{money(detail.order.total, locale)}</strong>
-          </div>
-          <p className="muted">
-            {t("代理：")}
-            {detail.order.agent_name || t("无")}
-            {t("\u00B7 佣金")} {money(detail.order.commission, locale)}
-          </p>
-          <ErrorBox error={error} />
-          {detail.order.fulfillment_status === "shipped" ? (
-            <div className="soft-note">
-              <strong>{t("已登记发货")}</strong>
-              <p>
-                {detail.order.carrier} · {detail.order.tracking}
-              </p>
-            </div>
-          ) : (
-            detail.order.status === "paid" && (
-              <form
-                onSubmit={async (e) => {
-                  e.preventDefault();
-                  setBusy(true);
-                  setError("");
-                  const f = Object.fromEntries(new FormData(e.currentTarget));
-                  try {
-                    await api("orders/ship", { id: detail.order.id, ...f });
-                    await refresh();
-                    setDetail(
-                      await api<OrderResult>(
-                        "orders/detail?id=" + detail.order.id,
-                      ),
-                    );
-                    setNotice("发货记录已保存");
-                  } catch (error) {
-                    setError((error as Error).message);
-                  } finally {
-                    setBusy(false);
-                  }
-                }}
-              >
-                <h2 style={{ marginTop: 22 }}>{t("登记已寄出的包裹")}</h2>
-                <label>
-                  {t("实际快递公司")}
+            {tab === "books" && <Bookkeeping />}
+            {tab === "payments" && (
+              <>
+                <MerchantPayments
+                  plan={data.merchant.plan}
+                  trialEndsAt={data.merchant.trial_ends_at}
+                />
+                <SubscriptionApplication />
+              </>
+            )}
+            {tab === "payouts" && <Payouts />}
+            {tab === "notifications" && <Notifications />}
+            {tab === "team" && <Team />}
+            {tab === "products" && (
+              <>
+                <div className="page-heading">
+                  <div>
+                    <h1>{t("商品管理")}</h1>
+                    <p>{t("把好产品，带给更多顾客。")}</p>
+                  </div>
+                  <button className="button" onClick={addProduct}>
+                    <Plus size={17} />
+                    {t("添加商品")}
+                  </button>
+                </div>
+                <div className="search">
+                  <Search size={17} />
                   <input
-                    name="carrier"
-                    list="shipment-couriers"
-                    maxLength={100}
-                    required
-                    defaultValue={data.merchant.courier}
+                    aria-label={t("搜索商品")}
+                    placeholder={t("搜索商品名称…")}
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
                   />
-                </label>
-                <datalist id="shipment-couriers">
-                  {COURIERS.map((c) => (
-                    <option key={c} value={c} />
-                  ))}
-                </datalist>
-                <label>
-                  {t("运单号")}
-                  <input name="tracking" maxLength={100} required />
-                </label>
-                <p className="muted">
-                  {t(
-                    "请先自行寄件，再填写真实运单号。此操作不会向快递公司下单。",
+                </div>
+                <div className="products-grid admin-products">
+                  {data.products
+                    .filter((p) => p.name.includes(query))
+                    .map((p) => (
+                      <article className="card" key={p.id}>
+                        <div className="product-image">
+                          {p.image ? (
+                            <img src={p.image} alt={p.name} />
+                          ) : (
+                            <span>{p.emoji}</span>
+                          )}
+                          <span className="product-status">
+                            {p.published === 0 ? t("未发布") : t("已发布")}
+                          </span>
+                        </div>
+                        <div className="product-info">
+                          <small>
+                            {!p.category || p.category === "全部商品"
+                              ? t("全部商品")
+                              : p.category}
+                          </small>
+                          <h3>{p.name}</h3>
+                          <div className="row between">
+                            <strong className="purple">
+                              {money(p.price, locale)}
+                            </strong>
+                            <span className="muted">
+                              {t("库存")}
+                              {p.stock}
+                              {t("件")}
+                            </span>
+                          </div>
+                          <button
+                            className="button secondary full small-button"
+                            onClick={() => {
+                              setEditing(p);
+                              setModal("product");
+                              setError("");
+                            }}
+                          >
+                            {t("编辑商品")}
+                          </button>
+                        </div>
+                      </article>
+                    ))}
+                </div>
+                {!data.products.length && (
+                  <Empty>{t("还没有商品。点击「添加商品」开始。")}</Empty>
+                )}
+              </>
+            )}
+            {tab === "orders" && (
+              <>
+                <div className="page-heading">
+                  <div>
+                    <h1>{t("订单管理")}</h1>
+                    <p>{t("每笔订单的进展，清楚掌握。")}</p>
+                  </div>
+                  <select
+                    aria-label={t("筛选订单")}
+                    value={filter}
+                    onChange={(e) => setFilter(e.target.value)}
+                  >
+                    <option value="all">{t("全部状态")}</option>
+                    <option value="pending">{t("待付款")}</option>
+                    <option value="paid">{t("已付款")}</option>
+                    <option value="cancelled">{t("已取消")}</option>
+                    <option value="refunded">{t("已退款")}</option>
+                  </select>
+                </div>
+                <div className="soft-note">
+                  {t("确认收款前请核对实际到账，当前尚未连接自动支付回调。")}
+                </div>
+                <section className="card">
+                  {orderTable(
+                    data.orders.filter(
+                      (o) => filter === "all" || o.status === filter,
+                    ),
                   )}
-                </p>
-                <button
-                  className="button"
-                  style={{ marginTop: 15 }}
-                  disabled={busy}
-                >
-                  {t("已寄件，保存发货记录")}
-                </button>
-              </form>
-            )
-          )}
-          {detail.order.status === "paid" && (
-            <button
-              className="button secondary"
-              style={{ marginTop: 20 }}
-              onClick={() => window.print()}
-            >
-              {t("打印收款记录")}
-            </button>
-          )}
-          {detail.order.status === "paid" && role === "owner" && (
-            <div style={{ marginTop: 20 }}>
-              {!refunding ? (
-                <button
-                  className="button secondary danger"
-                  onClick={() => setRefunding(true)}
-                >
-                  {t("登记已完成退款")}
-                </button>
+                </section>
+              </>
+            )}
+            {tab === "agents" && (
+              <>
+                <div className="page-heading">
+                  <div>
+                    <h1>{t("代理与佣金")}</h1>
+                    <p>{t("让每一份推广，都有清晰的回报。")}</p>
+                  </div>
+                  <button
+                    className="button"
+                    onClick={() => {
+                      setModal("agent");
+                      setError("");
+                    }}
+                  >
+                    <Plus size={17} />
+                    {t("添加代理")}
+                  </button>
+                </div>
+                <div className="soft-note">
+                  {t(
+                    "当前支持推广链接、订单归属与已付款佣金统计。代理可通过团队邀请独立登录，并在专属门户申请佣金提现。",
+                  )}
+                </div>
+                <section className="card table-scroll">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>{t("代理")}</th>
+                        <th>{t("佣金比例")}</th>
+                        <th>{t("订单数")}</th>
+                        <th>{t("已赚佣金")}</th>
+                        <th>{t("推广链接")}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {data.agents.map((a) => (
+                        <tr key={a.id}>
+                          <td>{a.name}</td>
+                          <td>{a.rate}%</td>
+                          <td>{a.orders_count}</td>
+                          <td>{money(a.earned, locale)}</td>
+                          <td>
+                            <span className="break-link">
+                              {location.origin +
+                                import.meta.env.BASE_URL.replace(/\/$/, "") +
+                                shop +
+                                "?agent=" +
+                                encodeURIComponent(a.code)}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  {!data.agents.length && (
+                    <Empty>{t("添加第一位代理，生成专属销售链接。")}</Empty>
+                  )}
+                </section>
+              </>
+            )}
+            {tab === "settings" && (
+              <>
+                <div className="page-heading">
+                  <div>
+                    <h1>{t("店铺设置")}</h1>
+                    <p>{t("把你的店铺故事，告诉每一位顾客。")}</p>
+                  </div>
+                </div>
+                <form className="card settings-form" onSubmit={save}>
+                  <h2>{t("基本资料")}</h2>
+                  <RegionFields
+                    value={region}
+                    onChange={setRegion}
+                    disabled={data.merchant.currency_locked}
+                  />
+                  <label>
+                    {t("店铺名称")}
+                    <input
+                      name="name"
+                      required
+                      maxLength={80}
+                      defaultValue={data.merchant.name}
+                    />
+                  </label>
+                  <label>
+                    {t("店铺简介")}
+                    <textarea
+                      name="description"
+                      maxLength={500}
+                      rows={4}
+                      defaultValue={data.merchant.description}
+                    />
+                  </label>
+                  {data.merchant.content_translations !== undefined ? (
+                    <ContentEditor
+                      kind="store"
+                      initial={data.merchant.content_translations}
+                    />
+                  ) : (
+                    <div className="soft-note">
+                      {t("多语言内容尚未启用，请联系平台管理员。")}
+                    </div>
+                  )}
+                  <ImageUpload
+                    name="logo"
+                    label={t("商家 Logo")}
+                    initialValue={data.merchant.logo}
+                    onUploading={imageUploading}
+                  />
+                  <ImageUpload
+                    name="banner"
+                    label={t("商店 Banner")}
+                    initialValue={data.merchant.banner}
+                    onUploading={imageUploading}
+                    wide
+                  />
+                  <label>
+                    {t("公开 WhatsApp 联系电话")}
+                    <input
+                      name="phone"
+                      type="tel"
+                      pattern="[+]?[0-9]{8,15}"
+                      maxLength={16}
+                      placeholder="+60123456789"
+                      defaultValue={data.merchant.phone}
+                    />
+                  </label>
+                  <h2 style={{ marginTop: 28 }}>{t("配送及邮费")}</h2>
+                  <label>
+                    {t("每单邮费（{currency}）", { currency: region.currency })}
+                    <input
+                      name="shipping_fee"
+                      type="number"
+                      min="0"
+                      max="10000"
+                      step={inputStep}
+                      required
+                      defaultValue={
+                        (data.merchant.shipping_fee || 0) /
+                        currencyFactor(currency)
+                      }
+                    />
+                  </label>
+                  <p className="muted">
+                    {t(
+                      "由你自行设定，填 0 代表免邮。只影响新订单，邮费不计入代理佣金。",
+                    )}
+                  </p>
+                  <label>
+                    {t("常用快递公司")}
+                    <input
+                      name="courier"
+                      list="store-couriers"
+                      maxLength={100}
+                      defaultValue={data.merchant.courier}
+                      placeholder={t("可选择或自行填写")}
+                    />
+                  </label>
+                  <datalist id="store-couriers">
+                    {COURIERS.map((c) => (
+                      <option key={c} value={c} />
+                    ))}
+                  </datalist>
+                  <p className="muted">
+                    {t(
+                      "快递由你自行安排，实际公司及运单号可在发货时填写。系统不会自动报价或叫件。",
+                    )}
+                  </p>
+                  <p className="muted" style={{ marginTop: 20 }}>
+                    {t("简介及电话会显示在公开商店。")}
+                  </p>
+                  <div className="store-guide">
+                    <strong>{t("直播卖货，怎样用店铺接单？")}</strong>
+                    <ol>
+                      <li>{t("先在「商品管理」添加商品、价格和库存。")}</li>
+                      <li>
+                        {t(
+                          "把下方店铺链接放到 TikTok、Facebook 直播简介、置顶留言或 WhatsApp。",
+                        )}
+                      </li>
+                      <li>
+                        {t(
+                          "顾客点链接进入店铺下单，你在「订单管理」收款核实和安排发货。",
+                        )}
+                      </li>
+                    </ol>
+                    <p>
+                      {t(
+                        "目前不会自动导入社交平台的商品或订单；添加社交账号不等于接通平台订单。",
+                      )}
+                    </p>
+                  </div>
+                  <div className="soft-note">
+                    {t("店铺网址：")}
+                    <span className="break-link">
+                      {location.origin +
+                        import.meta.env.BASE_URL.replace(/\/$/, "") +
+                        shop}
+                    </span>
+                    <br />
+                    {t("交易币种：{currency}", { currency })}
+                  </div>
+                  <button className="button" disabled={busy || uploading}>
+                    {t("保存店铺资料")}
+                  </button>
+                </form>
+              </>
+            )}
+            <footer className="dashboard-footer">
+              © {new Date().getFullYear()}{" "}
+              {t("EZShop · Made for Malaysian businesses")}
+            </footer>
+          </main>
+        </section>
+        {modal && (
+          <Modal
+            title={
+              modal === "product"
+                ? editing
+                  ? t("编辑商品")
+                  : t("添加商品")
+                : t("添加销售代理")
+            }
+            close={() => {
+              setModal(null);
+              setError("");
+            }}
+          >
+            <form onSubmit={save}>
+              {modal === "product" ? (
+                <>
+                  <label>
+                    {t("商品名称")}
+                    <input
+                      name="name"
+                      required
+                      maxLength={120}
+                      defaultValue={editing?.name}
+                    />
+                  </label>
+                  <label>
+                    {t("规格 / 款式（选填）")}
+                    <input
+                      name="variant"
+                      maxLength={100}
+                      defaultValue={editing?.variant}
+                      placeholder={t("例如：黑色 / M 或 500ml")}
+                    />
+                    <small>
+                      {t("不同规格分别建立商品，各自设置价格及库存。")}
+                    </small>
+                  </label>
+                  {data.merchant.bookkeeping_enabled &&
+                    ["owner", "manager"].includes(
+                      data.merchant.role || "owner",
+                    ) && (
+                      <label>
+                        {t("单位成本（{currency}）", { currency })}
+                        <input
+                          name="unit_cost"
+                          type="number"
+                          min="0"
+                          step={inputStep}
+                          max={100000000 / currencyFactor(currency)}
+                          defaultValue={
+                            editing?.unit_cost == null
+                              ? ""
+                              : editing.unit_cost / currencyFactor(currency)
+                          }
+                        />
+                        <small>
+                          {t("留空表示成本未知，不会当作零成本计算利润。")}
+                        </small>
+                      </label>
+                    )}
+                  <div className="form-grid">
+                    <label>
+                      {t("价格（{currency}）", { currency })}
+                      <input
+                        name="price"
+                        type="number"
+                        min={inputStep}
+                        step={inputStep}
+                        max={100000000 / currencyFactor(currency)}
+                        required
+                        defaultValue={
+                          editing
+                            ? editing.price / currencyFactor(currency)
+                            : ""
+                        }
+                      />
+                    </label>
+                    <label>
+                      {t("可售库存")}
+                      <input
+                        name="stock"
+                        type="number"
+                        min="0"
+                        max="1000000"
+                        required
+                        defaultValue={editing?.stock ?? 10}
+                      />
+                    </label>
+                  </div>
+                  <label>
+                    {t("商品介绍")}
+                    <textarea
+                      name="description"
+                      maxLength={2000}
+                      rows={3}
+                      defaultValue={editing?.description}
+                    />
+                  </label>
+                  <label>
+                    {t("分类")}
+                    <input
+                      name="category"
+                      maxLength={80}
+                      defaultValue={editing?.category || ""}
+                      placeholder={t("全部商品")}
+                    />
+                  </label>
+                  {data.merchant.content_translations !== undefined ? (
+                    <ContentEditor
+                      kind="product"
+                      initial={editing?.content_translations}
+                    />
+                  ) : (
+                    <div className="soft-note">
+                      {t("多语言内容尚未启用，请联系平台管理员。")}
+                    </div>
+                  )}
+                  <ImageUpload
+                    name="image"
+                    label={t("商品图片")}
+                    initialValue={editing?.image}
+                    onUploading={imageUploading}
+                    wide
+                  />
+                  <label>
+                    {t("无图片时使用的图标")}
+                    <select name="emoji" defaultValue={editing?.emoji || "📦"}>
+                      {["📦", "🍪", "☕", "👕", "🎁", "🧴", "🍰"].map((e) => (
+                        <option key={e}>{e}</option>
+                      ))}
+                    </select>
+                  </label>
+                  <label className="checkbox-label">
+                    <input
+                      type="checkbox"
+                      name="published"
+                      defaultChecked={editing?.published !== 0}
+                    />
+                    {t("发布到顾客端店铺")}
+                  </label>
+                  <label className="checkbox-label">
+                    <input
+                      type="checkbox"
+                      name="featured"
+                      defaultChecked={editing?.featured === 1}
+                    />
+                    {t("列入热门精选")}
+                  </label>
+                  <p className="muted">
+                    {t("修改价格不影响已有订单；库存变动后请刷新再编辑。")}
+                  </p>
+                </>
               ) : (
+                <>
+                  <label>
+                    {t("代理名称")}
+                    <input name="name" required maxLength={80} />
+                  </label>
+                  <label>
+                    {t("佣金比例（%）")}
+                    <input
+                      name="rate"
+                      type="number"
+                      min="0"
+                      max="100"
+                      step="1"
+                      required
+                      defaultValue={10}
+                    />
+                  </label>
+                </>
+              )}
+              <ErrorBox error={error} />
+              <button className="button full" disabled={busy || uploading}>
+                {busy ? t("正在保存…") : t("保存")}
+              </button>
+            </form>
+          </Modal>
+        )}
+        {detail && (
+          <Modal title={t("订单详情")} close={() => setDetail(null)}>
+            <p className="purple">
+              {detail.order.reference} · {t(statusLabel(detail.order.status))}
+            </p>
+            <div className="order-info">
+              <div>
+                <small>{t("顾客")}</small>
+                <p>{detail.order.customer}</p>
+                <p>{detail.order.email}</p>
+                <p>{detail.order.phone}</p>
+              </div>
+              <div>
+                <small>{t("收货地址")}</small>
+                <p>{detail.order.address}</p>
+                <p>
+                  {[
+                    detail.order.postcode,
+                    detail.order.city,
+                    detail.order.state,
+                  ]
+                    .filter(Boolean)
+                    .join(", ")}
+                </p>
+                <small>{t("订单备注")}</small>
+                <p>{detail.order.note || t("无")}</p>
+              </div>
+            </div>
+            {detail.items.map((i, n) => (
+              <div className="summary-line" key={n}>
+                <span>
+                  {i.name} × {i.quantity}
+                  <small>
+                    {money(i.price, locale)}
+                    {t("/ 件")}
+                  </small>
+                </span>
+                <strong>{money(i.price * i.quantity, locale)}</strong>
+              </div>
+            ))}
+            <div className="summary-line">
+              <span>{t("商品小计")}</span>
+              <span>
+                {money(detail.order.subtotal ?? detail.order.total, locale)}
+              </span>
+            </div>
+            <div className="summary-line">
+              <span>{t("邮费")}</span>
+              <span>{money(detail.order.shipping || 0, locale)}</span>
+            </div>
+            <div className="summary-total">
+              <strong>{t("订单总额")}</strong>
+              <strong>{money(detail.order.total, locale)}</strong>
+            </div>
+            <p className="muted">
+              {t("代理：")}
+              {detail.order.agent_name || t("无")}
+              {t("\u00B7 佣金")} {money(detail.order.commission, locale)}
+            </p>
+            <ErrorBox error={error} />
+            {detail.order.fulfillment_status === "shipped" ? (
+              <div className="soft-note">
+                <strong>{t("已登记发货")}</strong>
+                <p>
+                  {detail.order.carrier} · {detail.order.tracking}
+                </p>
+              </div>
+            ) : (
+              detail.order.status === "paid" && (
                 <form
                   onSubmit={async (e) => {
                     e.preventDefault();
                     setBusy(true);
                     setError("");
-                    const f = new FormData(e.currentTarget);
+                    const f = Object.fromEntries(new FormData(e.currentTarget));
                     try {
-                      await api("orders/refund", {
-                        id: detail.order.id,
-                        reference: String(f.get("reference")),
-                        restock: f.get("restock") === "on",
-                      });
-                      setDetail(null);
-                      setRefunding(false);
+                      await api("orders/ship", { id: detail.order.id, ...f });
                       await refresh();
-                      setNotice("退款已登记，佣金已回冲");
-                    } catch (e) {
-                      setError((e as Error).message);
+                      setDetail(
+                        await api<OrderResult>(
+                          "orders/detail?id=" + detail.order.id,
+                        ),
+                      );
+                      setNotice("发货记录已保存");
+                    } catch (error) {
+                      setError((error as Error).message);
                     } finally {
                       setBusy(false);
                     }
                   }}
                 >
-                  <div className="soft-note">
-                    {t(
-                      "仅登记已在线下或支付平台实际完成的全额退款，不会发起退款转账。该订单的佣金将回冲，关联的待处理提现申请会被拒绝。",
-                    )}
-                  </div>
+                  <h2 style={{ marginTop: 22 }}>{t("登记已寄出的包裹")}</h2>
                   <label>
-                    {t("实际退款参考号")}
-                    <input name="reference" maxLength={200} required />
+                    {t("实际快递公司")}
+                    <input
+                      name="carrier"
+                      list="shipment-couriers"
+                      maxLength={100}
+                      required
+                      defaultValue={data.merchant.courier}
+                    />
                   </label>
-                  <label className="checkbox-label">
-                    <input name="restock" type="checkbox" />
-                    {t("已确认收回商品，恢复库存")}
+                  <datalist id="shipment-couriers">
+                    {COURIERS.map((c) => (
+                      <option key={c} value={c} />
+                    ))}
+                  </datalist>
+                  <label>
+                    {t("运单号")}
+                    <input name="tracking" maxLength={100} required />
                   </label>
-                  <button className="button" disabled={busy || uploading}>
-                    {t("已核实，登记全额退款")}
+                  <p className="muted">
+                    {t(
+                      "请先自行寄件，再填写真实运单号。此操作不会向快递公司下单。",
+                    )}
+                  </p>
+                  <button
+                    className="button"
+                    style={{ marginTop: 15 }}
+                    disabled={busy}
+                  >
+                    {t("已寄件，保存发货记录")}
                   </button>
                 </form>
-              )}
-            </div>
-          )}
-          {detail.order.status === "pending" && (
-            <div className="row end">
+              )
+            )}
+            {detail.order.status === "paid" && (
               <button
-                className="button secondary danger"
-                disabled={busy || uploading}
-                onClick={() => orderAction(detail.order, "cancel")}
+                className="button secondary"
+                style={{ marginTop: 20 }}
+                onClick={() => window.print()}
               >
-                {t("取消订单")}
+                {t("打印收款记录")}
               </button>
-              <button
-                className="button"
-                disabled={busy || uploading}
-                onClick={() => orderAction(detail.order, "paid")}
-              >
-                {t("确认收款")}
-              </button>
-            </div>
-          )}
-        </Modal>
-      )}
-    </div>
+            )}
+            {detail.order.status === "paid" && role === "owner" && (
+              <div style={{ marginTop: 20 }}>
+                {!refunding ? (
+                  <button
+                    className="button secondary danger"
+                    onClick={() => setRefunding(true)}
+                  >
+                    {t("登记已完成退款")}
+                  </button>
+                ) : (
+                  <form
+                    onSubmit={async (e) => {
+                      e.preventDefault();
+                      setBusy(true);
+                      setError("");
+                      const f = new FormData(e.currentTarget);
+                      try {
+                        await api("orders/refund", {
+                          id: detail.order.id,
+                          reference: String(f.get("reference")),
+                          restock: f.get("restock") === "on",
+                        });
+                        setDetail(null);
+                        setRefunding(false);
+                        await refresh();
+                        setNotice("退款已登记，佣金已回冲");
+                      } catch (e) {
+                        setError((e as Error).message);
+                      } finally {
+                        setBusy(false);
+                      }
+                    }}
+                  >
+                    <div className="soft-note">
+                      {t(
+                        "仅登记已在线下或支付平台实际完成的全额退款，不会发起退款转账。该订单的佣金将回冲，关联的待处理提现申请会被拒绝。",
+                      )}
+                    </div>
+                    <label>
+                      {t("实际退款参考号")}
+                      <input name="reference" maxLength={200} required />
+                    </label>
+                    <label className="checkbox-label">
+                      <input name="restock" type="checkbox" />
+                      {t("已确认收回商品，恢复库存")}
+                    </label>
+                    <button className="button" disabled={busy || uploading}>
+                      {t("已核实，登记全额退款")}
+                    </button>
+                  </form>
+                )}
+              </div>
+            )}
+            {detail.order.status === "pending" && (
+              <div className="row end">
+                <button
+                  className="button secondary danger"
+                  disabled={busy || uploading}
+                  onClick={() => orderAction(detail.order, "cancel")}
+                >
+                  {t("取消订单")}
+                </button>
+                <button
+                  className="button"
+                  disabled={busy || uploading}
+                  onClick={() => orderAction(detail.order, "paid")}
+                >
+                  {t("确认收款")}
+                </button>
+              </div>
+            )}
+          </Modal>
+        )}
+      </div>
+    </CommerceCurrency>
   );
 }

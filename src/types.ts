@@ -1,5 +1,10 @@
+import type { Currency, CountryCode } from "./commerce-currency";
 import type { ContentTranslations } from "./content";
 export interface Merchant {
+  country_code?: CountryCode;
+  currency?: Currency;
+  currency_locked?: boolean;
+  regional_enabled?: boolean;
   plan?: "free" | "pro";
   bookkeeping_enabled?: boolean;
   subscription_access?: boolean;
@@ -37,6 +42,8 @@ export interface Product {
   featured?: number;
 }
 export interface Order {
+  currency?: Currency;
+  country_code?: CountryCode;
   id: number;
   reference: string;
   customer: string;

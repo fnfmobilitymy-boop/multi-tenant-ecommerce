@@ -9,7 +9,9 @@ try {
   result = { passed: false, pending: ["验收记录缺失或无法读取"] };
 }
 const text = result.passed
-  ? "正式验收记录已齐全，继续执行本次最终发布检查。"
+  ? result.basis === "tested_release"
+    ? "用户已授权测试通过后上线；继续执行构建、后端配置与发布检查。真实扣款及正式恢复仍未验收，不更改其pending记录。"
+    : "正式验收记录已齐全，继续执行本次最终发布检查。"
   : "暂不发布：尚未完成正式验收——" +
     result.pending.join("、") +
     "。模拟测试、配置可达或手动输入DEPLOY不会将这些项目自动标记为完成。";

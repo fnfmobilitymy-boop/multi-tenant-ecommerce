@@ -38,7 +38,12 @@ export async function supabaseApi<T>(
       password: String(payload.password),
       options: {
         emailRedirectTo: authRedirectUrl(),
-        data: { name: payload.name, slug: payload.slug },
+        data: {
+          name: payload.name,
+          slug: payload.slug,
+          country_code: payload.country_code,
+          currency: payload.currency,
+        },
       },
     });
     if (error) throw error;

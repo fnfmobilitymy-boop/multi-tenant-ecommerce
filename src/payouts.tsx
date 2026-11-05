@@ -1,6 +1,13 @@
+import {
+  useCommerceCurrency,
+  useCommerceMoney,
+  useCommerceDate,
+  currencyFactor,
+} from "./commerce-currency";
+import { toMinor } from "../supabase/functions/_shared/currencies";
 import { useI18n } from "./i18n";
 import { useEffect, useState } from "react";
-import { api, money, dateLabel } from "./api";
+import { api } from "./api";
 import { Empty, ErrorBox, Modal } from "./ui";
 interface Balance {
   agent_id: number;
@@ -25,6 +32,10 @@ interface Ledger {
 }
 export function Payouts({ agent = false }: { agent?: boolean }) {
   const { t, locale, errorText } = useI18n();
+  const currency = useCommerceCurrency(),
+    money = useCommerceMoney(),
+    dateLabel = useCommerceDate(),
+    inputStep = currency === "VND" ? "1" : "0.01";
   const [data, setData] = useState<Ledger | null>(null),
     [error, setError] = useState(""),
     [busy, setBusy] = useState(false),
@@ -50,7 +61,8 @@ export function Payouts({ agent = false }: { agent?: boolean }) {
     try {
       if (agent)
         await api("payouts/request", {
-          amount: Math.round(Number(f.amount) * 100),
+          currency,
+          amount: toMinor(f.amount, currency),
           bank_details: f.bank_details,
           request_key: key,
         });
@@ -209,12 +221,12 @@ export function Payouts({ agent = false }: { agent?: boolean }) {
             {agent ? (
               <>
                 <label>
-                  {t("申请金额（MYR）")}
+                  {t("申请金额（{currency}）", { currency })}
                   <input
                     name="amount"
                     type="number"
-                    min="0.01"
-                    step="0.01"
+                    min={inputStep}
+                    step={inputStep}
                     max="9000000000"
                     required
                   />

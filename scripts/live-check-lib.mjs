@@ -102,6 +102,17 @@ export async function liveChecks(env, fetcher = fetch) {
     ok: platform.result?.ready === true,
     http: platform.http,
   });
+  const region = await probe(
+    "regional_currency",
+    "/rest/v1/rpc/ezshop_region_status",
+    "POST",
+    {},
+  );
+  checks.push({
+    id: "regional_currency",
+    ok: region.result?.ready === true,
+    http: region.http,
+  });
   const functions = await Promise.all(
     ["payments", "stripe-webhook", "send-notifications"].map(async (name) => {
       const response = await probe(name, "/functions/v1/" + name, "OPTIONS");
@@ -115,7 +126,7 @@ export async function liveChecks(env, fetcher = fetch) {
   checks.push(...functions);
   return {
     checks,
-    database_ok: checks.slice(0, 3).every((check) => check.ok),
+    database_ok: checks.slice(0, 4).every((check) => check.ok),
     functions_deployed: functions.every((check) => check.ok),
     features: manifest?.features || {},
     production_verified: false,

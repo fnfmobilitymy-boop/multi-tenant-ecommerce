@@ -11,12 +11,13 @@ class Quiet(SimpleHTTPRequestHandler):
         if self.path.split('?')[0] in ('/merchant','/platform') or self.path.startswith('/shop/'):self.path='/index.html'
         super().do_GET()
 server=ThreadingHTTPServer(('127.0.0.1',3109),functools.partial(Quiet,directory=str(root/'auth-test-dist')));threading.Thread(target=server.serve_forever,daemon=True).start()
+currency=os.environ.get('EZSHOP_TEST_CURRENCY','MYR');factor=1 if currency=='VND' else 100
 base='http://127.0.0.1:3109';buyer='22222222-2222-4222-8222-222222222222';errors=[];state={'paid':False,'cost':None,'expense':0,'voided':False}
 def token(uid):
     encode=lambda x:base64.urlsafe_b64encode(json.dumps(x).encode()).decode().rstrip('=')
     return encode({'alg':'HS256','typ':'JWT'})+'.'+encode({'sub':uid,'role':'authenticated','aud':'authenticated','exp':int(time.time())+36000})+'.fixture'
 user={'id':buyer,'email':'buyer@example.test','aud':'authenticated','email_confirmed_at':'2026-11-05T00:00:00Z','user_metadata':{},'app_metadata':{'provider':'email'}}
-merchant={'id':1,'name':'Books Store','slug':'books-store','email':'owner@example.test','role':'owner','plan':'pro','bookkeeping_enabled':True}
+merchant={'id':1,'name':'Books Store','slug':'books-store','email':'owner@example.test','role':'owner','plan':'pro','bookkeeping_enabled':True,'currency':currency,'country_code':'VN' if currency=='VND' else 'MY'}
 def report():
     summary={'receipts':2000,'refunds':0,'payouts':0,'manual_income':0,'expenses':state['expense'],'goods_cost':0 if state['cost'] is None else 2*state['cost'],'commissions':0,'missing_cost_orders':1 if state['cost'] is None else 0,'net_cash':2000-state['expense'],'profit':None if state['cost'] is None else 2000-2*state['cost']-state['expense'],'unknown_date_events':0}
     rows=[{'id':1,'source':'order','kind':'payment','amount':2000,'date':'2026-11-05T00:00:00Z','reference':'EZ-BOOK','order_id':1,'voided':False}]
@@ -39,7 +40,7 @@ try:
                 if url.path=='/auth/v1/logout':return reply({})
                 if url.path.endswith('/rpc/ezshop_customer_api'):
                     assert request.headers.get('authorization')=='Bearer '+token(buyer) or buyer in json.loads(base64.urlsafe_b64decode(request.headers['authorization'].split('.')[1]+'==')).get('sub','')
-                    if body['route']=='history':return reply({'summary':{'paid_total':2000 if state['paid'] else 0,'refunded_total':0,'purchased_quantity':2 if state['paid'] else 0,'pending_count':0 if state['paid'] else 1,'order_count':1},'orders':[{'reference':'EZ-CUSTOMER','total':2000,'quantity':2,'status':'paid' if state['paid'] else 'pending','created':'2026-11-05T00:00:00Z','slug':'books-store','store_name':'Books Store','access_token':'private-order-fixture'}]})
+                    if body['route']=='history':return reply({'summary':{'currency':currency,'paid_total':2000 if state['paid'] else 0,'refunded_total':0,'purchased_quantity':2 if state['paid'] else 0,'pending_count':0 if state['paid'] else 1,'order_count':1},'orders':[{'currency':currency,'reference':'EZ-CUSTOMER','total':2000,'quantity':2,'status':'paid' if state['paid'] else 'pending','created':'2026-11-05T00:00:00Z','slug':'books-store','store_name':'Books Store','access_token':'private-order-fixture'}]})
                     return reply({'ok':True})
                 if url.path.endswith('/rpc/ezshop_api'):
                     if body['route']=='dashboard':return reply({'merchant':merchant,'products':[],'orders':[],'agents':[]})
@@ -52,8 +53,8 @@ try:
                     name=body['route']
                     if name=='summary':return reply(report())
                     if name=='order':return reply({'reference':'EZ-BOOK','version':0,'unknown_paid_date':False,'items':[{'id':101,'name':'Item','quantity':2,'unit_cost':state['cost']}]})
-                    if name=='order-costs':assert payload['items'][0]['unit_cost']==400;state['cost']=400;return reply({'ok':True})
-                    if name=='entry/add':assert payload['amount']==200 and payload['kind']=='expense';state['expense']=200;return reply({'ok':True})
+                    if name=='order-costs':assert payload['items'][0]['unit_cost']==4*factor;state['cost']=4*factor;return reply({'ok':True})
+                    if name=='entry/add':assert payload['amount']==2*factor and payload['kind']=='expense';state['expense']=2*factor;return reply({'ok':True})
                     if name=='entry/void':state['expense']=0;state['voided']=True;return reply({'ok':True})
                 return route.abort()
             c.route('**/*',intercept);return c
@@ -69,10 +70,10 @@ try:
         assert page.evaluate("JSON.parse(localStorage.getItem('sb-auth-test-auth-token')).access_token")==merchant_token,'Customer login replaced the merchant session'
         page.goto(base+'/shop/books-store/account');page.get_by_role('button',name='Log out',exact=True).click();page.get_by_role('button',name='Customer login',exact=True).wait_for();assert page.evaluate("sessionStorage.getItem('ezshop:order:EZ-CUSTOMER')") is None
         fresh=context().new_page();fresh.goto(base+'/shop/books-store/account');fresh.get_by_label('Email address',exact=True).fill('buyer@example.test');fresh.get_by_label('Password',exact=True).fill('Customer-test-password-123');fresh.get_by_role('button',name='Customer login',exact=True).click();fresh.locator('article.metric').filter(has_text='Purchased units').locator('strong').filter(has_text='2').wait_for()
-        m=context().new_page();m.on('pageerror',lambda e:errors.append(str(e)));m.goto(base+'/merchant');m.get_by_role('button',name='Products',exact=True).click();m.get_by_role('button',name='Add product',exact=True).click();m.get_by_role('dialog').get_by_label('Unit cost (MYR)',exact=False).wait_for();m.get_by_role('dialog').get_by_role('button',name='Close',exact=True).click();m.get_by_role('button',name='Income, expenses and profit',exact=True).click();m.get_by_text('Costs needed',exact=True).wait_for()
-        m.get_by_role('button',name='Costs and receipt date',exact=True).click();dialog=m.get_by_role('dialog');dialog.locator('input[name=cost-101]').fill('4.00');dialog.get_by_label('Reason for correction',exact=True).fill('Supplier invoice');dialog.get_by_role('button',name='Save',exact=True).click();dialog.wait_for(state='hidden');m.locator('article.metric').filter(has_text='Estimated operating profit').locator('strong').filter(has_text='12.00').wait_for()
-        m.get_by_role('button',name='Record income or expense',exact=True).click();dialog=m.get_by_role('dialog');dialog.locator('select[name=category]').select_option('advertising');dialog.get_by_label('Amount',exact=False).fill('2.00');dialog.get_by_label('Description',exact=True).fill('Test campaign');dialog.get_by_role('button',name='Save',exact=True).click();dialog.wait_for(state='hidden');m.get_by_text('Test campaign',exact=False).wait_for()
+        m=context().new_page();m.on('pageerror',lambda e:errors.append(str(e)));m.goto(base+'/merchant');m.get_by_role('button',name='Products',exact=True).click();m.get_by_role('button',name='Add product',exact=True).click();m.get_by_role('dialog').get_by_label('Unit cost ('+currency+')',exact=False).wait_for();m.get_by_role('dialog').get_by_role('button',name='Close',exact=True).click();m.get_by_role('button',name='Income, expenses and profit',exact=True).click();m.get_by_text('Costs needed',exact=True).wait_for()
+        m.get_by_role('button',name='Costs and receipt date',exact=True).click();dialog=m.get_by_role('dialog');dialog.locator('input[name=cost-101]').fill('4' if currency=='VND' else '4.00');dialog.get_by_label('Reason for correction',exact=True).fill('Supplier invoice');dialog.get_by_role('button',name='Save',exact=True).click();dialog.wait_for(state='hidden');m.locator('article.metric').filter(has_text='Estimated operating profit').locator('strong').filter(has_text='1,992' if currency=='VND' else '12.00').wait_for()
+        m.get_by_role('button',name='Record income or expense',exact=True).click();dialog=m.get_by_role('dialog');dialog.locator('select[name=category]').select_option('advertising');dialog.get_by_label('Amount',exact=False).fill('2' if currency=='VND' else '2.00');dialog.get_by_label('Description',exact=True).fill('Test campaign');dialog.get_by_role('button',name='Save',exact=True).click();dialog.wait_for(state='hidden');m.get_by_text('Test campaign',exact=False).wait_for()
         m.once('dialog',lambda d:d.accept('Correction'));m.get_by_role('button',name='Void entry',exact=True).click();m.get_by_text('Voided',exact=True).wait_for()
         m.set_viewport_size({'width':390,'height':844});assert m.evaluate('document.documentElement.scrollWidth<=innerWidth+1')
-        assert not errors,errors;browser.close();print('PASS: 顾客独立登录、跨设备购买统计、退出清除凭证；商家成本补录、支出、作废及手机账本。未访问真实服务。')
+        assert not errors,errors;browser.close();print('PASS: 顾客独立登录、跨设备购买统计、退出清除凭证；商家成本补录、支出、作废及手机账本。未访问真实服务。币种：'+currency)
 finally:server.shutdown();server.server_close()

@@ -15,6 +15,14 @@ MEDIA_DIR = DB.parent / 'media'
 DIST = Path(os.environ.get('EZSHOP_DIST', str(ROOT.parent / 'dist')))
 MAX_IMAGE_BYTES=5*1024*1024
 
+REGIONS={'MY':('MYR',),'SG':('SGD',),'TH':('THB',),'KH':('KHR','USD'),'VN':('VND',)}
+def region_pair(data, fallback_country='MY',fallback_currency='MYR'):
+    country=data.get('country_code',fallback_country)
+    if not isinstance(country,str) or country not in REGIONS:raise ValueError('国家与币种不匹配')
+    currency=data.get('currency',REGIONS[country][0] if country!=fallback_country else fallback_currency)
+    if not isinstance(currency,str) or currency not in REGIONS[country]:raise ValueError('国家与币种不匹配')
+    return country,currency
+
 def valid_image_url(value):
     return bool((urlparse(value).scheme=='https' and urlparse(value).hostname) or re.fullmatch(r'/media/[0-9]+/[a-f0-9]{40}\.(png|jpg|webp)',value))
 
@@ -36,6 +44,10 @@ def init():
         ''')
         # Additive, repeatable migrations preserve existing merchant/order data.
         for table, column, definition in (
+            ('merchants','country_code',"TEXT NOT NULL DEFAULT 'MY'"),
+            ('merchants','currency',"TEXT NOT NULL DEFAULT 'MYR'"),
+            ('orders','country_code',"TEXT NOT NULL DEFAULT 'MY'"),
+            ('orders','currency',"TEXT NOT NULL DEFAULT 'MYR'"),
             ('merchants', 'shipping_fee', 'INTEGER NOT NULL DEFAULT 0'),
             ('merchants', 'courier', "TEXT NOT NULL DEFAULT ''"),
             ('orders', 'subtotal', 'INTEGER NOT NULL DEFAULT 0'),
@@ -232,6 +244,7 @@ class Handler(BaseHTTPRequestHandler):
             self.reply({'error': '服务器暂时无法完成请求'}, 500)
 
     def route(self, db, path, data):
+        if self.command=='POST' and not db.in_transaction:db.execute('BEGIN IMMEDIATE')
         method = self.command
         if path == '/api/brand' and method == 'GET':
             return self.reply({'logo': LOGO.is_file()})
@@ -244,7 +257,7 @@ class Handler(BaseHTTPRequestHandler):
             email = text_field(data, 'email', 200).lower()
             if len(password) < 10:
                 raise ValueError('密码至少需要 10 个字符')
-            db.execute('BEGIN IMMEDIATE')
+            if not db.in_transaction:db.execute('BEGIN IMMEDIATE')
             member = db.execute('SELECT * FROM memberships WHERE invite_token=? AND expires>? AND password IS NULL AND email=?', (token, int(time.time()), email)).fetchone()
             if not member:
                 return self.reply({'error': '邀请已过期、已使用或邮箱不匹配'}, 400)
@@ -266,7 +279,8 @@ class Handler(BaseHTTPRequestHandler):
                 slug = text_field(data, 'slug', 60).lower()
                 if not re.fullmatch(r'[a-z0-9]+(?:-[a-z0-9]+)*', slug):
                     raise ValueError('店铺网址只能使用小写英文字母、数字和连字符')
-                mid = db.execute('INSERT INTO merchants(name,slug,email,password) VALUES(?,?,?,?)', (name, slug, email, password_hash(password))).lastrowid
+                country,currency=region_pair(data)
+                mid = db.execute('INSERT INTO merchants(name,slug,email,password,country_code,currency) VALUES(?,?,?,?,?,?)', (name, slug, email, password_hash(password),country,currency)).lastrowid
             else:
                 merchant = db.execute('SELECT * FROM merchants WHERE email=?', (email,)).fetchone()
                 member = db.execute('SELECT * FROM memberships WHERE email=? AND password IS NOT NULL', (email,)).fetchone() if not merchant else None
@@ -281,11 +295,11 @@ class Handler(BaseHTTPRequestHandler):
             return self.reply({'ok': True}, cookie='ezshop_session=' + token + '; HttpOnly; SameSite=Lax; Path=/; Max-Age=86400')
         if path == '/api/store' and method == 'GET':
             slug = parse_qs(urlparse(self.path).query).get('slug', [''])[0]
-            merchant = db.execute("SELECT id,name,slug,phone,description,logo,banner,shipping_fee,courier,content_translations FROM merchants WHERE slug=? AND status='active'", (slug,)).fetchone()
+            merchant = db.execute("SELECT id,name,slug,phone,description,logo,banner,shipping_fee,courier,content_translations,country_code,currency FROM merchants WHERE slug=? AND status='active'", (slug,)).fetchone()
             if not merchant:
                 return self.reply({'error': '找不到这家店铺'}, 404)
             products = [dict(p) for p in db.execute('SELECT id,name,price,stock,emoji,description,category,image,featured,variant,content_translations FROM products WHERE merchant_id=? AND published=1 ORDER BY id DESC', (merchant['id'],))]
-            return self.reply({'store': {**{k: merchant[k] for k in ('name', 'slug', 'phone', 'description','shipping_fee','courier','content_translations')}, **{k:merchant[k] for k in ('logo','banner') if merchant[k]}}, 'products': products})
+            return self.reply({'store': {**{k: merchant[k] for k in ('name', 'slug', 'phone', 'description','shipping_fee','courier','content_translations','country_code','currency')}, **{k:merchant[k] for k in ('logo','banner') if merchant[k]}}, 'products': products})
         if path == '/api/order-result' and method == 'POST':
             reference = text_field(data, 'reference', 50)
             token = text_field(data, 'token', 100)
@@ -296,7 +310,7 @@ class Handler(BaseHTTPRequestHandler):
             if data.get('slug') != store['slug']:
                 return self.reply({'error': '订单不存在或访问凭证无效'}, 404)
             items = [dict(i) for i in db.execute('SELECT name,price,quantity,content_translations FROM order_items WHERE order_id=?', (order['id'],))]
-            safe = {key: order[key] for key in ('reference','total','status','created','subtotal','shipping','discount','fulfillment_status','carrier','tracking','shipped_at')}
+            safe = {key: order[key] for key in ('reference','total','status','created','subtotal','shipping','discount','fulfillment_status','carrier','tracking','shipped_at','country_code','currency')}
             return self.reply({'order': safe, 'items': items, 'store': dict(store)})
         if path == '/api/shipping-quote' and method == 'POST':
             slug=text_field(data,'slug',60)
@@ -308,7 +322,7 @@ class Handler(BaseHTTPRequestHandler):
             return self.checkout(db, data)
         cookie = self.headers.get('Cookie', '')
         token = next((p.strip().split('=', 1)[1] for p in cookie.split(';') if p.strip().startswith('ezshop_session=')), '')
-        merchant = db.execute('SELECT m.id,m.name,m.slug,m.email,m.phone,m.description,m.logo,m.banner,m.content_translations,m.shipping_fee,m.courier,m.is_admin,m.plan,m.status,s.member_id FROM merchants m JOIN sessions s ON s.merchant_id=m.id WHERE s.token=? AND s.expires>?', (token, int(time.time()))).fetchone()
+        merchant = db.execute('SELECT m.id,m.name,m.slug,m.email,m.phone,m.description,m.logo,m.banner,m.content_translations,m.shipping_fee,m.courier,m.country_code,m.currency,m.is_admin,m.plan,m.status,s.member_id FROM merchants m JOIN sessions s ON s.merchant_id=m.id WHERE s.token=? AND s.expires>?', (token, int(time.time()))).fetchone()
         if not merchant:
             return self.reply({'error': '请先登录'}, 401)
         mid = merchant['id']
@@ -317,6 +331,8 @@ class Handler(BaseHTTPRequestHandler):
             return self.reply({'error': '团队权限已撤销'}, 401)
         role = member['role'] if member else 'owner'
         safe_merchant = dict(merchant)
+        safe_merchant['regional_enabled']=True
+        safe_merchant['currency_locked']=bool(merchant['shipping_fee'] or db.execute('SELECT 1 FROM products WHERE merchant_id=? UNION ALL SELECT 1 FROM orders WHERE merchant_id=? LIMIT 1',(mid,mid)).fetchone())
         safe_merchant.update(role=role, is_admin=merchant['is_admin'] if role=='owner' else 0)
         safe_merchant.pop('member_id', None)
         if member:
@@ -403,7 +419,7 @@ class Handler(BaseHTTPRequestHandler):
             if not merchant['is_admin']:
                 return self.reply({'error':'需要平台管理员权限'},403)
             if path=='/api/platform' and method=='GET':
-                merchants=[dict(m) for m in db.execute("SELECT m.id,m.name,m.email,m.slug,m.plan,m.status,COUNT(o.id) orders_count,COALESCE(SUM(CASE WHEN o.status='paid' THEN o.total ELSE 0 END),0) sales FROM merchants m LEFT JOIN orders o ON o.merchant_id=m.id GROUP BY m.id")]
+                merchants=[dict(m) for m in db.execute("SELECT m.id,m.name,m.email,m.slug,m.plan,m.status,m.country_code,m.currency,COUNT(o.id) orders_count,COALESCE(SUM(CASE WHEN o.status='paid' THEN o.total ELSE 0 END),0) sales FROM merchants m LEFT JOIN orders o ON o.merchant_id=m.id GROUP BY m.id")]
                 return self.reply({'merchants':merchants})
             if path=='/api/platform/update' and method=='POST':
                 target=integer(data,'id',1,2**53)
@@ -419,6 +435,7 @@ class Handler(BaseHTTPRequestHandler):
                 db.execute('INSERT INTO audit_log(merchant_id,actor,action,object_id) VALUES(?,?,?,?)',(mid,'platform','merchant.update',target))
                 db.commit()
                 return self.reply({'ok':True})
+        if path in ('/api/products','/api/products/update','/api/payouts/request') and method=='POST' and data.get('currency','MYR')!=merchant['currency']:raise ValueError('币种已变化，请刷新后重新填写金额')
         if path == '/api/products' and method == 'POST':
             name = text_field(data, 'name', 120)
             price = integer(data, 'price', 1, 100000000)
@@ -434,7 +451,7 @@ class Handler(BaseHTTPRequestHandler):
             price = integer(data, 'price', 1, 100000000)
             stock = integer(data, 'stock', 0, 1000000)
             emoji = text_field(data, 'emoji', 12)
-            db.execute('BEGIN IMMEDIATE')
+            if not db.in_transaction:db.execute('BEGIN IMMEDIATE')
             product = db.execute('SELECT version,variant,content_translations FROM products WHERE id=? AND merchant_id=?', (pid, mid)).fetchone()
             if not product:
                 return self.reply({'error': '找不到商品'}, 404)
@@ -446,6 +463,10 @@ class Handler(BaseHTTPRequestHandler):
             db.commit()
             return self.reply({'ok': True})
         if path == '/api/settings' and method == 'POST':
+            country,currency=region_pair(data,merchant['country_code'],merchant['currency'])
+            if (country,currency)!=(merchant['country_code'],merchant['currency']):
+                if safe_merchant['currency_locked']:raise ValueError('店铺已有商品、交易或邮费，请勿直接转换币种')
+                db.execute('UPDATE merchants SET country_code=?,currency=? WHERE id=?',(country,currency,mid))
             name = text_field(data, 'name', 80)
             phone = data.get('phone', '')
             description = data.get('description', '')
@@ -461,7 +482,7 @@ class Handler(BaseHTTPRequestHandler):
                 assets.append(value)
             shipping_fee=data.get('shipping_fee',merchant['shipping_fee'])
             courier=data.get('courier',merchant['courier'])
-            if type(shipping_fee) is not int or not 0<=shipping_fee<=1000000:raise ValueError('邮费须为 0 到 RM 10,000 之间的金额')
+            if type(shipping_fee) is not int or not 0<=shipping_fee<=1000000:raise ValueError('邮费超出允许范围')
             if not isinstance(courier,str) or len(courier)>100:raise ValueError('快递公司名称不能超过 100 字')
             versions=translations(data.get('content_translations',json.loads(merchant['content_translations'])),'store')
             db.execute('UPDATE merchants SET name=?,phone=?,description=?,logo=?,banner=?,shipping_fee=?,courier=?,content_translations=? WHERE id=?', (name, phone, description.strip(), *assets, shipping_fee,courier.strip(),json.dumps(versions,ensure_ascii=False),mid))
@@ -477,7 +498,7 @@ class Handler(BaseHTTPRequestHandler):
         if path == '/api/orders/ship' and method == 'POST':
             oid=integer(data,'id',1,2**53)
             carrier=text_field(data,'carrier',100);tracking=text_field(data,'tracking',100)
-            db.execute('BEGIN IMMEDIATE')
+            if not db.in_transaction:db.execute('BEGIN IMMEDIATE')
             order=db.execute('SELECT * FROM orders WHERE id=? AND merchant_id=?',(oid,mid)).fetchone()
             if not order:return self.reply({'error':'找不到订单'},404)
             if order['status']!='paid':return self.reply({'error':'仅已付款订单可以登记发货'},409)
@@ -497,7 +518,7 @@ class Handler(BaseHTTPRequestHandler):
             return self.reply({'order': public_order(order), 'items': items})
         if path in ('/api/orders/paid', '/api/orders/cancel') and method == 'POST':
             oid = integer(data, 'id', 1, 2**53)
-            db.execute('BEGIN IMMEDIATE')
+            if not db.in_transaction:db.execute('BEGIN IMMEDIATE')
             row = db.execute('SELECT status FROM orders WHERE id=? AND merchant_id=?', (oid, mid)).fetchone()
             if not row:
                 return self.reply({'error': '找不到订单'}, 404)
@@ -519,12 +540,13 @@ class Handler(BaseHTTPRequestHandler):
 
     def checkout(self, db, data):
         # Write lock prevents concurrent checkouts from overselling inventory.
-        db.execute('BEGIN IMMEDIATE')
+        if not db.in_transaction:db.execute('BEGIN IMMEDIATE')
         slug = text_field(data, 'slug', 60)
         store = db.execute("SELECT * FROM merchants WHERE slug=? AND status='active'", (slug,)).fetchone()
         if not store:
             raise ValueError('店铺不存在')
         mid = store['id']
+        if data.get('currency','MYR')!=store['currency']:raise ValueError('币种已变化，请刷新后重新填写金额')
         checkout_key = data.get('checkout_key')
         if checkout_key is not None:
             if not isinstance(checkout_key, str) or not re.fullmatch(r'[A-Za-z0-9_-]{20,100}', checkout_key):
@@ -545,7 +567,7 @@ class Handler(BaseHTTPRequestHandler):
         address = text_field(data, 'address', 500)
         lines,subtotal=cart_items(db,mid,data.get('items'))
         shipping=store['shipping_fee']
-        state,postcode,city=destination(data,required=shipping>0)
+        state,postcode,city=destination(data,required=shipping>0,country=store['country_code'])
         total=subtotal+shipping
         code = data.get('agent', '')
         if not isinstance(code, str) or len(code) > 100:
@@ -559,7 +581,7 @@ class Handler(BaseHTTPRequestHandler):
         reference = 'EZ-' + secrets.token_hex(5).upper()
         oid = db.execute('INSERT INTO orders(merchant_id,reference,customer,email,phone,address,total,agent_id,commission) VALUES(?,?,?,?,?,?,?,?,?)', (mid, reference, customer, email, phone, address, total, agent['id'] if agent else None, commission)).lastrowid
         token = secrets.token_urlsafe(32)
-        db.execute('UPDATE orders SET note=?,checkout_key=?,access_token=?,subtotal=?,shipping=?,state=?,postcode=?,city=?,locale=? WHERE id=?', (note, checkout_key, token,subtotal,shipping,state,postcode,city,language,oid))
+        db.execute('UPDATE orders SET note=?,checkout_key=?,access_token=?,subtotal=?,shipping=?,state=?,postcode=?,city=?,locale=?,currency=?,country_code=? WHERE id=?', (note, checkout_key, token,subtotal,shipping,state,postcode,city,language,store['currency'],store['country_code'],oid))
         for p, qty in lines:
             db.execute('INSERT INTO order_items(order_id,product_id,name,price,quantity,content_translations) VALUES(?,?,?,?,?,?)', (oid, p['id'], p['name']+(' · '+p['variant'] if p['variant'] else ''), p['price'], qty,json.dumps(snapshot(p),ensure_ascii=False)))
             db.execute('UPDATE products SET stock=stock-?,version=version+1 WHERE id=? AND merchant_id=?', (qty, p['id'], mid))

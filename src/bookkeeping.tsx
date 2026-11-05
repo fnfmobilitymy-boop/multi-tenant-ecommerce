@@ -1,5 +1,16 @@
+import {
+  currencyTimeZone,
+  type Currency,
+} from "../supabase/functions/_shared/currencies";
+import {
+  useCommerceCurrency,
+  useCommerceMoney,
+  useCommerceDate,
+  currencyFactor,
+} from "./commerce-currency";
+import { toMinor } from "../supabase/functions/_shared/currencies";
 import { useEffect, useRef, useState } from "react";
-import { api, dateLabel, money } from "./api";
+import { api } from "./api";
 import { useI18n } from "./i18n";
 import { ErrorBox, Loading, Modal } from "./ui";
 interface Row {
@@ -58,20 +69,24 @@ const kinds: Record<string, string> = {
   income: "其他收入",
   expense: "日常支出",
 };
-const today = () =>
-  new Intl.DateTimeFormat("sv-SE", { timeZone: "Asia/Kuala_Lumpur" }).format(
-    new Date(),
-  );
+const today = (currency: Currency = "MYR") =>
+  new Intl.DateTimeFormat("sv-SE", {
+    timeZone: currencyTimeZone(currency),
+  }).format(new Date());
 export function Bookkeeping() {
   const { t, locale } = useI18n();
+  const currency = useCommerceCurrency(),
+    money = useCommerceMoney(),
+    dateLabel = useCommerceDate(),
+    inputStep = currency === "VND" ? "1" : "0.01";
   const [report, setReport] = useState<Report | null>(null),
     [error, setError] = useState(""),
     [busy, setBusy] = useState(false),
     [entry, setEntry] = useState(false),
     [kind, setKind] = useState("expense"),
     [mode, setMode] = useState("all"),
-    [period, setPeriod] = useState(today().slice(0, 7)),
-    [day, setDay] = useState(today()),
+    [period, setPeriod] = useState(today(currency).slice(0, 7)),
+    [day, setDay] = useState(today(currency)),
     [costs, setCosts] = useState<{ id: number; data: CostOrder } | null>(null);
   const generation = useRef(0),
     key = useRef(crypto.randomUUID());
@@ -116,7 +131,8 @@ export function Bookkeeping() {
     try {
       await api("books/entry/add", {
         ...Object.fromEntries(form),
-        amount: Math.round(Number(form.get("amount")) * 100),
+        currency,
+        amount: toMinor(form.get("amount"), currency),
         request_key: key.current,
       });
       key.current = crypto.randomUUID();
@@ -144,13 +160,14 @@ export function Bookkeeping() {
     setError("");
     try {
       await api("books/order-costs", {
+        currency,
         id: costs.id,
         version: costs.data.version,
         reason: form.get("reason"),
         paid_on: form.get("paid_on") || "",
         items: costs.data.items.map((i) => ({
           id: i.id,
-          unit_cost: Math.round(Number(form.get("cost-" + i.id)) * 100),
+          unit_cost: toMinor(form.get("cost-" + i.id), currency),
         })),
       });
       setCosts(null);
@@ -381,13 +398,13 @@ export function Bookkeeping() {
               </select>
             </label>
             <label>
-              {t("金额")} (MYR)
+              {t("金额")} ({currency})
               <input
                 name="amount"
                 type="number"
                 required
-                min="0.01"
-                step="0.01"
+                min={inputStep}
+                step={inputStep}
                 max="1000000000"
               />
             </label>
@@ -398,8 +415,8 @@ export function Bookkeeping() {
                 type="date"
                 required
                 min="2000-01-01"
-                max={today()}
-                defaultValue={today()}
+                max={today(currency)}
+                defaultValue={today(currency)}
               />
             </label>
             <label>
@@ -431,15 +448,20 @@ export function Bookkeeping() {
             <p>{costs.data.reference}</p>
             {costs.data.items.map((i) => (
               <label key={i.id}>
-                {i.name} × {i.quantity} · {t("单位成本（MYR）")}
+                {i.name} × {i.quantity} ·{" "}
+                {t("单位成本（{currency}）", { currency })}
                 <input
                   name={"cost-" + i.id}
                   type="number"
                   min="0"
-                  step="0.01"
+                  step={inputStep}
                   max="1000000"
                   required
-                  defaultValue={i.unit_cost === null ? "" : i.unit_cost / 100}
+                  defaultValue={
+                    i.unit_cost === null
+                      ? ""
+                      : i.unit_cost / currencyFactor(currency)
+                  }
                 />
               </label>
             ))}
@@ -450,7 +472,7 @@ export function Bookkeeping() {
                   name="paid_on"
                   type="date"
                   min="2000-01-01"
-                  max={today()}
+                  max={today(currency)}
                 />
               </label>
             )}

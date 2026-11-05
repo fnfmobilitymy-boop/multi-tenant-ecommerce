@@ -16,13 +16,17 @@ def cart_items(db,mid,items):
         subtotal+=product['price']*qty;lines.append((product,qty))
     return lines,subtotal
 
-def destination(data,required=False):
+def destination(data,required=False,country="MY"):
     state=data.get('state','');postcode=data.get('postcode','');city=data.get('city','')
-    if data.get('country','MY')!='MY':raise ValueError('当前店铺仅提供马来西亚配送')
+    if data.get('country',country)!=country:raise ValueError('请填写商家所在国家的配送地址')
     if not all(isinstance(v,str) for v in (state,postcode,city)):raise ValueError('配送地址格式无效')
+    if country!='MY':
+        pattern=r'[0-9]{6}' if country=='SG' else r'[0-9]{5,6}' if country=='KH' else r'[0-9]{5}'
+        if not 1<=len(city.strip())<=100 or not re.fullmatch(pattern,postcode) or len(state)>100 or (country!='SG' and not state.strip()):raise ValueError('请填写有效的当地城市、地区及邮编')
+        return state,postcode,city.strip()
     if not required and not state and not postcode and not city:return '','',''
     if state not in STATES:raise ValueError('请选择马来西亚配送州属')
     if not isinstance(postcode,str) or not re.fullmatch(r'[0-9]{5}',postcode):raise ValueError('请输入 5 位邮编')
     if not isinstance(city,str) or not 1<=len(city.strip())<=100:raise ValueError('请填写城市')
-    if data.get('country','MY')!='MY':raise ValueError('当前店铺仅提供马来西亚配送')
+    if data.get('country',country)!=country:raise ValueError('请填写商家所在国家的配送地址')
     return state,postcode,city.strip()

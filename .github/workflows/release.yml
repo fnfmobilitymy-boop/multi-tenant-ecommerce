@@ -1,9 +1,14 @@
 name: EZShop · 一次更新网站与后端
 on:
+  workflow_call:
+    inputs:
+      confirm:
+        required: true
+        type: string
   workflow_dispatch:
     inputs:
       confirm:
-        description: 输入DEPLOY更新已有数据库项目的后端函数及网站；不执行数据库迁移，不创建付款
+        description: 输入DEPLOY按用户当前发布授权升级后端和网站；不创建付款
         required: true
         type: string
 permissions:
@@ -22,15 +27,15 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-      - name: 全部正式验收完成后才发布
+      - name: 检查用户当前发布条件
         run: node scripts/check-final-acceptance.mjs
   backend:
     needs: acceptance
     if: inputs.confirm == 'DEPLOY' && github.ref == 'refs/heads/main'
     uses: ./.github/workflows/backend.yml
     with:
-      action: deploy-functions
-      confirm: DEPLOY_FUNCTIONS
+      action: upgrade-and-deploy
+      confirm: UPGRADE_AND_DEPLOY
     secrets: inherit
   website:
     needs: backend

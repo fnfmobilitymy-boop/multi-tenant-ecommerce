@@ -40,6 +40,11 @@ jobs:
           node scripts/check-public-config.mjs
       - run: npm ci --no-audit --no-fund
       - run: npm test
+      - name: 核对正式后端地区及币种能力
+        env:
+          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
+        run: npm run check:live -- --database-only
       - name: 构建 GitHub Pages 网站
         env:
           VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}

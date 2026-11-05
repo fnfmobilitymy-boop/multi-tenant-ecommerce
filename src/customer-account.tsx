@@ -1,3 +1,4 @@
+import type { Currency } from "./commerce-currency";
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import type { User } from "@supabase/supabase-js";
@@ -11,6 +12,7 @@ import { dateLabel, money, statusLabel } from "./api";
 import { useI18n } from "./i18n";
 import { Brand, ErrorBox, Loading } from "./ui";
 interface Purchase {
+  currency?: Currency;
   reference: string;
   status: string;
   total: number;
@@ -21,10 +23,16 @@ interface Purchase {
   quantity: number;
 }
 interface History {
-  summary: {
-    order_count: number;
+  currency_totals?: {
+    currency: Currency;
     paid_total: number;
     refunded_total: number;
+  }[];
+  summary: {
+    currency?: Currency | null;
+    order_count: number;
+    paid_total: number | null;
+    refunded_total: number | null;
     purchased_quantity: number;
     pending_count: number;
   };
@@ -318,7 +326,15 @@ export function CustomerAccount() {
                 <div className="metric-grid">
                   <article className="card metric">
                     <span>{t("已付款消费")}</span>
-                    <strong>{money(history.summary.paid_total, locale)}</strong>
+                    <strong>
+                      {history.summary.paid_total === null
+                        ? "—"
+                        : money(
+                            history.summary.paid_total,
+                            locale,
+                            history.summary.currency || "MYR",
+                          )}
+                    </strong>
                   </article>
                   <article className="card metric">
                     <span>{t("已购买件数")}</span>
@@ -327,7 +343,13 @@ export function CustomerAccount() {
                   <article className="card metric">
                     <span>{t("已退款金额")}</span>
                     <strong>
-                      {money(history.summary.refunded_total, locale)}
+                      {history.summary.refunded_total === null
+                        ? "—"
+                        : money(
+                            history.summary.refunded_total,
+                            locale,
+                            history.summary.currency || "MYR",
+                          )}
                     </strong>
                   </article>
                   <article className="card metric">
@@ -335,6 +357,19 @@ export function CustomerAccount() {
                     <strong>{history.summary.pending_count}</strong>
                   </article>
                 </div>
+                {history.summary.currency === null && (
+                  <div className="soft-note">
+                    {t("不同币种分别统计，不自动换汇。")}{" "}
+                    {history.currency_totals?.map((item) => (
+                      <p key={item.currency}>
+                        {item.currency}:{" "}
+                        {item.paid_total === null
+                          ? "—"
+                          : money(item.paid_total, locale, item.currency)}
+                      </p>
+                    ))}
+                  </div>
+                )}
                 <div className="table-scroll">
                   <table>
                     <thead>
@@ -351,10 +386,22 @@ export function CustomerAccount() {
                         <tr key={o.reference}>
                           <td>
                             {o.reference}
-                            <small>{dateLabel(o.created, locale)}</small>
+                            <small>
+                              {dateLabel(
+                                o.created,
+                                locale,
+                                o.currency || history.summary.currency || "MYR",
+                              )}
+                            </small>
                           </td>
                           <td>{o.quantity}</td>
-                          <td>{money(o.total, locale)}</td>
+                          <td>
+                            {money(
+                              o.total,
+                              locale,
+                              o.currency || history.summary.currency || "MYR",
+                            )}
+                          </td>
                           <td>{t(statusLabel(o.status))}</td>
                           <td>
                             <button

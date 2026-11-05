@@ -34,7 +34,7 @@ def handle(db,mid,role,member,path,data,method):
         if role!='agent':raise FinanceError('仅代理可以提交自己的提现申请',403)
         amount=number(data,'amount');details=text(data,'bank_details');key=text(data,'request_key',100)
         if not re.fullmatch(r'[A-Za-z0-9_-]{20,100}',key):raise FinanceError('请求标识无效')
-        db.execute('BEGIN IMMEDIATE')
+        if not db.in_transaction:db.execute('BEGIN IMMEDIATE')
         old=db.execute('SELECT * FROM payouts WHERE merchant_id=? AND agent_id=? AND request_key=?',(mid,aid,key)).fetchone()
         if old:
             if old['amount']!=amount or old['bank_details']!=details:raise FinanceError('同一请求标识不能用于不同的申请',409)
@@ -48,7 +48,7 @@ def handle(db,mid,role,member,path,data,method):
         pid=number(data,'id');status=data.get('status')
         if status not in ('paid','rejected'):raise FinanceError('结算状态无效')
         reference=text(data,'reference',200)
-        db.execute('BEGIN IMMEDIATE')
+        if not db.in_transaction:db.execute('BEGIN IMMEDIATE')
         p=db.execute('SELECT * FROM payouts WHERE id=? AND merchant_id=?',(pid,mid)).fetchone()
         if not p:raise FinanceError('找不到提现申请',404)
         if p['status']==status and p['reference']==reference:return {'ok':True},200
@@ -61,7 +61,7 @@ def handle(db,mid,role,member,path,data,method):
         if role!='owner':raise FinanceError('仅商家所有者可以登记退款',403)
         oid=number(data,'id');reference=text(data,'reference',200);restock=data.get('restock',False)
         if type(restock) is not bool:raise FinanceError('库存恢复选项无效')
-        db.execute('BEGIN IMMEDIATE')
+        if not db.in_transaction:db.execute('BEGIN IMMEDIATE')
         o=db.execute('SELECT * FROM orders WHERE id=? AND merchant_id=?',(oid,mid)).fetchone()
         if not o:raise FinanceError('找不到订单',404)
         if o['status']=='refunded':

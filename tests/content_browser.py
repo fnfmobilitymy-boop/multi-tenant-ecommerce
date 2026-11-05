@@ -26,6 +26,9 @@ with tempfile.TemporaryDirectory() as directory:
             assert page.locator('.language-selector select').input_value()=='vi','Merchant browser default was ignored'
             page.locator('.language-selector select').select_option('en')
             page.get_by_role('button',name='Sign up free',exact=True).click()
+            # Content fixtures use MYR; language preference does not determine
+            # the merchant's confirmed trading country.
+            page.locator('select[name=country_code]').select_option('MY')
             for label,value in [('Store name','Original Store'),('Store URL slug','content-store'),('Email address','content@example.test'),('Password','Testing-only-12345')]:page.get_by_label(label,exact=True).fill(value)
             page.get_by_role('button',name='Create store',exact=True).click()
             page.get_by_role('button',name='Products',exact=True).click()

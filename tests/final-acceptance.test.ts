@@ -1,5 +1,16 @@
 import { it, expect } from "vitest";
 import { finalAcceptance } from "../scripts/final-acceptance-lib.mjs";
+it("用户明确改为测试后上线时可发布，但不伪造正式验收结果", () => {
+  const record = { schema_version: 1, checks: { stripe: { status: "pending" } }, release_policy: {
+    mode: "tested_release", authorized_by: "user", instruction: "测试好了就正式上线", authorized_on: "2026-11-05",
+    evidence: ["isolated test evidence"], limitations: ["real payment remains unverified"],
+  }};
+  expect(finalAcceptance(record)).toEqual({ passed: true, pending: [], basis: "tested_release" });
+  expect(record.checks.stripe.status).toBe("pending");
+  for (const patch of [{ authorized_by: "" }, { evidence: [] }, { limitations: [] }, { authorized_on: "" }]) {
+    expect(finalAcceptance({ ...record, release_policy: { ...record.release_policy, ...patch } }).passed).toBe(false);
+  }
+});
 it("真实验收记录未完成时阻止正式发布，不把已有测试通过当作验收", () => {
   expect(
     finalAcceptance({

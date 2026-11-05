@@ -1,3 +1,4 @@
+import { currencyFactor, validCurrency, type Currency } from "./currencies.ts";
 const words = {
   zh: {
     receipt: "付款收据",
@@ -63,6 +64,7 @@ const escape = (value: unknown) =>
 export function notificationMessage(job: {
   kind: string;
   locale?: string;
+  currency?: Currency;
   store_name: string;
   reference: string;
   shipping?: number;
@@ -95,7 +97,12 @@ export function notificationMessage(job: {
     )
   )
     throw new Error("Invalid amount");
-  const money = (sen: number) => "MYR " + (sen / 100).toFixed(2);
+  const currency = job.currency || "MYR";
+  if (!validCurrency(currency)) throw new Error("Invalid currency");
+  const money = (amount: number) =>
+    currency +
+    " " +
+    (amount / currencyFactor(currency)).toFixed(currency === "VND" ? 0 : 2);
   const title = job.kind === "receipt" ? w.receipt : w.reminder;
   const message = job.kind === "receipt" ? w.paid : w.pending;
   const lines = job.items.map(

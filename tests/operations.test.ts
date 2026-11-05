@@ -36,7 +36,8 @@ it("只读检查拒绝服务端密钥并且不把可达状态冒充生产验收"
                     bookkeeping: true,
                   },
                 }
-              : url.endsWith("ezshop_platform_read_status")
+              : url.endsWith("ezshop_platform_read_status") ||
+                  url.endsWith("ezshop_region_status")
                 ? { ready: true }
                 : {},
         ),

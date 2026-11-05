@@ -1,3 +1,9 @@
+import {
+  currencyFactor,
+  currencyTimeZone,
+  validCurrency,
+  type Currency,
+} from "../supabase/functions/_shared/currencies";
 import { intlLocale, type Locale } from "./i18n-core";
 import { createClient } from "@supabase/supabase-js";
 import { supabaseApi } from "./supabase-api";
@@ -90,11 +96,17 @@ export async function api<T>(path: string, data?: unknown): Promise<T> {
   if (!response.ok) throw new Error(body.error || "请求失败，请稍后重试");
   return body;
 }
-export const money = (n: number, locale: Locale = "en") =>
-  new Intl.NumberFormat(intlLocale(locale), {
+export const money = (
+  n: number,
+  locale: Locale = "en",
+  currency: Currency = "MYR",
+) => {
+  if (!validCurrency(currency)) throw new Error("不支持的交易币种");
+  return new Intl.NumberFormat(intlLocale(locale), {
     style: "currency",
-    currency: "MYR",
-  }).format(n / 100);
+    currency,
+  }).format(n / currencyFactor(currency));
+};
 export const statusLabel = (s: string) =>
   ({
     pending: "待付款",
@@ -102,8 +114,12 @@ export const statusLabel = (s: string) =>
     cancelled: "已取消",
     refunded: "已退款",
   })[s] || s;
-export const dateLabel = (s: string, locale: Locale = "zh") =>
+export const dateLabel = (
+  s: string,
+  locale: Locale = "zh",
+  currency: Currency = "MYR",
+) =>
   new Date(s.includes("T") ? s : s.replace(" ", "T") + "Z").toLocaleString(
     intlLocale(locale),
-    { timeZone: "Asia/Kuala_Lumpur", hour12: false },
+    { timeZone: currencyTimeZone(currency), hour12: false },
   );
