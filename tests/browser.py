@@ -32,6 +32,13 @@ with tempfile.TemporaryDirectory() as temp:
             merchant.get_by_label('密码',exact=True).fill('Test-account-12345')
             merchant.get_by_role('button',name='创建店铺',exact=True).click()
             merchant.get_by_role('heading',name='生意总览',exact=True).wait_for()
+            merchant.get_by_role('button',name='收支与利润',exact=True).wait_for()
+            with merchant.expect_popup() as preview:
+                merchant.get_by_role('link',name='预览顾客店铺',exact=True).first.click()
+            preview_page=preview.value;preview_page.get_by_role('heading',name='Kedai Kita',exact=True).wait_for()
+            preview_page.get_by_text('商家暂未发布商品，请稍后再来。',exact=True).wait_for()
+            assert merchant.url.endswith('/merchant'), 'Customer preview replaced merchant dashboard'
+            preview_page.close()
             merchant.get_by_role('button',name='添加新商品',exact=False).click()
             dialog=merchant.get_by_role('dialog')
             dialog.get_by_label('商品名称',exact=True).fill('手工曲奇礼盒')

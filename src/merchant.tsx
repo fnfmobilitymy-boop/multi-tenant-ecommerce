@@ -485,8 +485,8 @@ function MerchantPage({
             <span>✦</span>
             <strong>{t("你的生意，你的节奏。")}</strong>
             <p>{t("分享店铺链接，让顾客随时随地下单。")}</p>
-            <Link to={shop}>
-              {t("查看我的店铺")}
+            <Link to={shop} target="_blank" rel="noopener noreferrer" title={t("在新标签页打开")}>
+              {t("预览顾客店铺")}
               <ArrowUpRight size={14} />
             </Link>
           </div>
@@ -540,9 +540,9 @@ function MerchantPage({
                   <h1>{t("生意总览")}</h1>
                   <p>{t("每一笔订单，都是生意的新进展。")}</p>
                 </div>
-                <Link className="button secondary" to={shop} target="_blank">
+                <Link className="button secondary" to={shop} target="_blank" rel="noopener noreferrer" title={t("在新标签页打开")}>
                   <ArrowUpRight size={17} />
-                  {t("查看我的店铺")}
+                  {t("预览顾客店铺")}
                 </Link>
               </div>
               <div className="metric-grid">
@@ -1000,7 +1000,7 @@ function MerchantPage({
                 </div>
                 <div className="soft-note">
                   {t("店铺网址：")}
-                  <Link to={shop}>
+                  <Link to={shop} target="_blank" rel="noopener noreferrer" title={t("在新标签页打开")}>
                     {location.origin +
                       import.meta.env.BASE_URL.replace(/\/$/, "") +
                       shop}

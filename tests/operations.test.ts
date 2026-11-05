@@ -110,3 +110,14 @@ it("从已存在004的项目升级可重复，不破坏旧数据或RPC链", asyn
     await db.close();
   }
 }, 30000);
+
+it("发布验证保留仓库路径，拒绝旧版本和缺少新功能的构建",async()=>{
+ const {verifySiteRelease}=await import('../scripts/site-release-lib.mjs');
+ const sha='a'.repeat(40);let requested='';
+ const fetcher=async(url:any,options:any)=>{requested=String(url);expect(options.method).toBe('GET');expect(options.headers).toBeUndefined();return new Response(JSON.stringify({commit:sha,features:{bookkeeping:true,customer_accounts:true,merchant_receiving:true}}));};
+ expect(await verifySiteRelease('https://example.test/ezshop',sha,fetcher)).toBe(true);
+ expect(requested).toContain('/ezshop/version.json?release=');
+ expect(await verifySiteRelease('https://example.test/ezshop',sha,async()=>new Response(JSON.stringify({commit:'b'.repeat(40),features:{bookkeeping:true}})))).toBe(false);
+ expect(await verifySiteRelease('https://example.test/ezshop',sha,async()=>new Response(JSON.stringify({commit:sha,features:{bookkeeping:true}})))).toBe(false);
+ await expect(verifySiteRelease('https://user:private@example.test/',sha,fetcher)).rejects.toThrow();
+});

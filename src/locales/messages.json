@@ -4989,5 +4989,40 @@
     "ส่งคำขอลงทะเบียนแล้ว โปรดตรวจอีเมลเพื่อยืนยันก่อนเข้าสู่ระบบ",
     "បានដាក់សំណើចុះឈ្មោះ។ សូមពិនិត្យអ៊ីមែលដើម្បីផ្ទៀងផ្ទាត់មុនចូលគណនី។",
     "Đã gửi yêu cầu đăng ký. Kiểm tra email để xác minh trước khi đăng nhập."
+  ],
+  "预览顾客店铺": [
+    "Preview customer storefront",
+    "Pratonton kedai pelanggan",
+    "ดูหน้าร้านสำหรับลูกค้า",
+    "មើលហាងសម្រាប់អតិថិជន",
+    "Xem trước cửa hàng cho khách"
+  ],
+  "在新标签页打开": [
+    "Opens in a new tab",
+    "Buka dalam tab baharu",
+    "เปิดในแท็บใหม่",
+    "បើកក្នុងផ្ទាំងថ្មី",
+    "Mở trong tab mới"
+  ],
+  "请检查店铺链接，或向商家获取最新地址。": [
+    "Check the store link or ask the merchant for the latest address.",
+    "Semak pautan kedai atau minta alamat terkini daripada peniaga.",
+    "ตรวจสอบลิงก์ร้านค้า หรือขอที่อยู่ล่าสุดจากร้านค้า",
+    "សូមពិនិត្យតំណហាង ឬស្នើអាសយដ្ឋានថ្មីពីអ្នកលក់។",
+    "Kiểm tra liên kết cửa hàng hoặc hỏi người bán địa chỉ mới nhất."
+  ],
+  "店铺标识：": [
+    "Store slug: ",
+    "Pengenal kedai: ",
+    "รหัสร้านค้า: ",
+    "សម្គាល់ហាង៖ ",
+    "Mã cửa hàng: "
+  ],
+  "商家暂未发布商品，请稍后再来。": [
+    "The merchant has not published any products yet. Please check back later.",
+    "Peniaga belum menerbitkan produk. Sila kembali kemudian.",
+    "ร้านค้ายังไม่ได้เผยแพร่สินค้า โปรดกลับมาใหม่ภายหลัง",
+    "អ្នកលក់មិនទាន់ផ្សព្វផ្សាយទំនិញទេ។ សូមមកម្តងទៀតពេលក្រោយ។",
+    "Người bán chưa đăng sản phẩm. Vui lòng quay lại sau."
   ]
 }

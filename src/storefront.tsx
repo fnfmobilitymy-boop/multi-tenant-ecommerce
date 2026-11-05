@@ -234,7 +234,7 @@ export function Storefront() {
     return (
       <div className="store-shell">
         <Brand to={base} />
-        {error ? <ErrorBox error={error} /> : <Loading />}
+        {error ? <><ErrorBox error={error} /><p>{t("请检查店铺链接，或向商家获取最新地址。")}</p><p className="break-link">{t("店铺标识：")}{slug}</p></> : <Loading />}
       </div>
     );
   const categories = [
@@ -401,7 +401,7 @@ export function Storefront() {
             {shown.length ? (
               <div className="products-grid">{shown.map(productCard)}</div>
             ) : (
-              <Empty>{t("没有找到商品，试试其他关键词或分类。")}</Empty>
+              <Empty>{data.products.length ? t("没有找到商品，试试其他关键词或分类。") : t("商家暂未发布商品，请稍后再来。")}</Empty>
             )}
           </>
         )}
