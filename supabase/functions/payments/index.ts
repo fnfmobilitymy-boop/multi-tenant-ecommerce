@@ -2,7 +2,7 @@ import {paymentReadiness} from "../_shared/payment-readiness.ts";
 import {connectFailure} from "../_shared/connect-errors.ts";
 import Stripe from 'npm:stripe@23.1.0';
 import {createClient} from 'npm:@supabase/supabase-js@2.118.0';
-import {appUrl,stripeRedirect,validateProCheckout,proTrialEnd} from '../_shared/payment-security.ts';
+import {appUrl,stripeRedirect} from '../_shared/payment-security.ts';
 Deno.serve(async(req:Request)=>{
  let root:URL;try{root=appUrl(Deno.env.get('APP_URL'))}catch{return new Response(JSON.stringify({error:'支付服务尚未配置，当前不会发起付款或订阅。'}),{status:503,headers:{'Content-Type':'application/json'}})}
  const origin=req.headers.get('Origin');const headers={'Content-Type':'application/json','Access-Control-Allow-Origin':root.origin,'Access-Control-Allow-Headers':'authorization,apikey,content-type,x-client-info','Access-Control-Allow-Methods':'POST,OPTIONS','Vary':'Origin'};
@@ -11,6 +11,7 @@ Deno.serve(async(req:Request)=>{
  if(req.method==='OPTIONS')return new Response(null,{status:204,headers});
  if(req.method!=='POST')return reply({error:'POST required'},405);
  let body:any;try{body=await req.json()}catch{return reply({error:'Invalid JSON'},400)}
+ if(body?.action==='subscription-checkout')return reply({error:'平台Pro采用人工审核，请提交付款申请并等待平台确认到账。'},409);
  if(body?.action==='readiness')return reply(paymentReadiness(name=>Deno.env.get(name)));
  const key=Deno.env.get('STRIPE_SECRET_KEY');if(!key)return reply({error:'支付服务尚未配置，当前不会发起付款或订阅。'},503);
  const stripe=new Stripe(key,{httpClient:Stripe.createFetchHttpClient()});
@@ -55,25 +56,6 @@ Deno.serve(async(req:Request)=>{
   if(action==='billing-portal'){
    if(!owner.billing?.customer_id)return reply({error:'尚未建立订阅账户。'},409);
    const session=await stripe.billingPortal.sessions.create({customer:owner.billing.customer_id,return_url:root.toString()});return reply({url:stripeRedirect(session.url,'billing')});
-  }
-  if(action==='subscription-checkout'){
-   if(typeof owner.trial_ends_at!=='string'||!Number.isFinite(Date.parse(owner.trial_ends_at)))return reply({error:'试用配置尚未升级，当前不会扣费。'},503);
-   const priceId=Deno.env.get('STRIPE_PRO_PRICE_ID');if(!priceId)return reply({error:'平台尚未配置订阅价格，当前不会扣费。'},503);
-   const taxId=Deno.env.get('STRIPE_PRO_TAX_RATE_ID');if(!taxId)return reply({error:'订阅税率尚未配置，当前不会扣费。'},503);
-   const configuredPrice=await stripe.prices.retrieve(priceId);const tax=await stripe.taxRates.retrieve(taxId);
-   try{validateProCheckout(configuredPrice,tax)}catch{return reply({error:'订阅价格或6%税率配置无效，当前不会扣费。'},503)}
-   let customerId=owner.billing?.customer_id;
-   if(!customerId){const customer=await stripe.customers.create({email:owner.email,name:owner.name,metadata:{ezshop_merchant_id:String(owner.merchant_id)}},{idempotencyKey:'ezshop-billing-customer-'+owner.merchant_id});customerId=customer.id;await rpc('service/bind-customer',{merchant_id:owner.merchant_id,customer_id:customerId})}
-   let attempt=await rpc('service/billing-claim',{merchant_id:owner.merchant_id,price_id:priceId});
-   if(attempt.session_id){
-    const existing=await stripe.checkout.sessions.retrieve(attempt.session_id);
-    if(existing.status==='open'&&existing.url){if(existing.metadata?.ezshop_tax_rate_id!==tax.id)return reply({error:'订阅会话税率需更新，请联系平台处理。'},409);return reply({url:stripeRedirect(existing.url,'checkout')})}
-    if(existing.status!=='expired')return reply({error:'订阅正在核实，请勿重复开通。'},409);
-    await rpc('service/expire-billing-session',{session_id:existing.id});attempt=await rpc('service/billing-claim',{merchant_id:owner.merchant_id,price_id:priceId});
-   }
-   const price=configuredPrice;if(attempt.price_id!==price.id)return reply({error:'订阅价格配置无效，当前不会扣费。'},503);
-   const session=await stripe.checkout.sessions.create({mode:'subscription',customer:customerId,line_items:[{price:price.id,quantity:1,tax_rates:[tax.id]}],allowed_payment_method_types:['card'],client_reference_id:String(owner.merchant_id),metadata:{ezshop_merchant_id:String(owner.merchant_id),ezshop_tax_rate_id:tax.id},payment_method_collection:'always',subscription_data:{metadata:{ezshop_merchant_id:String(owner.merchant_id)},...(proTrialEnd(owner.trial_ends_at)?{trial_end:proTrialEnd(owner.trial_ends_at),trial_settings:{end_behavior:{missing_payment_method:'cancel' as const}}}:{})},success_url:root.toString()+'?billing=return',cancel_url:root.toString()+'?billing=cancelled'},{idempotencyKey:'ezshop-billing-'+attempt.id});
-   await rpc('service/save-billing-session',{attempt_id:attempt.id,session_id:session.id});return reply({url:stripeRedirect(session.url,'checkout')});
   }
   return reply({error:'不支持此操作'},404);
  }catch(error){

@@ -13,7 +13,7 @@
       "verified_at": null,
       "reviewed_by": "",
       "evidence": [],
-      "note": "待正式首次扣款和开通验证，并核对订阅续期、失败及取消行为。配置检查和模拟Webhook不能替代真实验证。"
+      "note": "用户2026-11-07改为人工查账批准Pro，不再以Stripe真实扣款及自动续期作为验收条件；旧Stripe订阅须在Stripe另行取消，不能视为已取消。"
     },
     "backup_restore": {
       "status": "pending",

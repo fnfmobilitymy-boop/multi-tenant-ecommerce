@@ -493,33 +493,11 @@ export function PlatformBillingAdmin() {
                 defaultValue={settings.usdt_address}
               />
             </label>
-            <label className="checkbox-label">
-              <input
-                type="checkbox"
-                name="stripe_enabled"
-                defaultChecked={settings.stripe_enabled}
-              />
-              {t("启用 Stripe 收款链接")}
-            </label>
-            <label>
-              {t("Stripe 收款币种")}
-              <select
-                name="stripe_currency"
-                defaultValue={settings.stripe_currency || "MYR"}
-              >
-                <option value="MYR">MYR</option>
-                <option value="USD">USD</option>
-              </select>
-            </label>
-            <label>
-              {t("Stripe 收款链接")}
-              <input
-                name="stripe_link"
-                type="url"
-                defaultValue={settings.stripe_link}
-                maxLength={500}
-              />
-            </label>
+            <p className="soft-note">
+              {t(
+                "平台Pro采用人工核款；如曾开通Stripe自动订阅，须在Stripe取消，停用本页不会停止既有扣款。",
+              )}
+            </p>
             <button
               className="button"
               disabled={busy || Object.values(uploads).some(Boolean)}

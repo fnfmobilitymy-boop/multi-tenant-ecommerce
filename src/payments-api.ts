@@ -5,6 +5,8 @@ export async function paymentsApi<T>(
   path: string,
   data?: unknown,
 ): Promise<T> {
+  if (path === "subscribe")
+    throw new Error("平台Pro采用人工审核，请提交付款申请并等待平台确认到账。");
   const payload = (data || {}) as Record<string, unknown>;
   if (
     ["status", "store-options", "order-summary", "resolve-review"].includes(

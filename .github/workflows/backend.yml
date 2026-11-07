@@ -93,9 +93,7 @@ jobs:
           NOTIFICATION_JOB_SECRET: ${{ secrets.NOTIFICATION_JOB_SECRET }}
         run: |
           test -n "$SUPABASE_ACCESS_TOKEN" || { echo '缺少 Secret SUPABASE_ACCESS_TOKEN'; exit 1; }
-          if [ "$STRIPE_AUTOMATION_ENABLED" = "true" ]; then
-            node scripts/check-stripe-config.mjs
-          fi
+          # Pro is manually approved; no Stripe subscription configuration is required.
           node scripts/write-service-config.mjs
           supabase secrets set --env-file "$RUNNER_TEMP/ezshop-services.env" --remote="$SUPABASE_PROJECT_REF"
           rm "$RUNNER_TEMP/ezshop-services.env"

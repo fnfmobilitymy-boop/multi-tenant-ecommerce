@@ -268,81 +268,49 @@ describe("支付与订阅受控数据库接口", () => {
     ).toBe(true);
     expect((await main("dashboard")).products[0].stock).toBe(stockBefore); // Refund never claims returned goods.
   });
-  it("订阅 Checkout 不等于已付费，真实已付账单才启用 Pro", async () => {
+  it("Pro只能人工审批，服务端旧账单回调不能开通、续期或撤销", async () => {
     await user(owner);
-    await service(() =>
-      pay("service/bind-customer", {
-        merchant_id: mid,
-        customer_id: "cus_fixture",
-      }),
-    );
-    const claim = await service(() =>
-      pay("service/billing-claim", { merchant_id: mid, price_id: "price_pro" }),
-    );
-    await service(() =>
-      pay("service/save-billing-session", {
-        attempt_id: claim.id,
-        session_id: "cs_billing",
-      }),
-    );
-    expect((await main("dashboard")).merchant.plan).toBe("free");
-    const snapshot = {
-      merchant_id: mid,
-      customer_id: "cus_fixture",
-      subscription_id: "sub_fixture",
-      price_id: "price_pro",
-      status: "active",
-      period_end: Math.floor(Date.now() / 1000) + 86400,
-      invoice_paid: false,
-      event_id: "evt_sub_unpaid",
-      event_created: 100,
-    };
-    await service(() => pay("service/subscription-sync", snapshot));
-    expect((await main("dashboard")).merchant.plan).toBe("free");
-    await service(() =>
-      pay("service/subscription-sync", {
-        ...snapshot,
-        event_id: "evt_sub_paid",
-        event_created: 101,
-        invoice_paid: true,
-      }),
-    );
-    expect((await main("dashboard")).merchant.plan).toBe("pro");
-    await service(() =>
-      pay("service/subscription-sync", {
-        ...snapshot,
-        event_id: "evt_sub_cancel",
-        event_created: 102,
-        status: "canceled",
-      }),
-    );
-    expect((await main("dashboard")).merchant.plan).toBe("free");
-    expect(
-      (
-        await service(() =>
-          pay("service/subscription-sync", {
-            ...snapshot,
-            event_id: "evt_old_paid",
-            event_created: 101,
-            invoice_paid: true,
-          }),
-        )
-      ).outdated,
-    ).toBe(true);
-    expect((await main("dashboard")).merchant.plan).toBe("free");
-    const renewed = await service(() =>
-      pay("service/billing-claim", { merchant_id: mid, price_id: "price_pro" }),
-    );
-    expect(renewed.id).not.toBe(claim.id);
+    const before = (await main("dashboard")).merchant.plan;
     await expect(
-      service(() =>
+      pay("service/subscription-sync", {
+        merchant_id: mid,
+        invoice_paid: true,
+        role: "service_role",
+      }),
+    ).rejects.toThrow();
+    for (const route of [
+      "service/bind-customer",
+      "service/billing-claim",
+      "service/save-billing-session",
+    ]) {
+      await expect(
+        service(() => pay(route, { merchant_id: mid, price_id: "price_pro" })),
+      ).rejects.toThrow("人工审核");
+    }
+    for (const status of ["active", "canceled", "past_due"]) {
+      const result = await service(() =>
         pay("service/subscription-sync", {
-          ...snapshot,
-          event_id: "evt_wrong_customer",
-          customer_id: "cus_other",
+          merchant_id: mid,
+          status,
+          invoice_paid: true,
         }),
+      );
+      expect(result.ignored).toBe(true);
+      expect((await main("dashboard")).merchant.plan).toBe(before);
+    }
+    expect((await pay("owner-status")).automatic_pro_enabled).toBe(false);
+    const state = (
+      await db.query<{ body: any }>(
+        "select public.ezshop_manual_billing_status() body",
+      )
+    ).rows[0].body;
+    expect(state.ready).toBe(true);
+    await expect(
+      db.exec(
+        "set role service_role;select public.ezshop_pre_manual_payment_api('service/subscription-sync','{}');",
       ),
     ).rejects.toThrow();
+    await db.exec("reset role");
   });
   it("规格来自数据库，订单保留成交规格，重试及其他商家不能改写", async () => {
     await user(owner);
@@ -515,6 +483,10 @@ describe("平台自填金额订阅与安全上线检查", () => {
     ).rows[0].valid;
     expect(validAddress).toBe(true);
     await call("ezshop_platform_billing_api", "save", config);
+    expect(
+      (await call("ezshop_platform_billing_api", "settings")).settings
+        .stripe_enabled,
+    ).toBe(false);
     const version = (await call("ezshop_platform_billing_api", "settings"))
       .settings.version;
     await call("ezshop_platform_billing_api", "save", config);
@@ -541,6 +513,10 @@ describe("平台自填金额订阅与安全上线检查", () => {
     await user(other);
     const api = (route: string, payload: any = {}) =>
       call("ezshop_platform_billing_api", route, payload);
+    expect((await api("view")).options.stripe_link).toBe(false);
+    await expect(
+      api("create", { method: "stripe_link", amount: "105.89" }),
+    ).rejects.toThrow("人工审核");
     const req = (
       await api("create", { method: "bank_transfer", amount: "19.90" })
     ).request;
@@ -573,6 +549,19 @@ describe("平台自填金额订阅与安全上线检查", () => {
     });
     await user(other);
     expect((await main("dashboard")).merchant.plan).toBe("pro");
+    const grant = (await api("view")).paid_until;
+    for (const status of ["active", "canceled"]) {
+      await service(() =>
+        pay("service/subscription-sync", {
+          merchant_id: req.merchant_id,
+          status,
+          invoice_paid: true,
+          period_end: 2100000000,
+        }),
+      );
+      expect((await api("view")).paid_until).toBe(grant);
+      expect((await main("dashboard")).merchant.plan).toBe("pro");
+    }
     await user(owner);
     await expect(
       api("review", {
@@ -635,76 +624,241 @@ describe("平台自填金额订阅与安全上线检查", () => {
   });
 });
 
-it('七天试用固定截止；到期禁止经营及绕过入口，保留续费与已有订单查询', async()=>{
- const id='dddddddd-dddd-4ddd-8ddd-dddddddddddd';
- await db.query('insert into auth.users values($1,$2,$3)',[id,'trial@example.test',JSON.stringify({name:'Trial',slug:'trial-store'})]);
- await user(id);
- const fresh=await main('dashboard');const merchant=fresh.merchant.id;
- expect(fresh.merchant.subscription_access).toBe(true);
- const duration=(await db.query<{seconds:number}>('select extract(epoch from (trial_ends_at-now()))::float8 seconds from ezshop.merchants where id=$1',[merchant])).rows[0].seconds;
- expect(duration).toBeGreaterThan(604700);expect(duration).toBeLessThanOrEqual(604800);
- await main('products',{name:'Trial product',price:1000,stock:3,published:1});
- const product=(await main('dashboard')).products[0];
- await user('');
- const placed=await main('checkout',{slug:'trial-store',customer:'Buyer',email:'buyer@example.test',phone:'0123456789',address:'KL',items:[{id:product.id,quantity:1}],checkout_key:'trial_order_idempotency_00001'});
- await db.query("update ezshop.merchants set trial_ends_at=now()-interval '1 minute',plan='pro' where id=$1",[merchant]);
- await user(id);
- const expired=await main('dashboard');expect(expired.merchant.subscription_access).toBe(false);expect(expired.products).toEqual([]);expect(expired.orders).toEqual([]);
- await expect(main('products',{name:'Bypass',price:1000,stock:3})).rejects.toThrow('到期');
- expect((await db.query<{allowed:boolean}>('select public.ezshop_can_upload_media() allowed')).rows[0].allowed).toBe(false);
- expect((await pay('owner-status')).trial_ends_at).toBeTruthy();
- expect(await call('ezshop_platform_billing_api','view')).toHaveProperty('options');
- await db.exec('set role authenticated');await expect(call('ezshop_subscription_api','products',{})).rejects.toThrow();await db.exec('reset role');
- await user('');
- const closed=await main('store',{slug:'trial-store'});expect(closed.products).toEqual([]);expect(closed.store.subscription_access).toBe(false);
- await expect(main('checkout',{slug:'trial-store',customer:'Buyer',email:'buyer@example.test',phone:'0123456789',address:'KL',items:[{id:product.id,quantity:1}],checkout_key:'trial_order_idempotency_00002'})).rejects.toThrow('暂停');
- expect((await main('order-result',{slug:'trial-store',reference:placed.reference,token:placed.access_token})).order.reference).toBe(placed.reference);
- await db.query('insert into ezshop.billing_accounts(merchant_id,customer_id,status,invoice_paid,paid_through) values($1,\'cus_trial_fixture\',$2,true,now()+interval \'1 month\')',[merchant,'active']);
- await user(id);expect((await main('dashboard')).merchant.subscription_access).toBe(true);
- await db.query("update ezshop.billing_accounts set status='past_due',invoice_paid=false where merchant_id=$1",[merchant]);
- expect((await main('dashboard')).merchant.subscription_access).toBe(false);
- await user(owner);
+it("七天试用固定截止；到期禁止经营及绕过入口，保留续费与已有订单查询", async () => {
+  const id = "dddddddd-dddd-4ddd-8ddd-dddddddddddd";
+  await db.query("insert into auth.users values($1,$2,$3)", [
+    id,
+    "trial@example.test",
+    JSON.stringify({ name: "Trial", slug: "trial-store" }),
+  ]);
+  await user(id);
+  const fresh = await main("dashboard");
+  const merchant = fresh.merchant.id;
+  expect(fresh.merchant.subscription_access).toBe(true);
+  const duration = (
+    await db.query<{ seconds: number }>(
+      "select extract(epoch from (trial_ends_at-now()))::float8 seconds from ezshop.merchants where id=$1",
+      [merchant],
+    )
+  ).rows[0].seconds;
+  expect(duration).toBeGreaterThan(604700);
+  expect(duration).toBeLessThanOrEqual(604800);
+  await main("products", {
+    name: "Trial product",
+    price: 1000,
+    stock: 3,
+    published: 1,
+  });
+  const product = (await main("dashboard")).products[0];
+  await user("");
+  const placed = await main("checkout", {
+    slug: "trial-store",
+    customer: "Buyer",
+    email: "buyer@example.test",
+    phone: "0123456789",
+    address: "KL",
+    items: [{ id: product.id, quantity: 1 }],
+    checkout_key: "trial_order_idempotency_00001",
+  });
+  await db.query(
+    "update ezshop.merchants set trial_ends_at=now()-interval '1 minute',plan='pro' where id=$1",
+    [merchant],
+  );
+  await user(id);
+  const expired = await main("dashboard");
+  expect(expired.merchant.subscription_access).toBe(false);
+  expect(expired.products).toEqual([]);
+  expect(expired.orders).toEqual([]);
+  await expect(
+    main("products", { name: "Bypass", price: 1000, stock: 3 }),
+  ).rejects.toThrow("到期");
+  expect(
+    (
+      await db.query<{ allowed: boolean }>(
+        "select public.ezshop_can_upload_media() allowed",
+      )
+    ).rows[0].allowed,
+  ).toBe(false);
+  expect((await pay("owner-status")).trial_ends_at).toBeTruthy();
+  expect(await call("ezshop_platform_billing_api", "view")).toHaveProperty(
+    "options",
+  );
+  await db.exec("set role authenticated");
+  await expect(
+    call("ezshop_subscription_api", "products", {}),
+  ).rejects.toThrow();
+  await db.exec("reset role");
+  await user("");
+  const closed = await main("store", { slug: "trial-store" });
+  expect(closed.products).toEqual([]);
+  expect(closed.store.subscription_access).toBe(false);
+  await expect(
+    main("checkout", {
+      slug: "trial-store",
+      customer: "Buyer",
+      email: "buyer@example.test",
+      phone: "0123456789",
+      address: "KL",
+      items: [{ id: product.id, quantity: 1 }],
+      checkout_key: "trial_order_idempotency_00002",
+    }),
+  ).rejects.toThrow("暂停");
+  expect(
+    (
+      await main("order-result", {
+        slug: "trial-store",
+        reference: placed.reference,
+        token: placed.access_token,
+      })
+    ).order.reference,
+  ).toBe(placed.reference);
+  await db.query(
+    "insert into ezshop.billing_accounts(merchant_id,customer_id,status,invoice_paid,paid_through) values($1,'cus_trial_fixture',$2,true,now()+interval '1 month')",
+    [merchant, "active"],
+  );
+  await user(id);
+  expect((await main("dashboard")).merchant.subscription_access).toBe(true);
+  await db.query(
+    "update ezshop.billing_accounts set status='past_due',invoice_paid=false where merchant_id=$1",
+    [merchant],
+  );
+  expect((await main("dashboard")).merchant.subscription_access).toBe(false);
+  await user(owner);
 });
 
-it('商家自行填写银行资料，商家隔离且订单锁定当时账户，不自动标记已付款',async()=>{
- await user(owner);
- const original=(await main('receiving')).receiving;
- const payload={...original,bank_enabled:true,bank_name:'Test Merchant Bank',holder:'Test Merchant Holder',account:'1234567890',instructions:'Use the order reference'};
- const first=(await main('receiving/save',payload)).receiving;
- expect(first.version).toBe(1);
- await expect(main('receiving/save',payload)).rejects.toThrow('已更新');
- await user(other);expect((await main('receiving')).receiving.account).toBe('');
- const publicStore=await main('store',{slug:'pay-store'});expect(JSON.stringify(publicStore)).not.toContain('1234567890');
- const placed=await order('bank-snapshot');
- expect(placed.status).toBe('pending');
- const result=await main('order-result',{slug:'pay-store',reference:placed.reference,token:placed.access_token});
- expect(result.payment_instructions.bank.account).toBe('1234567890');expect(result.order.status).toBe('pending');
- await expect(main('order-result',{slug:'pay-store',reference:placed.reference,token:'wrong'})).rejects.toThrow();
- await user(owner);const changed=(await main('receiving/save',{...first,account:'9999999999'})).receiving;
- await user('');
- expect((await main('order-result',{slug:'pay-store',reference:placed.reference,token:placed.access_token})).payment_instructions.bank.account).toBe('1234567890');
- expect((await order('bank-snapshot')).reference).toBe(placed.reference);
- await user(owner);await main('receiving/save',{...changed,bank_enabled:false});
- const unconfigured=await order('bank-disabled');
- expect((await main('order-result',{slug:'pay-store',reference:unconfigured.reference,token:unconfigured.access_token})).payment_instructions).toEqual({});
- await expect(main('receiving')).rejects.toThrow();
- await user(owner);
+it("商家自行填写银行资料，商家隔离且订单锁定当时账户，不自动标记已付款", async () => {
+  await user(owner);
+  const original = (await main("receiving")).receiving;
+  const payload = {
+    ...original,
+    bank_enabled: true,
+    bank_name: "Test Merchant Bank",
+    holder: "Test Merchant Holder",
+    account: "1234567890",
+    instructions: "Use the order reference",
+  };
+  const first = (await main("receiving/save", payload)).receiving;
+  expect(first.version).toBe(1);
+  await expect(main("receiving/save", payload)).rejects.toThrow("已更新");
+  await user(other);
+  expect((await main("receiving")).receiving.account).toBe("");
+  const publicStore = await main("store", { slug: "pay-store" });
+  expect(JSON.stringify(publicStore)).not.toContain("1234567890");
+  const placed = await order("bank-snapshot");
+  expect(placed.status).toBe("pending");
+  const result = await main("order-result", {
+    slug: "pay-store",
+    reference: placed.reference,
+    token: placed.access_token,
+  });
+  expect(result.payment_instructions.bank.account).toBe("1234567890");
+  expect(result.order.status).toBe("pending");
+  await expect(
+    main("order-result", {
+      slug: "pay-store",
+      reference: placed.reference,
+      token: "wrong",
+    }),
+  ).rejects.toThrow();
+  await user(owner);
+  const changed = (
+    await main("receiving/save", { ...first, account: "9999999999" })
+  ).receiving;
+  await user("");
+  expect(
+    (
+      await main("order-result", {
+        slug: "pay-store",
+        reference: placed.reference,
+        token: placed.access_token,
+      })
+    ).payment_instructions.bank.account,
+  ).toBe("1234567890");
+  expect((await order("bank-snapshot")).reference).toBe(placed.reference);
+  await user(owner);
+  await main("receiving/save", { ...changed, bank_enabled: false });
+  const unconfigured = await order("bank-disabled");
+  expect(
+    (
+      await main("order-result", {
+        slug: "pay-store",
+        reference: unconfigured.reference,
+        token: unconfigured.access_token,
+      })
+    ).payment_instructions,
+  ).toEqual({});
+  await expect(main("receiving")).rejects.toThrow();
+  await user(owner);
 });
 
-it('电子钱包、USDT和商家链接独立校验，停用银行资料不泄露也不伪造汇率或到账',async()=>{
- await user(owner);const base=(await main('receiving')).receiving;
- await expect(main('receiving/save',{...base,link_enabled:true,payment_link:'javascript:alert(1)'})).rejects.toThrow('HTTPS');
- await expect(main('receiving/save',{...base,link_enabled:true,payment_link:'https://user:pass@example.test/pay'})).rejects.toThrow('HTTPS');
- await expect(main('receiving/save',{...base,wallet_enabled:true,wallet_name:'Test Wallet',wallet_identifier:'',wallet_qr:''})).rejects.toThrow('电子钱包');
- await expect(main('receiving/save',{...base,usdt_enabled:true,usdt_network:null,usdt_address:''})).rejects.toThrow('USDT');
- await expect(main('receiving/save',{...base,usdt_enabled:true,usdt_network:'TRC20',usdt_address:'invalid'})).rejects.toThrow('USDT');
- await main('receiving/save',{...base,bank_enabled:false,wallet_enabled:true,wallet_name:'Test Wallet',wallet_identifier:'test-wallet-id',usdt_enabled:true,usdt_network:'ERC20',usdt_address:'0x1111111111111111111111111111111111111111',link_enabled:true,payment_link:'https://checkout.stripe.com/c/pay/test-fixture'});
- const placed=await order('merchant-multiple-rails');
- const result=await main('order-result',{slug:'pay-store',reference:placed.reference,token:placed.access_token});
- expect(result.payment_instructions).not.toHaveProperty('bank');
- expect(result.payment_instructions.wallet.identifier).toBe('test-wallet-id');
- expect(result.payment_instructions.usdt.network).toBe('ERC20');
- expect(result.payment_instructions.link).toBe('https://checkout.stripe.com/c/pay/test-fixture');
- expect(result.order.total).toBeGreaterThan(0);expect(result.order.status).toBe('pending');expect(result.payment_instructions).not.toHaveProperty('exchange_rate');
- await user(owner);
+it("电子钱包、USDT和商家链接独立校验，停用银行资料不泄露也不伪造汇率或到账", async () => {
+  await user(owner);
+  const base = (await main("receiving")).receiving;
+  await expect(
+    main("receiving/save", {
+      ...base,
+      link_enabled: true,
+      payment_link: "javascript:alert(1)",
+    }),
+  ).rejects.toThrow("HTTPS");
+  await expect(
+    main("receiving/save", {
+      ...base,
+      link_enabled: true,
+      payment_link: "https://user:pass@example.test/pay",
+    }),
+  ).rejects.toThrow("HTTPS");
+  await expect(
+    main("receiving/save", {
+      ...base,
+      wallet_enabled: true,
+      wallet_name: "Test Wallet",
+      wallet_identifier: "",
+      wallet_qr: "",
+    }),
+  ).rejects.toThrow("电子钱包");
+  await expect(
+    main("receiving/save", {
+      ...base,
+      usdt_enabled: true,
+      usdt_network: null,
+      usdt_address: "",
+    }),
+  ).rejects.toThrow("USDT");
+  await expect(
+    main("receiving/save", {
+      ...base,
+      usdt_enabled: true,
+      usdt_network: "TRC20",
+      usdt_address: "invalid",
+    }),
+  ).rejects.toThrow("USDT");
+  await main("receiving/save", {
+    ...base,
+    bank_enabled: false,
+    wallet_enabled: true,
+    wallet_name: "Test Wallet",
+    wallet_identifier: "test-wallet-id",
+    usdt_enabled: true,
+    usdt_network: "ERC20",
+    usdt_address: "0x1111111111111111111111111111111111111111",
+    link_enabled: true,
+    payment_link: "https://checkout.stripe.com/c/pay/test-fixture",
+  });
+  const placed = await order("merchant-multiple-rails");
+  const result = await main("order-result", {
+    slug: "pay-store",
+    reference: placed.reference,
+    token: placed.access_token,
+  });
+  expect(result.payment_instructions).not.toHaveProperty("bank");
+  expect(result.payment_instructions.wallet.identifier).toBe("test-wallet-id");
+  expect(result.payment_instructions.usdt.network).toBe("ERC20");
+  expect(result.payment_instructions.link).toBe(
+    "https://checkout.stripe.com/c/pay/test-fixture",
+  );
+  expect(result.order.total).toBeGreaterThan(0);
+  expect(result.order.status).toBe("pending");
+  expect(result.payment_instructions).not.toHaveProperty("exchange_rate");
+  await user(owner);
 });

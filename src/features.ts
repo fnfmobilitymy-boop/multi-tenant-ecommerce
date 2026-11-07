@@ -1,5 +1,5 @@
-// Stripe automation is deferred. A release must explicitly opt in only after
-// provider configuration and payment/webhook verification are complete.
+// Optional shop order payments only. Platform Pro always uses manual approval;
+// this legacy environment flag cannot enable automatic Pro subscriptions.
 export const stripeAutomationEnabled =
   import.meta.env.VITE_STRIPE_AUTOMATION_ENABLED === "true";
 

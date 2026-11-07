@@ -1,6 +1,6 @@
 import Stripe from 'npm:stripe@23.1.0';
 import {createClient} from 'npm:@supabase/supabase-js@2.118.0';
-import {paymentEvent,idOf,subscriptionSnapshot} from '../_shared/payment-security.ts';
+import {paymentEvent,idOf} from '../_shared/payment-security.ts';
 Deno.serve(async(req:Request)=>{
  const reply=(body:unknown,status=200)=>new Response(JSON.stringify(body),{status,headers:{'Content-Type':'application/json'}});
  if(req.method!=='POST')return reply({error:'POST required'},405);
@@ -28,15 +28,8 @@ Deno.serve(async(req:Request)=>{
    const charge=await stripe.charges.retrieve(chargeId,{},{stripeAccount:event.account});
    return reply(await rpc('service/charge-adjustment',{event_id:event.id,account_id:event.account,payment_intent:idOf(charge.payment_intent),kind:event.type==='charge.refunded'?'refund':'dispute',charge_id:charge.id,reference:charge.metadata?.ezshop_order_reference,currency:charge.currency,amount:charge.amount,refunded:charge.amount_refunded}));
   }
-  let subscriptionId:string|null=null;
-  if(event.type==='checkout.session.completed'&&object.mode==='subscription')subscriptionId=idOf(object.subscription);
-  if(['invoice.paid','invoice.payment_failed'].includes(event.type))subscriptionId=idOf(object.subscription)||idOf(object.parent?.subscription_details?.subscription);
-  if(['customer.subscription.updated','customer.subscription.deleted'].includes(event.type))subscriptionId=object.id;
-  if(subscriptionId){
-   const sub=await stripe.subscriptions.retrieve(subscriptionId,{expand:['latest_invoice']});
-   if(!sub.metadata?.ezshop_merchant_id)return reply({ok:true,ignored:true});
-   return reply(await rpc('service/subscription-sync',{...subscriptionSnapshot(sub),event_id:event.id,event_created:event.created}));
-  }
+  // Platform Pro is approved manually. Signed legacy subscription events must
+  // never grant, renew, or revoke a merchant's manually approved service.
   return reply({ok:true,ignored:true});
  }catch{return reply({error:'Event not yet applied; retry required'},500)}
 });

@@ -50,18 +50,10 @@ try:
         page=context.new_page();page.on('pageerror',lambda e:errors.append(str(e)))
         page.goto(base)
         page.get_by_role('button',name='收款与订阅',exact=True).click()
-        page.get_by_text('尚未开通收款',exact=True).wait_for()
-        page.get_by_text('Stripe 测试模式：不会产生真实收款，暂未完成正式支付验收。',exact=True).wait_for()
-        page.get_by_role('button',name='开通商家收款账户',exact=True).click()
-        connect_panel=page.locator('section.card').filter(has=page.get_by_role('heading',name='店铺线上收款',exact=True))
-        connect_panel.get_by_role('alert').wait_for()
-        billing_panel=page.locator('.overview-grid section.card').nth(1)
-        assert billing_panel.get_by_role('alert').count()==0
-        page.get_by_role('button',name='查看价格并订阅 Pro',exact=True).click()
-        billing_panel.get_by_role('alert').filter(has_text='支付服务尚未配置').wait_for()
-        assert 'subscription-checkout' in calls
+        page.get_by_text('使用下方平台订阅申请付款，平台核实到账后开通服务。',exact=True).wait_for()
+        assert page.get_by_role('button',name='查看价格并订阅 Pro',exact=True).count()==0
+        assert 'subscription-checkout' not in calls and 'readiness' not in calls
         page.locator('.language-selector select').select_option('en')
-        billing_panel.get_by_role('alert').filter(has_text='Payment service is not configured').wait_for()
         page.get_by_role('heading',name='Payments & subscription',exact=True).wait_for()
         page.evaluate("sessionStorage.setItem('ezshop:order:EZ-TEST','test-order-access-token')")
         page.goto(base+'/shop/test-store/order-result?ref=EZ-TEST&payment_return=1')
@@ -82,6 +74,6 @@ try:
         (root/'test-results').mkdir(exist_ok=True)
         page.screenshot(path=str(root/'test-results/payment-result.png'),full_page=True)
         browser.close()
-        print('PASS: 订阅未配置提示、后端订单状态、恶意跳转拒绝、付款核查及已付款后禁止重复支付。所有远端接口已模拟。')
+        print('PASS: Pro人工申请且无自动订阅请求、后端订单状态、恶意跳转拒绝、付款核查及已付款后禁止重复支付。所有远端接口已模拟。')
 finally:
     server.shutdown();server.server_close()

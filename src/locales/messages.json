@@ -5241,5 +5241,26 @@
     "ค่าจัดส่งเกินช่วงที่อนุญาต",
     "ថ្លៃដឹកជញ្ជូនលើសជួរដែលបានអនុញ្ញាត។",
     "Phí vận chuyển vượt phạm vi cho phép."
+  ],
+  "如曾开通自动扣款，请联系平台取消旧订阅；本页不会自动取消Stripe订阅。": [
+    "If you previously enabled recurring payments, contact the platform to cancel the old subscription. This page does not cancel Stripe subscriptions.",
+    "Jika anda pernah mengaktifkan bayaran berulang, hubungi platform untuk membatalkan langganan lama. Halaman ini tidak membatalkan langganan Stripe.",
+    "หากเคยเปิดการชำระเงินอัตโนมัติ โปรดติดต่อแพลตฟอร์มเพื่อยกเลิกการสมัครเดิม หน้านี้ไม่ได้ยกเลิกการสมัคร Stripe",
+    "ប្រសិនបើអ្នកធ្លាប់បើកការទូទាត់ស្វ័យប្រវត្តិ សូមទាក់ទងវេទិកាដើម្បីបោះបង់ការជាវចាស់។ ទំព័រនេះមិនបោះបង់ការជាវ Stripe ទេ។",
+    "Nếu trước đây bạn bật thanh toán định kỳ, hãy liên hệ nền tảng để hủy đăng ký cũ. Trang này không hủy đăng ký Stripe."
+  ],
+  "平台Pro采用人工核款；如曾开通Stripe自动订阅，须在Stripe取消，停用本页不会停止既有扣款。": [
+    "Platform Pro payments require manual verification. Cancel any existing recurring subscription in Stripe; disabling this page does not stop existing charges.",
+    "Bayaran Pro platform perlu disahkan secara manual. Batalkan langganan berulang sedia ada dalam Stripe; menyahaktifkan halaman ini tidak menghentikan caj sedia ada.",
+    "Pro ของแพลตฟอร์มต้องตรวจสอบยอดรับด้วยตนเอง หากมีการสมัครอัตโนมัติเดิม ต้องยกเลิกใน Stripe การปิดหน้านี้ไม่หยุดการเรียกเก็บเดิม",
+    "ការទូទាត់ Pro របស់វេទិកាត្រូវផ្ទៀងផ្ទាត់ដោយដៃ។ សូមបោះបង់ការជាវស្វ័យប្រវត្តិដែលមាននៅក្នុង Stripe ព្រោះការបិទទំព័រនេះមិនបញ្ឈប់ការគិតប្រាក់ដែលមានទេ។",
+    "Pro của nền tảng được đối soát thủ công. Hãy hủy đăng ký định kỳ hiện có trong Stripe; tắt trang này không dừng các khoản thu hiện có."
+  ],
+  "平台Pro采用人工审核，请提交付款申请并等待平台确认到账。": [
+    "Platform Pro requires manual approval. Submit your payment request and wait for the platform to confirm receipt.",
+    "Pro platform memerlukan kelulusan manual. Hantar permohonan bayaran dan tunggu pengesahan penerimaan daripada platform.",
+    "Pro ของแพลตฟอร์มต้องอนุมัติด้วยตนเอง โปรดส่งคำขอชำระเงินและรอแพลตฟอร์มยืนยันยอดรับ",
+    "Pro របស់វេទិកាត្រូវការអនុម័តដោយដៃ។ សូមដាក់សំណើទូទាត់ ហើយរង់ចាំវេទិកាបញ្ជាក់ការទទួលប្រាក់។",
+    "Pro của nền tảng cần được duyệt thủ công. Gửi yêu cầu thanh toán và chờ nền tảng xác nhận đã nhận tiền."
   ]
 }
