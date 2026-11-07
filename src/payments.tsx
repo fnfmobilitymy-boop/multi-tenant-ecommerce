@@ -21,7 +21,7 @@ export function MerchantPayments({
     <>
       <div className="page-heading">
         <div>
-          <h1>{t("收款与订阅")}</h1>
+          <h1>{t("收款设置与套餐")}</h1>
           <p>{t("商品款付给商家，平台服务费付给 EZShop。")}</p>
         </div>
         <Wallet className="purple" size={25} />
@@ -30,7 +30,7 @@ export function MerchantPayments({
       <div className="overview-grid">
         <section className="card payment-panel">
           <h2>{t("商品订单收款")}</h2>
-          <span className="badge pending">{t("人工核实收款")}</span>
+          <span className="badge pending">{t("核实到账后，确认收款")}</span>
           <p>
             {t("顾客下单后，请与顾客安排付款，并在核实实际到账后确认收款。")}
           </p>

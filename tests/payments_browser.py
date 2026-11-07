@@ -49,13 +49,13 @@ try:
         context.route('**/*',intercept)
         page=context.new_page();page.on('pageerror',lambda e:errors.append(str(e)))
         page.goto(base)
-        page.get_by_role('button',name='收款与订阅',exact=True).click()
+        page.get_by_role('button',name='收款设置与套餐',exact=True).click()
         page.get_by_text('使用下方平台订阅申请付款，平台核实到账后开通服务。',exact=True).wait_for()
         assert page.get_by_role('button',name='查看价格并订阅 Pro',exact=True).count()==0
         assert 'subscription-checkout' not in calls and 'readiness' not in calls
         assert page.get_by_role('button',name='开通商家收款账户',exact=True).count()==0
         page.locator('.language-selector select').select_option('en')
-        page.get_by_role('heading',name='Payments & subscription',exact=True).wait_for()
+        page.get_by_role('heading',name='Payment settings and plan',exact=True).wait_for()
         assert page.get_by_role('button',name='Open merchant payment account',exact=True).count()==0
         assert not any(action in calls for action in ['connect-onboarding','readiness','subscription-checkout'])
         page.evaluate("sessionStorage.setItem('ezshop:order:EZ-TEST','test-order-access-token')")

@@ -18,7 +18,7 @@ with tempfile.TemporaryDirectory() as tmp:
             c.route('**/*',lambda route:route.continue_() if urlparse(route.request.url).hostname=='127.0.0.1' else route.abort())
             owner=c.new_page();owner.on('pageerror',lambda e:errors.append(str(e)));owner.goto(base);owner.get_by_role('button',name='免费注册',exact=True).click()
             for label,value in [('店铺名称','Fulfillment Store'),('店铺网址标识','fulfillment-store'),('邮箱地址','fulfillment@example.test'),('密码','Fixture-password-12345')]:owner.get_by_label(label,exact=True).fill(value)
-            owner.get_by_role('button',name='创建店铺',exact=True).click();owner.get_by_role('heading',name='生意总览',exact=True).wait_for()
+            owner.get_by_role('button',name='创建店铺',exact=True).click();owner.get_by_role('heading',name='经营概览',exact=True).wait_for()
             def api(path,data=None):
                 res=c.request.get(base+'/api/'+path) if data is None else c.request.post(base+'/api/'+path,data=data)
                 assert res.ok,res.text();return res.json()

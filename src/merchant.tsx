@@ -269,7 +269,7 @@ function MerchantPage({
     setError("");
   }
   const tabs = [
-    { id: "dashboard", name: "生意总览", icon: LayoutDashboard },
+    { id: "dashboard", name: "经营概览", icon: LayoutDashboard },
     { id: "products", name: "商品管理", icon: Package },
     { id: "orders", name: "订单管理", icon: ShoppingBag },
     { id: "customers", name: "顾客管理", icon: Users },
@@ -277,7 +277,7 @@ function MerchantPage({
     { id: "settings", name: "店铺设置", icon: Settings },
     { id: "notifications", name: "邮件通知", icon: ShoppingBag },
     { id: "books", name: "收支与利润", icon: Wallet },
-    { id: "payments", name: "收款与订阅", icon: Wallet },
+    { id: "payments", name: "收款设置与套餐", icon: Wallet },
     { id: "payouts", name: "佣金结算", icon: Wallet },
     { id: "team", name: "团队与权限", icon: Users },
   ] as const;
@@ -638,7 +638,7 @@ function MerchantPage({
           <div className="sidebar-bottom">
             <div className="upgrade-card">
               <span>✦</span>
-              <strong>{t("你的生意，你的节奏。")}</strong>
+              <strong>{t("订单、库存、账目，一处管理")}</strong>
               <p>{t("分享店铺链接，让顾客随时随地下单。")}</p>
             </div>
             <button className="nav-item" onClick={logout}>
@@ -703,8 +703,8 @@ function MerchantPage({
                 <div className="page-heading">
                   <div>
                     <span className="eyebrow">{t("BUSINESS OVERVIEW")}</span>
-                    <h1>{t("生意总览")}</h1>
-                    <p>{t("每一笔订单，都是生意的新进展。")}</p>
+                    <h1>{t("经营概览")}</h1>
+                    <p>{t("查看销售、待处理订单与经营数据。")}</p>
                   </div>
                 </div>
                 <div className="metric-grid">

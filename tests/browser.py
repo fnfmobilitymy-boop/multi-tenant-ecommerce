@@ -31,7 +31,7 @@ with tempfile.TemporaryDirectory() as temp:
             merchant.get_by_label('邮箱地址').fill('merchant@example.test')
             merchant.get_by_label('密码',exact=True).fill('Test-account-12345')
             merchant.get_by_role('button',name='创建店铺',exact=True).click()
-            merchant.get_by_role('heading',name='生意总览',exact=True).wait_for()
+            merchant.get_by_role('heading',name='经营概览',exact=True).wait_for()
             merchant.get_by_role('button',name='收支与利润',exact=True).wait_for()
             assert merchant.locator('a[href*="/shop/"],a[href*="/platform"]').count()==0, 'Merchant portal exposes another portal link'
             merchant.get_by_role('button',name='添加新商品',exact=False).click()
@@ -100,7 +100,7 @@ with tempfile.TemporaryDirectory() as temp:
             merchant.on('dialog',lambda d:d.accept())
             merchant.get_by_role('button',name='确认收款',exact=True).click()
             merchant.get_by_role('dialog').wait_for(state='hidden')
-            merchant.get_by_role('button',name='生意总览',exact=True).click()
+            merchant.get_by_role('button',name='经营概览',exact=True).click()
             customer.reload();customer.get_by_text('已付款',exact=True).wait_for()
             merchant.get_by_role('button',name='订单管理',exact=True).click()
             merchant.get_by_role('button',name='查看详情',exact=False).first.click()
@@ -110,7 +110,7 @@ with tempfile.TemporaryDirectory() as temp:
             merchant.get_by_role('dialog').get_by_text('已登记发货',exact=True).wait_for()
             merchant.get_by_role('dialog').get_by_role('button',name='关闭',exact=True).click()
             customer.reload();customer.get_by_text('运单号：BROWSER-SHIP-001',exact=True).wait_for()
-            merchant.get_by_role('button',name='生意总览',exact=True).click()
+            merchant.get_by_role('button',name='经营概览',exact=True).click()
 
             out=root/'test-results';out.mkdir(exist_ok=True)
             merchant.screenshot(path=str(out/'dashboard-desktop.png'),full_page=True)
@@ -139,7 +139,7 @@ with tempfile.TemporaryDirectory() as temp:
             staff.get_by_label('邮箱地址').fill('inventory@example.test')
             staff.get_by_label('密码',exact=True).fill('Team-test-12345')
             staff.get_by_role('button',name='登录工作台').click()
-            staff.get_by_role('heading',name='生意总览',exact=True).wait_for()
+            staff.get_by_role('heading',name='经营概览',exact=True).wait_for()
             assert staff.get_by_role('button',name='订单管理',exact=True).count()==0
             assert staff.get_by_role('button',name='团队与权限',exact=True).count()==0
             staff.get_by_role('button',name='商品管理',exact=True).click()

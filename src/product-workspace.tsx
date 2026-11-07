@@ -130,9 +130,8 @@ export function ProductWorkspace({
     <div className="catalog-workspace">
       <div className="page-heading">
         <div>
-          <span className="eyebrow">{t("商品目录")}</span>
           <h1>{t("商品管理")}</h1>
-          <p>{t("把好产品，带给更多顾客。")}</p>
+          <p>{t("管理商品、价格与库存")}</p>
         </div>
         <div className="row">
           <button className="button secondary" onClick={exportProducts}>

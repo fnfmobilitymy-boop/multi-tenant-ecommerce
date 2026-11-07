@@ -119,7 +119,7 @@ export function SalesAnalytics({ orders }: { orders: Order[] }) {
           className="order-donut"
           style={{
             background: orders.length
-              ? `conic-gradient(#7854e7 0% ${a}%, #f4be64 ${a}% ${b}%, #dfe3ed ${b}% 100%)`
+              ? `conic-gradient(#15803d 0% ${a}%, #b45309 ${a}% ${b}%, #cbd5e1 ${b}% 100%)`
               : "#eef0f6",
           }}
         >
@@ -130,9 +130,9 @@ export function SalesAnalytics({ orders }: { orders: Order[] }) {
         </div>
         <div className="distribution-legend">
           {[
-            [t("已付款"), paid, "#7854e7"],
-            [t("待付款"), pending, "#f4be64"],
-            [t("取消或退款"), other, "#dfe3ed"],
+            [t("已付款"), paid, "#15803d"],
+            [t("待付款"), pending, "#b45309"],
+            [t("取消或退款"), other, "#cbd5e1"],
           ].map(([name, n, color]) => (
             <div key={name}>
               <span>

@@ -28,7 +28,7 @@ with tempfile.TemporaryDirectory() as temp:
     call('checkout',{'slug':'kenny-lifestyle','customer':'Alex Tan' if i<2 else 'Maya','email':'alex@example.test' if i<2 else 'maya@example.test','phone':'0123456789','address':'Kuala Lumpur','city':'Kuala Lumpur','state':'Kuala Lumpur','postcode':'50000','items':[{'id':products[0]['id'],'quantity':1}],'checkout_key':'workspace-checkout-'+str(i)+'-1234567890'})
    # Fixture paid orders only. No payment provider or production database touched.
    with sqlite3.connect(db) as c:c.execute("UPDATE orders SET status='paid' WHERE id IN (1,2)");c.commit()
-   page.goto(base+'/merchant');page.get_by_role('heading',name='生意总览',exact=True).wait_for()
+   page.goto(base+'/merchant');page.get_by_role('heading',name='经营概览',exact=True).wait_for()
    expect(page.locator('.chart-summary')).to_contain_text('2');page.get_by_label('统计周期').select_option('30');expect(page.locator('.chart-column')).to_have_count(30)
    page.get_by_label('统计周期').select_option('7');expect(page.locator('.chart-column')).to_have_count(7)
    results=root/'test-results';results.mkdir(exist_ok=True)

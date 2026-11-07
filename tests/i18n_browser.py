@@ -31,13 +31,13 @@ with tempfile.TemporaryDirectory() as directory:
             selector.select_option('th')
             assert page.locator('input[name=name]').input_value()=='Kenny Demo', 'Language switch cleared form'
             page.get_by_role('button',name=text('创建店铺','th'),exact=True).click()
-            page.get_by_role('heading',name=text('生意总览','th'),exact=True).wait_for()
+            page.get_by_role('heading',name=text('经营概览','th'),exact=True).wait_for()
             for language in languages:
                 selector.select_option(language)
-                page.get_by_role('heading',name=text('生意总览',language),exact=True).wait_for()
+                page.get_by_role('heading',name=text('经营概览',language),exact=True).wait_for()
                 page.get_by_role('button',name=text('商品管理',language),exact=True).wait_for()
                 assert selector.locator('option').count()==6
-                page.reload();page.get_by_role('heading',name=text('生意总览',language),exact=True).wait_for()
+                page.reload();page.get_by_role('heading',name=text('经营概览',language),exact=True).wait_for()
                 assert selector.input_value()==language
                 assert page.locator('html').get_attribute('lang')==language
             response=page.request.post(base+'/api/products',data={'name':'Kenny Shirt','price':2500,'stock':10,'emoji':'📦','category':'全部商品','description':'商家原始商品介绍','variant':'黑色 / M','published':1})

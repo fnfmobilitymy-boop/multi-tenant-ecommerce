@@ -380,7 +380,7 @@ export function Storefront() {
                   </div>
                   <p>
                     {data.store.description ||
-                      t("好物值得分享，生活值得认真。发现属于你的日常精选。")}
+                      t("浏览本店商品，选择适合你的好物。")}
                   </p>
                   <a href="#products" className="button">
                     {t("探索商品")}
@@ -424,7 +424,7 @@ export function Storefront() {
                 <div>
                   <span className="eyebrow">{t("FIND YOUR FAVORITES")}</span>
                   <h2>{t("店铺商品")}</h2>
-                  <p>{t("发现好物，从这里开始。")}</p>
+                  <p>{t("按分类浏览，或搜索商品名称。")}</p>
                 </div>
                 <label className="search">
                   <Search size={17} />

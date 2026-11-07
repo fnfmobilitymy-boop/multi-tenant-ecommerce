@@ -5934,5 +5934,61 @@
     "สต็อกต่ำ",
     "ស្តុកទាប",
     "Sắp hết hàng"
+  ],
+  "经营概览": [
+    "Business overview",
+    "Gambaran perniagaan",
+    "ภาพรวมธุรกิจ",
+    "ទិដ្ឋភាពអាជីវកម្ម",
+    "Tổng quan kinh doanh"
+  ],
+  "收款设置与套餐": [
+    "Payment settings and plan",
+    "Tetapan bayaran dan pelan",
+    "การตั้งค่ารับเงินและแพ็กเกจ",
+    "ការកំណត់ទទួលប្រាក់ និងគម្រោង",
+    "Cài đặt thanh toán và gói dịch vụ"
+  ],
+  "管理商品、价格与库存": [
+    "Manage products, prices and stock",
+    "Urus produk, harga dan stok",
+    "จัดการสินค้า ราคา และสต็อก",
+    "គ្រប់គ្រងផលិតផល តម្លៃ និងស្តុក",
+    "Quản lý sản phẩm, giá và tồn kho"
+  ],
+  "订单、库存、账目，一处管理": [
+    "Orders, stock and accounts in one place",
+    "Pesanan, stok dan akaun di satu tempat",
+    "จัดการคำสั่งซื้อ สต็อก และบัญชีในที่เดียว",
+    "គ្រប់គ្រងការបញ្ជាទិញ ស្តុក និងគណនីនៅកន្លែងតែមួយ",
+    "Quản lý đơn hàng, tồn kho và sổ sách tại một nơi"
+  ],
+  "核实到账后，确认收款": [
+    "Confirm payment after checking funds received",
+    "Sahkan bayaran selepas menyemak wang diterima",
+    "ยืนยันการชำระเงินหลังตรวจสอบยอดรับจริง",
+    "បញ្ជាក់ការទូទាត់បន្ទាប់ពីផ្ទៀងផ្ទាត់ប្រាក់ដែលបានទទួល",
+    "Xác nhận thanh toán sau khi kiểm tra tiền đã nhận"
+  ],
+  "查看销售、待处理订单与经营数据。": [
+    "Review sales, pending orders and business data.",
+    "Semak jualan, pesanan belum selesai dan data perniagaan.",
+    "ดูยอดขาย คำสั่งซื้อที่รอดำเนินการ และข้อมูลธุรกิจ",
+    "មើលការលក់ ការបញ្ជាទិញកំពុងរង់ចាំ និងទិន្នន័យអាជីវកម្ម។",
+    "Xem doanh số, đơn cần xử lý và dữ liệu kinh doanh."
+  ],
+  "浏览本店商品，选择适合你的好物。": [
+    "Explore this store and find what suits you.",
+    "Lihat produk kedai ini dan pilih yang sesuai untuk anda.",
+    "เลือกชมสินค้าของร้านและค้นหาสิ่งที่เหมาะกับคุณ",
+    "ស្វែងរកផលិតផលរបស់ហាងនេះដែលសមនឹងអ្នក។",
+    "Khám phá sản phẩm của cửa hàng và chọn món phù hợp."
+  ],
+  "按分类浏览，或搜索商品名称。": [
+    "Browse by category or search by product name.",
+    "Lihat mengikut kategori atau cari nama produk.",
+    "เลือกดูตามหมวดหมู่ หรือค้นหาชื่อสินค้า",
+    "រកតាមប្រភេទ ឬស្វែងរកតាមឈ្មោះផលិតផល។",
+    "Duyệt theo danh mục hoặc tìm theo tên sản phẩm."
   ]
 }

@@ -53,7 +53,7 @@ try:
                         state['approve_calls']+=1;state['plan']='pro';state['paid_until']='2026-12-05T00:00:00Z';state['requests'][0].update(status='approved',approved_until=state['paid_until']);return reply({'ok':True})
                 return route.abort()
             result.route('**/*',intercept);return result
-        merchant=context(False).new_page();merchant.on('pageerror',lambda e:errors.append(str(e)));merchant.goto('http://127.0.0.1:3108');merchant.get_by_role('button',name='收款与订阅',exact=True).click();merchant.get_by_text('Pro：MYR 99.90/月，另加6%税费，共MYR 105.89/月。',exact=True).wait_for()
+        merchant=context(False).new_page();merchant.on('pageerror',lambda e:errors.append(str(e)));merchant.goto('http://127.0.0.1:3108');merchant.get_by_role('button',name='收款设置与套餐',exact=True).click();merchant.get_by_text('Pro：MYR 99.90/月，另加6%税费，共MYR 105.89/月。',exact=True).wait_for()
         assert merchant.get_by_role('button',name='平台管理',exact=True).count()==0
         denied=context(False).new_page();denied.goto('http://127.0.0.1:3108/platform');denied.get_by_role('heading',name='平台管理员登录',exact=True).wait_for();assert denied.get_by_role('button',name='核实并处理',exact=True).count()==0
         receiving_panel=merchant.locator('section.card').filter(has=merchant.get_by_role('heading',name='商家收款方式与资料',exact=True))
