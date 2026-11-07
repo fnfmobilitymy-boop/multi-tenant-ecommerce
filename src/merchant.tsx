@@ -14,7 +14,7 @@ import { I18nProvider, LanguageToolbar, useI18n } from "./i18n";
 import { useEffect, useState } from "react";
 import { Payouts } from "./payouts";
 import { ImageUpload } from "./image-upload";
-import { COURIERS } from "./delivery";
+import { couriersFor } from "./delivery";
 import { MerchantPayments } from "./payments";
 import { Link } from "react-router-dom";
 import {
@@ -1015,10 +1015,11 @@ function MerchantPage({
                     />
                   </label>
                   <datalist id="store-couriers">
-                    {COURIERS.map((c) => (
+                    {couriersFor(region.country).map((c) => (
                       <option key={c} value={c} />
                     ))}
                   </datalist>
+                  <p className="muted">{t("列表按商家国家提供常见建议，实际配送范围以邮寄公司为准。")}</p>
                   <p className="muted">
                     {t(
                       "快递由你自行安排，实际公司及运单号可在发货时填写。系统不会自动报价或叫件。",
@@ -1353,7 +1354,7 @@ function MerchantPage({
                     />
                   </label>
                   <datalist id="shipment-couriers">
-                    {COURIERS.map((c) => (
+                    {couriersFor(data.merchant.country_code || "MY").map((c) => (
                       <option key={c} value={c} />
                     ))}
                   </datalist>
