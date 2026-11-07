@@ -16,9 +16,18 @@ export function finalAcceptance(record) {
       policy.limitations.every((v) => typeof v === "string" && v.trim())) {
     return { passed: true, pending: [], basis: "tested_release" };
   }
+  const manual = record?.payment_policy;
+  const manualPayments = manual?.goods_confirmation === "merchant_manual" &&
+    manual?.pro_approval === "platform_manual" && manual?.gateway_required === false &&
+    manual?.authorized_by === "user" && typeof manual?.instruction === "string" &&
+    !!manual.instruction.trim() && typeof manual?.authorized_on === "string" &&
+    Number.isFinite(Date.parse(manual.authorized_on));
   const pending = [];
   for (const [key, label] of Object.entries(checks)) {
     const item = record?.checks?.[key];
+    // An explicitly disabled payment provider is outside the manual workflow.
+    // This does not certify any real order, payment, or restore result.
+    if (key === "stripe" && manualPayments && item?.status === "not_applicable") continue;
     if (
       record?.schema_version !== 1 ||
       item?.status !== "passed" ||

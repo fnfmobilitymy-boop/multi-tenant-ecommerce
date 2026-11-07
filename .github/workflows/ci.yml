@@ -85,6 +85,26 @@ jobs:
             test-results/
           if-no-files-found: ignore
 
+  operations_configuration:
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: 只读检查备份与可选邮件配置，不导出资料或发送邮件
+        env:
+          SUPABASE_BACKUP_DB_URL: ${{ secrets.SUPABASE_BACKUP_DB_URL }}
+          BACKUP_ENCRYPTION_PASSPHRASE: ${{ secrets.BACKUP_ENCRYPTION_PASSPHRASE }}
+          EZSHOP_BACKUP_SCHEDULE_ENABLED: ${{ vars.EZSHOP_BACKUP_SCHEDULE_ENABLED }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          MAIL_FROM: ${{ secrets.MAIL_FROM }}
+          NOTIFICATION_JOB_SECRET: ${{ secrets.NOTIFICATION_JOB_SECRET }}
+          EZSHOP_EMAIL_DISPATCH_ENABLED: ${{ vars.EZSHOP_EMAIL_DISPATCH_ENABLED }}
+        run: node scripts/check-operations-config.mjs
+
   release_after_tests:
     needs: [verify]
     if: always() && github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.verify.result == 'success'

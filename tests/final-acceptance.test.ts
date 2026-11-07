@@ -59,3 +59,15 @@ it("缺少证据、日期或复核人都不能通过；只有全部复核记录�
     ).toBe(false);
   expect(finalAcceptance(null).passed).toBe(false);
 });
+
+
+it("人工收款不要求停用网关的交易证明，但订单和备份不能随之跳过",()=>{
+ const passed={status:"passed",verified_at:"2026-11-07T00:00:00Z",reviewed_by:"fixture-reviewer",evidence:["fixture only; not production evidence"]};
+ const policy={goods_confirmation:"merchant_manual",pro_approval:"platform_manual",gateway_required:false,authorized_by:"user",authorized_on:"2026-11-07",instruction:"暂不接网关，均人工查账"};
+ const record={schema_version:1,payment_policy:policy,checks:{orders:passed,stripe:{status:"not_applicable"},backup_restore:passed}};
+ expect(finalAcceptance(record)).toEqual({passed:true,pending:[]});
+ for(const key of ["orders","backup_restore"]){expect(finalAcceptance({...record,checks:{...record.checks,[key]:{status:"pending"}}}).passed).toBe(false);}
+ for(const patch of [{goods_confirmation:"automatic"},{gateway_required:true},{authorized_by:""},{instruction:""},{authorized_on:""}]){
+  expect(finalAcceptance({...record,payment_policy:{...policy,...patch}}).pending).toContain("Stripe扣款与订阅");
+ }
+});

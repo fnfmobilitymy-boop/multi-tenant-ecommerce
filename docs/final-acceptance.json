@@ -9,11 +9,11 @@
       "note": "待真实账号或独立验收项目验证下单、核款、发货、查询、库存及利润同步；本地模拟测试不作为正式验收记录。"
     },
     "stripe": {
-      "status": "pending",
+      "status": "not_applicable",
       "verified_at": null,
       "reviewed_by": "",
       "evidence": [],
-      "note": "平台Pro继续人工查账审批；商品自动核款明确不用Stripe，待商家开通当地支付网关并接入真实到账通知。目前尚无本地网关账号；不声称已自动查银行流水。Stripe历史订阅如存在仍需另行取消。"
+      "note": "当前阶段不接支付网关：平台Pro由平台核款批准，商品款由商家核实银行/钱包实际到账后确认；不需要Stripe或Billplz/CHIP账号。既有Stripe订阅如存在仍须另行核对取消，不声称已取消。"
     },
     "backup_restore": {
       "status": "pending",
@@ -29,15 +29,23 @@
     "instruction": "测试就好了，测试好了就正式上线",
     "authorized_on": "2026-11-05",
     "evidence": [
-      "93项单元及数据库测试通过",
+      "103项单元及数据库测试通过",
       "13项本地订单集成测试通过",
-      "749条六语文案校验及生产构建通过",
-      "六币种下单、三端隔离、登录恢复、支付安全、收支及本地恢复测试通过"
+      "789条六语文案校验及生产构建通过",
+      "批量配货/地址打印、发货通知入队、六币种下单及三端隔离浏览器验证通过"
     ],
     "limitations": [
-      "真实Stripe扣款及续期尚未验收",
-      "正式项目加密备份和独立恢复尚未完成",
-      "实际账号正式订单仍需上线后核对"
+      "实际账号正式订单、人工核款及发货仍需上线后核对",
+      "正式项目加密备份和独立恢复尚未核实",
+      "邮件服务尚未实际验证，发货通知排队不等于已投递"
     ]
+  },
+  "payment_policy": {
+    "goods_confirmation": "merchant_manual",
+    "pro_approval": "platform_manual",
+    "gateway_required": false,
+    "authorized_by": "user",
+    "authorized_on": "2026-11-07",
+    "instruction": "成本高，先这样：平台Pro和商品款人工查账，暂不接支付网关。"
   }
 }
