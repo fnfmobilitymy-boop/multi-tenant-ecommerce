@@ -1,11 +1,9 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Store, ArrowRight } from "lucide-react";
 import { useI18n } from "./i18n";
 import { Brand, ErrorBox } from "./ui";
 export function CustomerHome() {
   const { t } = useI18n();
-  const navigate = useNavigate();
   const [entry, setEntry] = useState("");
   const [error, setError] = useState("");
   function enter(event: React.FormEvent) {
@@ -40,7 +38,8 @@ export function CustomerHome() {
       setError("请输入有效的店铺链接或标识。");
       return;
     }
-    navigate("/shop/" + encodeURIComponent(slug));
+    // Reload into the store so its dedicated customer auth client is initialized.
+    window.location.assign(import.meta.env.BASE_URL + "shop/" + encodeURIComponent(slug));
   }
   return (
     <main className="customer-home">

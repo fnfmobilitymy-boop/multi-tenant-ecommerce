@@ -108,7 +108,12 @@ try:
         login.get_by_role('button',name='退出登录',exact=True).click();login.get_by_role('heading',name='平台管理员登录',exact=True).wait_for()
         assert login.evaluate("JSON.parse(localStorage.getItem('sb-auth-test-auth-token')).access_token")==merchant_token
         assert login.evaluate("localStorage.getItem('ezshop-platform-auth-auth-test.supabase.co')") is None
-        customer=context().new_page();customer.goto(base+'/shop/platform');customer.get_by_role('heading',name='Target Store',exact=True).wait_for();assert customer.locator('a[href="/merchant"],a[href="/platform"],a[href^="/platform/"]').count()==0
+        customer=context().new_page();customer.goto(base);customer.get_by_role('heading',name='欢迎来到 EZShop',exact=True).wait_for()
+        assert customer.locator('a[href="/merchant"],a[href="/platform"]').count()==0
+        customer.get_by_label('店铺链接或标识',exact=True).fill('platform');customer.get_by_role('button',name='进入店铺',exact=True).click()
+        customer.get_by_role('heading',name='Target Store',exact=True).wait_for();assert customer.locator('a[href="/merchant"],a[href="/platform"],a[href^="/platform/"]').count()==0
+        customer.get_by_role('link',name='我的购买记录',exact=True).click();customer.get_by_role('heading',name='顾客登录',exact=True).wait_for()
+        assert customer.get_by_text('顾客账号暂不可用，请使用订单查询凭证。',exact=True).count()==0
         assert not errors,errors
         browser.close();print('PASS: 平台独立只读明细、商品分页、顾客/订单成本、账本、全部分类、中英及手机布局；普通商家拒绝平台访问。未访问真实服务。')
 finally:server.shutdown();server.server_close()

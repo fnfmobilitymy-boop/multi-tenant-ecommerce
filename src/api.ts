@@ -19,7 +19,7 @@ const portalPath =
         import.meta.env.BASE_URL.replace(/\/$/, "").length,
       );
 const platformPortal = /^\/platform(?:\/|$)/.test(portalPath);
-const customerPortal = /^\/shop\/[^/]+(?:\/|$)/.test(portalPath);
+const customerPortal = /^\/shop\/[^/]+(?:\/|$)/.test(portalPath) || ((portalPath === "/" || portalPath === "") && !initialPasswordRecovery);
 // Only public project credentials belong in the browser.
 // Cloud adapter is enabled only when both project settings are supplied.
 export const supabase =
