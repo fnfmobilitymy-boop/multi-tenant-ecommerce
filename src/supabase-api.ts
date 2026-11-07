@@ -63,7 +63,13 @@ export async function supabaseApi<T>(
   if (route === "recover-password") {
     const { error } = await client.auth.resetPasswordForEmail(
       String(payload.email),
-      { redirectTo: authRedirectUrl() },
+      {
+        redirectTo: authRedirectUrl(
+          undefined,
+          undefined,
+          payload.portal === "platform" ? "platform" : "merchant",
+        ),
+      },
     );
     if (error) throw error;
     return { ok: true } as T;

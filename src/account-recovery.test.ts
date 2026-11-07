@@ -36,6 +36,24 @@ describe("账号找回", () => {
         "https://fnfmobilitymy-boop.github.io/multi-tenant-ecommerce/merchant",
     });
   });
+  it("平台重设请求只允许固定平台回跳，不接受任意跳转地址", async () => {
+    vi.stubGlobal("window", {
+      location: { origin: "https://ezshop.lifestyle" },
+    });
+    vi.stubEnv("BASE_URL", "/");
+    const send = vi.fn().mockResolvedValue({ error: null });
+    const client = {
+      auth: { resetPasswordForEmail: send },
+    } as unknown as SupabaseClient;
+    await supabaseApi(client, "recover-password", {
+      email: "admin@example.test",
+      portal: "platform",
+      redirectTo: "https://other.example",
+    });
+    expect(send).toHaveBeenCalledWith("admin@example.test", {
+      redirectTo: "https://ezshop.lifestyle/platform/reset-password",
+    });
+  });
   it("没有有效用户时不能更新密码", async () => {
     const updateUser = vi.fn();
     const client = {
@@ -58,12 +76,10 @@ describe("账号找回", () => {
       signOut = vi.fn().mockResolvedValue({ error: null });
     const client = {
       auth: {
-        getUser: vi
-          .fn()
-          .mockResolvedValue({
-            data: { user: { id: "fixture" } },
-            error: null,
-          }),
+        getUser: vi.fn().mockResolvedValue({
+          data: { user: { id: "fixture" } },
+          error: null,
+        }),
         updateUser,
         signOut,
       },
@@ -86,12 +102,10 @@ describe("账号找回", () => {
   it("退出失败不能冒称密码更新失败", async () => {
     const client = {
       auth: {
-        getUser: vi
-          .fn()
-          .mockResolvedValue({
-            data: { user: { id: "fixture" } },
-            error: null,
-          }),
+        getUser: vi.fn().mockResolvedValue({
+          data: { user: { id: "fixture" } },
+          error: null,
+        }),
         updateUser: vi.fn().mockResolvedValue({ error: null }),
         signOut: vi.fn().mockResolvedValue({ error: Error("network") }),
       },

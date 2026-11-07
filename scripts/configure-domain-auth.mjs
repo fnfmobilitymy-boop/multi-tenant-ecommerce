@@ -7,6 +7,7 @@ export function domainAuthSettings(current, domain) {
   const required = [
     site,
     `https://${domain}/reset-password`,
+    `https://${domain}/platform/reset-password`,
     `https://${domain}/shop/**`,
   ];
   const existing = String(current.uri_allow_list || "")
@@ -96,7 +97,7 @@ if (
           process.env.GITHUB_STEP_SUMMARY,
           "## 新域名认证回跳：待手动确认\n\n" +
             message +
-            "\n\nSite URL：https://ezshop.lifestyle/merchant\n\n追加 Redirect URLs：https://ezshop.lifestyle/merchant、https://ezshop.lifestyle/reset-password、https://ezshop.lifestyle/shop/**。保留旧记录。\n",
+            "\n\nSite URL：https://ezshop.lifestyle/merchant\n\n追加 Redirect URLs：https://ezshop.lifestyle/merchant、https://ezshop.lifestyle/reset-password、https://ezshop.lifestyle/platform/reset-password、https://ezshop.lifestyle/shop/**。保留旧记录。\n",
         );
     } else
       console.log(

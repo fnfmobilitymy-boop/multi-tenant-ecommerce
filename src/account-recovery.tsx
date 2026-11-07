@@ -1,11 +1,13 @@
 import { useI18n } from "./i18n";
 import { useEffect, useState, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { api, initialPasswordRecovery, supabase } from "./api";
 import { Brand, ErrorBox, Loading } from "./ui";
 export function RecoveryListener() {
   const { t, locale, errorText } = useI18n();
   const navigate = useNavigate();
+  const platform = useLocation().pathname.startsWith("/platform");
+  const resetPath = platform ? "/platform/reset-password" : "/reset-password";
   const consumed = useRef(false);
   useEffect(() => {
     if (!supabase || /\/shop\/[^/]+(?:\/|$)/.test(window.location.pathname))
@@ -13,20 +15,17 @@ export function RecoveryListener() {
     let timer: ReturnType<typeof setTimeout> | undefined;
     if (initialPasswordRecovery && !consumed.current) {
       consumed.current = true;
-      navigate("/reset-password" + window.location.hash, { replace: true });
+      navigate(resetPath + window.location.hash, { replace: true });
     }
     const { data } = supabase.auth.onAuthStateChange((event) => {
       if (event === "PASSWORD_RECOVERY")
-        timer = setTimeout(
-          () => navigate("/reset-password", { replace: true }),
-          0,
-        );
+        timer = setTimeout(() => navigate(resetPath, { replace: true }), 0);
     });
     return () => {
       if (timer) clearTimeout(timer);
       data.subscription.unsubscribe();
     };
-  }, [navigate]);
+  }, [navigate, resetPath]);
   return null;
 }
 function message(error: unknown) {
@@ -39,7 +38,12 @@ function message(error: unknown) {
   if (/字符/.test(value)) return value;
   return "暂时无法完成，请稍后重试。";
 }
-export function ForgotPassword() {
+export function ForgotPassword({
+  portal = "merchant",
+}: {
+  portal?: "merchant" | "platform";
+}) {
+  const loginPath = portal === "platform" ? "/platform" : "/merchant";
   const { t, locale, errorText } = useI18n();
   const [busy, setBusy] = useState(false),
     [error, setError] = useState(""),
@@ -50,7 +54,7 @@ export function ForgotPassword() {
     setError("");
     try {
       const email = String(new FormData(event.currentTarget).get("email"));
-      await api("recover-password", { email });
+      await api("recover-password", { email, portal });
       setDone(true);
     } catch (e) {
       setError(message(e));
@@ -91,14 +95,21 @@ export function ForgotPassword() {
             </button>
           </>
         )}
-        <Link className="text-button" style={{ marginTop: 25 }} to="/merchant">
+        <Link className="text-button" style={{ marginTop: 25 }} to={loginPath}>
           {t("返回登录")}
         </Link>
       </form>
     </section>
   );
 }
-export function ResetPassword() {
+export function ResetPassword({
+  portal = "merchant",
+}: {
+  portal?: "merchant" | "platform";
+}) {
+  const loginPath = portal === "platform" ? "/platform" : "/merchant";
+  const forgotPath =
+    portal === "platform" ? "/platform/forgot-password" : "/forgot-password";
   const { t, locale, errorText } = useI18n();
   const [loading, setLoading] = useState(true),
     [valid, setValid] = useState(false),
@@ -168,14 +179,14 @@ export function ResetPassword() {
                 {t("密码已更新，但退出会话未完成。请关闭此窗口后重新登录。")}
               </p>
             )}
-            <Link className="button full" to="/merchant">
+            <Link className="button full" to={loginPath}>
               {t("返回登录")}
             </Link>
           </>
         ) : !valid ? (
           <>
             <ErrorBox error={t("重设链接已失效或缺少登录凭证，请重新申请。")} />
-            <Link className="button full" to="/forgot-password">
+            <Link className="button full" to={forgotPath}>
               {t("重新申请重设邮件")}
             </Link>
           </>

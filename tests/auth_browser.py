@@ -8,7 +8,7 @@ root=Path(__file__).resolve().parent.parent
 class Quiet(SimpleHTTPRequestHandler):
     def log_message(self,*args):pass
     def do_GET(self):
-        if urlparse(self.path).path in ('/merchant','/forgot-password','/reset-password'):self.path='/index.html'
+        if urlparse(self.path).path in ('/merchant','/platform','/platform/forgot-password','/platform/reset-password','/forgot-password','/reset-password'):self.path='/index.html'
         return super().do_GET()
 server=ThreadingHTTPServer(('127.0.0.1',3104),functools.partial(Quiet,directory=str(root/os.environ.get('EZSHOP_AUTH_TEST_DIST','dist'))))
 threading.Thread(target=server.serve_forever,daemon=True).start()
@@ -91,6 +91,34 @@ try:
         assert page.locator('input[name=email]').input_value()=='test@example.test'
         page.get_by_role('button',name='ផ្ញើអ៊ីមែលកំណត់ឡើងវិញ',exact=True).click()
         page.get_by_role('status').filter(has_text='ប្រសិនបើអ៊ីមែលនេះបានចុះឈ្មោះ').wait_for()
+        platform_context=browser.new_context(locale='zh-CN')
+        merchant_marker=token.rsplit('.',1)[0]+'.merchant-fixture'
+        platform_context.add_init_script("localStorage.setItem('sb-auth-test-auth-token',"+json.dumps(json.dumps({'access_token':merchant_marker,'refresh_token':'merchant-fixture-refresh','expires_at':int(time.time())+3600,'token_type':'bearer','user':{'id':'11111111-1111-4111-8111-111111111111','email':'test@example.test'}}))+");")
+        def platform_intercept(route):
+            assert route.request.headers.get('authorization')!='Bearer '+merchant_marker, 'Platform recovery reused merchant session'
+            return intercept(route)
+        platform_context.route('**/*',platform_intercept)
+        admin=platform_context.new_page();admin.on('pageerror',lambda error:errors.append(str(error)))
+        admin.goto(base+'/platform');admin.get_by_role('heading',name='平台管理员登录',exact=True).wait_for()
+        admin.get_by_role('link',name='忘记密码？',exact=True).click();admin.get_by_role('heading',name='找回密码',exact=True).wait_for()
+        assert admin.url.endswith('/platform/forgot-password')
+        assert admin.get_by_label('语言',exact=True).locator('option').count()==2
+        assert admin.locator('.brand img').get_attribute('src').find('platform-icon')!=-1
+        admin.get_by_label('注册邮箱',exact=True).fill('admin@example.test');admin.get_by_role('button',name='发送重设邮件',exact=True).click()
+        admin.get_by_role('status').filter(has_text='若此邮箱已注册').wait_for()
+        platform_recover=[c for c in captured if c[0].endswith('/recover')][-1]
+        assert platform_recover[1].get('redirect_to')==[base+'/platform/reset-password']
+        admin.get_by_role('link',name='返回登录',exact=True).click();admin.get_by_role('heading',name='平台管理员登录',exact=True).wait_for()
+        admin.goto(base+'/platform/reset-password#access_token='+token+'&refresh_token=platform-fixture-refresh&expires_in=3600&token_type=bearer&type=recovery')
+        admin.get_by_role('heading',name='设置新密码',exact=True).wait_for()
+        admin.get_by_label('新密码',exact=True).fill('Platform-new-test-12345');admin.get_by_label('再次输入新密码',exact=True).fill('Platform-new-test-12345')
+        admin.get_by_role('button',name='保存新密码',exact=True).click();admin.get_by_role('status').filter(has_text='密码已更新').wait_for()
+        assert '/platform/reset-password' in admin.url
+        admin.get_by_role('link',name='返回登录',exact=True).click();admin.get_by_role('heading',name='平台管理员登录',exact=True).wait_for()
+        admin.goto(base+'/platform/reset-password');admin.get_by_role('alert').filter(has_text='重设链接已失效').wait_for()
+        admin.get_by_role('link',name='重新申请重设邮件',exact=True).click();assert admin.url.endswith('/platform/forgot-password')
+        admin.get_by_label('语言',exact=True).select_option('en');admin.get_by_role('heading',name='Recover password',exact=True).wait_for()
+        admin.set_viewport_size({'width':390,'height':844});assert admin.evaluate('document.documentElement.scrollWidth<=innerWidth+1')
         assert not errors,errors
         browser.close()
         print('PASS: 品牌字体已加载；注册/重发/找回邮件回跳正确；重设密码、退出会话及失效链接提示正常。全部邮件接口已模拟，没有发送实际邮件。')

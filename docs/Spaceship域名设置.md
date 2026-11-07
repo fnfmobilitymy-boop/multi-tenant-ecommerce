@@ -27,7 +27,7 @@ GitHub 账户 Settings → Pages → Add a domain，按 GitHub 显示的名称�
 Supabase Authentication → URL Configuration：
 
 - 切换后 Site URL：`https://ezshop.lifestyle/merchant`。
-- Redirect URLs 添加 `https://ezshop.lifestyle/merchant`、`https://ezshop.lifestyle/reset-password`、`https://ezshop.lifestyle/shop/**`。
+- Redirect URLs 添加 `https://ezshop.lifestyle/merchant`、`https://ezshop.lifestyle/reset-password`、`https://ezshop.lifestyle/platform/reset-password`、`https://ezshop.lifestyle/shop/**`。
 - 保留原网站根地址、`https://fnfmobilitymy-boop.github.io/multi-tenant-ecommerce/merchant`、`https://fnfmobilitymy-boop.github.io/multi-tenant-ecommerce/shop/**`，用于过渡及旧邮件。
 - 当前商家注册、团队注册、重发及找回密码邮件会使用当前站点的 `/merchant` 回跳。找回密码仍由恢复处理器跳到重设密码页。
 - 已登录会话、购物车和私有订单凭证属于原域名浏览器存储，不会自动迁移到新域名；顾客可登录购买记录或使用原有凭证查询订单。
@@ -50,3 +50,5 @@ DNS、GitHub Pages 域名绑定必须由具备对应账号权限的人保存；S
 ## 正式环境观察
 
 GitHub只读诊断确认主域名绑定匹配、HTTPS证书状态approved、新域名HTTPS返回200、根路径资源正确。2026-11-08的发布已通过网站版本与资源检查；随后认证配置管理接口返回HTTP403，自动登录回跳未验证，须项目管理员在Supabase控制台保存。此状态不得作为实际验证邮件投递或回跳已通过的证据。
+
+平台登录新增“忘记密码？”入口：`/platform/forgot-password`；平台邮件回跳使用`/platform/reset-password`并保留平台独立会话、图标和中英语言，完成及失效后均返回平台端。Supabase Redirect URLs 需包含`https://ezshop.lifestyle/platform/reset-password`；现有管理权限不足时由项目管理员追加该条，保留旧记录。
