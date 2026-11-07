@@ -1,5 +1,7 @@
 # ezshop.lifestyle 域名切换
 
+更新：用户已在 GitHub Pages 绑定主域名，DNS 主域名检查通过。正式发布配置现已固定 `ezshop.lifestyle` 与根路径，并提供 `public/CNAME`；仓库变量不再作为本项目切换路径的开关。下文旧的变量步骤仅作为历史流程说明。
+
 顾客首页不展示某个指定商家或店铺目录；商家分享自己的 `/shop/店铺标识` 链接。后台保持 `/merchant`、`/platform`。
 
 ## 先完成 DNS 与域名归属验证

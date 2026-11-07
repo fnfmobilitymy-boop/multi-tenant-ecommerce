@@ -49,7 +49,7 @@ export async function configureDomainAuth(env, fetcher = fetch) {
     });
     // Never include the response body: auth configuration can contain secrets.
     if (!response.ok)
-      throw new Error(`Auth configuration HTTP ${response.status}`);
+      throw Object.assign(new Error(`Auth configuration HTTP ${response.status}`), { status: response.status });
     return response;
   };
   const current = await (await request("GET")).json();
@@ -83,7 +83,8 @@ if (
         ? "新域名登录回跳已回读验证；原回跳地址保留，未修改其他认证配置，也未发送邮件。"
         : "未启用新域名，不修改登录配置。",
     );
-  } catch {
+  } catch (error) {
+    if (Number.isInteger(error?.status)) console.error(`::error::Domain auth configuration HTTP ${error.status}`);
     console.error(
       "新域名登录回跳未验证完成。请检查管理令牌权限或在 Supabase URL Configuration 手动设置；不输出认证配置或密钥。",
     );

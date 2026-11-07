@@ -52,7 +52,7 @@ jobs:
           VITE_STRIPE_CONNECT_ENABLED: ${{ vars.VITE_STRIPE_CONNECT_ENABLED }}
           VITE_STRIPE_AUTOMATION_ENABLED: ${{ vars.VITE_STRIPE_AUTOMATION_ENABLED }}
           REPOSITORY_NAME: ${{ github.event.repository.name }}
-          EZSHOP_CUSTOM_DOMAIN: ${{ vars.EZSHOP_CUSTOM_DOMAIN }}
+          EZSHOP_CUSTOM_DOMAIN: ezshop.lifestyle
         run: node scripts/build-pages.mjs
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
@@ -75,13 +75,12 @@ jobs:
           node-version: 24
       - name: 确认网站实际版本已更新
         env:
-          DEPLOYED_SITE_URL: ${{ vars.EZSHOP_CUSTOM_DOMAIN == 'ezshop.lifestyle' && 'https://ezshop.lifestyle/' || steps.deployment.outputs.page_url }}
+          DEPLOYED_SITE_URL: https://ezshop.lifestyle/
           EXPECTED_COMMIT: ${{ github.sha }}
         run: node scripts/check-site-release.mjs
       - name: 新域名登录回跳配置及回读验证
-        if: vars.EZSHOP_CUSTOM_DOMAIN == 'ezshop.lifestyle'
         env:
-          EZSHOP_CUSTOM_DOMAIN: ${{ vars.EZSHOP_CUSTOM_DOMAIN }}
+          EZSHOP_CUSTOM_DOMAIN: ezshop.lifestyle
           VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
           SUPABASE_PROJECT_REF: ${{ vars.SUPABASE_PROJECT_REF }}
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
