@@ -78,3 +78,11 @@ jobs:
           DEPLOYED_SITE_URL: ${{ steps.deployment.outputs.page_url }}
           EXPECTED_COMMIT: ${{ github.sha }}
         run: node scripts/check-site-release.mjs
+      - name: 新域名登录回跳配置及回读验证
+        if: vars.EZSHOP_CUSTOM_DOMAIN == 'ezshop.lifestyle'
+        env:
+          EZSHOP_CUSTOM_DOMAIN: ${{ vars.EZSHOP_CUSTOM_DOMAIN }}
+          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          SUPABASE_PROJECT_REF: ${{ vars.SUPABASE_PROJECT_REF }}
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+        run: node scripts/configure-domain-auth.mjs

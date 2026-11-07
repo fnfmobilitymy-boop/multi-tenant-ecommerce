@@ -20,6 +20,8 @@ GitHub 账户 Settings → Pages → Add a domain，按 GitHub 显示的名称�
 
 ## 登录回跳
 
+发布流程会在网站版本和脚本样式加载检查通过后，使用现有 Supabase 管理令牌自动追加以下新域名回跳地址、保留原白名单和旧默认地址，并把默认 Site URL 更新到新商家入口；随后回读验证。只修改 `site_url`、`uri_allow_list`，不会修改密码、SMTP、登录方式或发送邮件。管理权限不足时该步骤报告失败，可按下列内容手动设置并重新验证。
+
 Supabase Authentication → URL Configuration：
 
 - 切换后 Site URL：`https://ezshop.lifestyle/merchant`。
@@ -41,4 +43,4 @@ Supabase Authentication → URL Configuration：
 - `https://ezshop.lifestyle/merchant`
 - `https://ezshop.lifestyle/platform`
 
-DNS、GitHub Pages 域名绑定和 Supabase 控制台配置必须由具备对应账号权限的人保存。仅发布源码或创建 CNAME 文件不代表域名已成功绑定。
+DNS、GitHub Pages 域名绑定必须由具备对应账号权限的人保存；Supabase 回跳优先通过已授权的发布流程配置，权限不足时由项目管理员在控制台设置。仅发布源码或创建 CNAME 文件不代表域名已成功绑定。
