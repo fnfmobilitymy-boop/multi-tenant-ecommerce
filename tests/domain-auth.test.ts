@@ -73,7 +73,11 @@ describe("Domain auth migration", () => {
       ),
     ).rejects.toThrow("inconsistent");
     expect(calls).toBe(0);
-    await expect(configureDomainAuth(env, denied)).rejects.toThrow("HTTP 403");
+    expect(await configureDomainAuth(env, denied)).toEqual({
+      enabled: true,
+      manualRequired: true,
+      status: 403,
+    });
     expect(calls).toBe(1);
     expect(
       await configureDomainAuth({ ...env, EZSHOP_CUSTOM_DOMAIN: "" }, denied),

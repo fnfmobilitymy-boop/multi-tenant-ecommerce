@@ -1,4 +1,5 @@
 import { pathToFileURL } from "node:url";
+import { appendFileSync } from "node:fs";
 
 export function domainAuthSettings(current, domain) {
   if (domain !== "ezshop.lifestyle") throw new Error("Unexpected domain");
@@ -49,27 +50,36 @@ export async function configureDomainAuth(env, fetcher = fetch) {
     });
     // Never include the response body: auth configuration can contain secrets.
     if (!response.ok)
-      throw Object.assign(new Error(`Auth configuration HTTP ${response.status}`), { status: response.status });
+      throw Object.assign(
+        new Error(`Auth configuration HTTP ${response.status}`),
+        { status: response.status },
+      );
     return response;
   };
-  const current = await (await request("GET")).json();
-  const desired = domainAuthSettings(current, domain);
-  const changed =
-    current.site_url !== desired.site_url ||
-    current.uri_allow_list !== desired.uri_allow_list;
-  if (changed) await request("PATCH", desired);
-  const actual = await (await request("GET")).json();
-  const actualUrls = new Set(
-    String(actual.uri_allow_list || "")
-      .split(",")
-      .map((value) => value.trim()),
-  );
-  if (
-    actual.site_url !== desired.site_url ||
-    desired.uri_allow_list.split(",").some((value) => !actualUrls.has(value))
-  )
-    throw new Error("Auth configuration verification failed");
-  return { enabled: true, changed };
+  try {
+    const current = await (await request("GET")).json();
+    const desired = domainAuthSettings(current, domain);
+    const changed =
+      current.site_url !== desired.site_url ||
+      current.uri_allow_list !== desired.uri_allow_list;
+    if (changed) await request("PATCH", desired);
+    const actual = await (await request("GET")).json();
+    const actualUrls = new Set(
+      String(actual.uri_allow_list || "")
+        .split(",")
+        .map((value) => value.trim()),
+    );
+    if (
+      actual.site_url !== desired.site_url ||
+      desired.uri_allow_list.split(",").some((value) => !actualUrls.has(value))
+    )
+      throw new Error("Auth configuration verification failed");
+    return { enabled: true, changed };
+  } catch (error) {
+    if (error?.status === 401 || error?.status === 403)
+      return { enabled: true, manualRequired: true, status: error.status };
+    throw error;
+  }
 }
 
 if (
@@ -78,13 +88,25 @@ if (
 ) {
   try {
     const result = await configureDomainAuth(process.env);
-    console.log(
-      result.enabled
-        ? "新域名登录回跳已回读验证；原回跳地址保留，未修改其他认证配置，也未发送邮件。"
-        : "未启用新域名，不修改登录配置。",
-    );
+    if (result.manualRequired) {
+      const message = `网站发布已单独验证；Supabase 新域名认证回跳未验证（HTTP ${result.status}），需项目管理员在 URL Configuration 手动设置。`;
+      console.warn("::warning::" + message);
+      if (process.env.GITHUB_STEP_SUMMARY)
+        appendFileSync(
+          process.env.GITHUB_STEP_SUMMARY,
+          "## 新域名认证回跳：待手动确认\n\n" +
+            message +
+            "\n\nSite URL：https://ezshop.lifestyle/merchant\n\n追加 Redirect URLs：https://ezshop.lifestyle/merchant、https://ezshop.lifestyle/reset-password、https://ezshop.lifestyle/shop/**。保留旧记录。\n",
+        );
+    } else
+      console.log(
+        result.enabled
+          ? "新域名登录回跳已回读验证；原回跳地址保留，未修改其他认证配置，也未发送邮件。"
+          : "未启用新域名，不修改登录配置。",
+      );
   } catch (error) {
-    if (Number.isInteger(error?.status)) console.error(`::error::Domain auth configuration HTTP ${error.status}`);
+    if (Number.isInteger(error?.status))
+      console.error(`::error::Domain auth configuration HTTP ${error.status}`);
     console.error(
       "新域名登录回跳未验证完成。请检查管理令牌权限或在 Supabase URL Configuration 手动设置；不输出认证配置或密钥。",
     );
