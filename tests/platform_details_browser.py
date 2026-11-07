@@ -60,31 +60,33 @@ try:
                     rows=[];total=0;page=payload.get('page',1)
                     if name=='products':
                         total=55;rows=[{'id':i,'name':'Product '+str(i),'price':1000,'stock':5,'unit_cost':400,'published':0} for i in range((page-1)*50+1,min(page*50,55)+1)]
-                    if name=='orders':total=1;rows=[order]
+                    if name=='orders':
+                        time.sleep(.1) # Ensure the test awaits the orders response, not stale product rows.
+                        total=2;rows=[{**order,'id':8,'reference':'EZ-OTHER'},order]
                     if name=='customers':total=1;rows=[{'names':['Buyer'],'email':'buyer@example.test','orders_count':1,'paid_total':2000,'refunded_total':0,'addresses':['KL delivery address']}]
                     if name=='journal':total=1;rows=[{'id':1,'date':None,'kind':'payment','amount':2000,'reference':'EZ-READ','voided':False}]
                     return reply({'rows':rows,'total':total,'page':page,'page_size':50})
                 raise AssertionError('Unexpected external request: '+url.path)
             c.route('**/*',intercept);return c
         c=context();page=c.new_page();page.on('pageerror',lambda e:errors.append(str(e)))
-        page.goto(base+'/platform');page.get_by_role('button',name='查看明细',exact=True).click()
+        page.goto(base+'/platform');page.get_by_role('row').filter(has_text='owner@example.test').get_by_role('button',name='查看明细',exact=True).click()
         page.get_by_role('heading',name='Target Store',exact=True).wait_for();page.get_by_text('not-a-real-account',exact=True).wait_for()
         page.locator('article.metric').filter(has_text='预计经营利润').locator('strong').filter(has_text='10.00').wait_for()
         assert page.locator('a[href*="/merchant"],a[href*="/shop/"]').count()==0
         page.get_by_role('tab',name='商品与库存',exact=True).click();page.get_by_role('cell',name='Product 1',exact=True).wait_for()
         page.get_by_role('button',name='下一页',exact=True).click();page.get_by_role('cell',name='Product 51',exact=True).wait_for()
         assert page.get_by_role('cell',name='Product 1',exact=True).count()==0
-        page.get_by_role('tab',name='订单与顾客',exact=True).click();page.get_by_role('button',name='查看明细',exact=True).click()
+        page.get_by_role('tab',name='订单与顾客',exact=True).click();page.get_by_role('row').filter(has=page.get_by_role('cell',name='EZ-READ',exact=True)).get_by_role('button',name='查看明细',exact=True).click()
         dialog=page.get_by_role('dialog');dialog.get_by_text('KL delivery address',exact=True).wait_for();dialog.get_by_text('单位成本',exact=True).wait_for();dialog.get_by_role('button',name='关闭',exact=True).click()
         for name in ['顾客汇总','代理','团队与权限','佣金结算','收支流水','操作记录','通知记录']:
             page.get_by_role('tab',name=name,exact=True).click();page.get_by_text('记录总数：',exact=False).wait_for()
         page.get_by_label('语言',exact=True).select_option('en');page.get_by_role('tab',name='Products and stock',exact=True).click();page.get_by_role('columnheader',name='Unit cost',exact=True).wait_for()
         page.set_viewport_size({'width':390,'height':844});assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+1')
         assert page.get_by_label('Language',exact=True).locator('option').count()==2
-        page.get_by_role('button',name='Back to merchants',exact=True).click();page.get_by_role('button',name='View details',exact=True).wait_for()
+        page.get_by_role('button',name='Back to merchants',exact=True).click();page.get_by_role('row').filter(has_text='owner@example.test').get_by_role('button',name='View details',exact=True).wait_for()
         denied=context(False).new_page();denied.goto(base+'/platform');denied.get_by_role('heading',name='平台管理员登录',exact=True).wait_for();assert denied.get_by_role('table').count()==0
         assert set(['overview','products','orders','order','customers','agents','team','payouts','journal','audit','notifications']).issubset(calls)
-        login=context(True,True).new_page();login.goto(base+'/platform');login.get_by_role('heading',name='平台管理员登录',exact=True).wait_for();login.get_by_label('邮箱地址',exact=True).fill('platform@example.test');login.get_by_label('密码',exact=True).fill('Fixture-platform-password-123');login.get_by_role('button',name='立即登录',exact=True).click();login.get_by_role('button',name='查看明细',exact=True).wait_for()
+        login=context(True,True).new_page();login.goto(base+'/platform');login.get_by_role('heading',name='平台管理员登录',exact=True).wait_for();login.get_by_label('邮箱地址',exact=True).fill('platform@example.test');login.get_by_label('密码',exact=True).fill('Fixture-platform-password-123');login.get_by_role('button',name='立即登录',exact=True).click();login.get_by_role('row').filter(has_text='owner@example.test').get_by_role('button',name='查看明细',exact=True).wait_for()
         login.wait_for_function("localStorage.getItem('ezshop-platform-auth-auth-test.supabase.co')!==null")
         assert login.evaluate("JSON.parse(localStorage.getItem('sb-auth-test-auth-token')).access_token")==merchant_token
         login.get_by_role('button',name='退出登录',exact=True).click();login.get_by_role('heading',name='平台管理员登录',exact=True).wait_for()

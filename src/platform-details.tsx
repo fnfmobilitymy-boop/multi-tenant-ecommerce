@@ -374,6 +374,7 @@ export function PlatformDetails({
             disabled={busy}
             onClick={() => {
               setDetail(null);
+              setData(null);
               setRevision((x) => x + 1);
             }}
           >
@@ -397,6 +398,7 @@ export function PlatformDetails({
             aria-selected={tab === key}
             className={tab === key ? "button" : "button secondary"}
             onClick={() => {
+              if (tab !== key || page !== 1) setData(null);
               setTab(key);
               setPage(1);
               setDetail(null);
@@ -503,7 +505,10 @@ export function PlatformDetails({
             <button
               className="button secondary"
               disabled={page <= 1}
-              onClick={() => setPage((x) => x - 1)}
+              onClick={() => {
+                setData(null);
+                setPage((x) => x - 1);
+              }}
             >
               {L("上一页", "Previous")}
             </button>
@@ -514,7 +519,10 @@ export function PlatformDetails({
             <button
               className="button secondary"
               disabled={page * listing.page_size >= listing.total}
-              onClick={() => setPage((x) => x + 1)}
+              onClick={() => {
+                setData(null);
+                setPage((x) => x + 1);
+              }}
             >
               {L("下一页", "Next")}
             </button>
