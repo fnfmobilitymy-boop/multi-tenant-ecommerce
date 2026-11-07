@@ -19,7 +19,7 @@ def token(uid):
     encode=lambda value:base64.urlsafe_b64encode(json.dumps(value).encode()).decode().rstrip('=')
     return encode({'alg':'HS256','typ':'JWT'})+'.'+encode({'sub':uid,'aud':'authenticated','exp':int(time.time())+36000})+'.fixture'
 merchant_token=token('22222222-2222-4222-8222-222222222222');platform_token=token('11111111-1111-4111-8111-111111111111')
-order={'id':7,'reference':'EZ-READ','customer':'Buyer','email':'buyer@example.test','phone':'0123456789','address':'KL delivery address','total':2000,'status':'paid','created':'2026-11-05T00:00:00Z'}
+order={'id':7,'reference':'EZ-READ','customer':'Buyer','email':'buyer@example.test','phone':'0123456789','address':'KL delivery address','country_code':'MY','state':'Kuala Lumpur','city':'Kuala Lumpur','postcode':'50000','total':2000,'status':'paid','created':'2026-11-05T00:00:00Z'}
 try:
     with sync_playwright() as p:
         options={'headless':True,'args':['--no-sandbox']}
@@ -83,6 +83,14 @@ try:
         page.get_by_role('tab',name='商品与库存',exact=True).click();page.get_by_role('cell',name='Product 1',exact=True).wait_for()
         page.get_by_role('button',name='下一页',exact=True).click();page.get_by_role('cell',name='Product 51',exact=True).wait_for()
         assert page.get_by_role('cell',name='Product 1',exact=True).count()==0
+        page.get_by_role('tab',name='订单与顾客',exact=True).click()
+        location_row=page.get_by_role('row').filter(has=page.get_by_role('cell',name='EZ-READ',exact=True))
+        location_row.get_by_role('cell',name='马来西亚',exact=True).wait_for()
+        location_row.get_by_role('cell',name='50000',exact=True).wait_for()
+        location_row.get_by_role('cell',name='KL delivery address',exact=True).wait_for()
+        assert location_row.get_by_role('cell',name='Kuala Lumpur',exact=True).count()==2
+        page.get_by_role('tab',name='顾客汇总',exact=True).click()
+        page.get_by_role('cell',name='KL delivery address',exact=True).wait_for()
         page.get_by_role('tab',name='订单与顾客',exact=True).click();page.get_by_role('row').filter(has=page.get_by_role('cell',name='EZ-READ',exact=True)).get_by_role('button',name='查看明细',exact=True).click()
         dialog=page.get_by_role('dialog');dialog.get_by_text('KL delivery address',exact=True).wait_for();dialog.get_by_text('单位成本',exact=True).wait_for();dialog.get_by_role('button',name='关闭',exact=True).click()
         for name in ['顾客汇总','代理','团队与权限','佣金结算','收支流水','操作记录','通知记录']:

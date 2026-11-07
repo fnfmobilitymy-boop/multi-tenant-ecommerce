@@ -3,6 +3,7 @@ import {
   type Currency,
 } from "../supabase/functions/_shared/currencies";
 import { useEffect, useRef, useState } from "react";
+import { countryNames, type CountryCode } from "./commerce-currency";
 import { api, dateLabel, money, statusLabel } from "./api";
 import { useI18n } from "./i18n";
 import { ErrorBox, Loading, Modal } from "./ui";
@@ -28,7 +29,7 @@ const names: Record<string, [string, string]> = {
   network: ["网络", "Network"],
   qr: ["二维码地址", "QR address"],
   currency: ["币种", "Currency"],
-  country_code: ["国家代码", "Country code"],
+  country_code: ["国家／地区", "Country / region"],
   payment_instructions: ["下单时的收款资料", "Receiving details at checkout"],
   content_translations: ["多语言内容", "Localized content"],
   locale: ["订单语言", "Order language"],
@@ -160,8 +161,8 @@ const tabs = [
 ];
 const columns: Record<string, string[]> = {
   products: ["name", "price", "unit_cost", "stock", "published"],
-  orders: ["reference", "customer", "email", "total", "status", "created"],
-  customers: ["names", "email", "orders_count", "paid_total", "refunded_total"],
+  orders: ["reference", "customer", "email", "country_code", "state", "city", "postcode", "address", "total", "status", "created"],
+  customers: ["names", "email", "addresses", "orders_count", "paid_total", "refunded_total"],
   agents: ["name", "rate", "code"],
   team: ["name", "email", "role", "joined"],
   payouts: ["id", "agent_id", "amount", "status"],
@@ -280,6 +281,8 @@ export function PlatformDetails({
       return key === "unit_cost" || key === "profit"
         ? L("未知／待补成本", "Unknown / costs needed")
         : "—";
+    if (key === "country_code" && typeof item === "string" && Object.hasOwn(countryNames, item))
+      return t(countryNames[item as CountryCode]);
     if (amounts.has(key) && typeof item === "number")
       return money(item, locale, currency);
     if (typeof item === "boolean" || key === "published" || key === "featured")
@@ -451,6 +454,7 @@ export function PlatformDetails({
       )}
       {listing && (
         <>
+          {(tab === "orders" || tab === "customers") && <p className="soft-note">{L("位置来自订单收货资料，不代表顾客实时位置。国家、州属、城市与邮编可在订单列表查看；未提供的资料显示为 —。", "Locations come from order delivery details, not live customer locations. Country, state, city and postal code appear in the order list; missing details show —.")}</p>}
           <p>
             {L("记录总数：", "Total records: ")}
             {listing.total}
