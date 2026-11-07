@@ -2912,3 +2912,30 @@ td { font-size: 1rem; }
 #platform-billing > .card > details {
   margin: 20px 22px;
 }
+
+/* A slightly more compact type scale across the three portals. */
+body { font-size: 0.9375rem; }
+h1 { font-size: 1.875rem; }
+h2 { font-size: 1.1875rem; }
+h3 { font-size: 1.0625rem; }
+td { font-size: 0.9375rem; }
+.dashboard-layout .page-heading h1 { font-size: 1.75rem; }
+.dashboard-layout .nav-item { font-size: 0.9375rem; }
+.dashboard-layout .metric > strong,
+.catalog-stat strong { font-size: 1.6875rem; }
+.chart-summary > strong { font-size: 1.625rem; }
+.order-donut strong { font-size: 1.75rem; }
+.catalog-name strong { font-size: 0.9375rem; }
+.storefront .store-hero h1 { font-size: clamp(1.75rem, 3vw, 2.75rem); }
+.storefront .product-info h3 { font-size: 1rem; }
+.recovery-page h1 { font-size: 1.75rem; }
+.payment-panel p { font-size: 0.9375rem; }
+.language-selector { font-size: 0.9375rem; }
+@media (min-width: 761px) {
+ input:not([type="checkbox"]):not([type="radio"]), textarea, select { font-size: 0.9375rem; }
+}
+@media (max-width: 760px) {
+ .dashboard-layout .page-heading h1 { font-size: 1.625rem; }
+ .dashboard-layout .nav-item { font-size: 0.875rem; }
+ .catalog-stat strong { font-size: 1.5rem; }
+}
