@@ -105,6 +105,10 @@ describe("支付与订阅受控数据库接口", () => {
         details_submitted: true,
       }),
     );
+    await user(owner);
+    const stockBefore = (await main("dashboard")).products.find(
+      (p: any) => p.id === pid,
+    ).stock;
     const o = await order("valid");
     const claim = await service(() =>
       pay("service/order-claim", {
@@ -145,6 +149,9 @@ describe("支付与订阅受控数据库接口", () => {
     await user(owner);
     const d = await main("dashboard");
     expect(d.orders[0].status).toBe("paid");
+    expect(d.products.find((p: any) => p.id === pid).stock).toBe(
+      stockBefore - 1,
+    );
     expect((await main("notifications")).jobs).toHaveLength(1);
     await expect(
       pay("order-summary", {

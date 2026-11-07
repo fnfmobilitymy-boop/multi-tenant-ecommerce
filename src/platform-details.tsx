@@ -188,6 +188,7 @@ const terms: Record<string, [string, string]> = {
   failed: ["失败", "Failed"],
   receipt: ["订单收据", "Receipt"],
   reminder: ["付款提醒", "Payment reminder"],
+  shipment: ["发货通知", "Shipment notice"],
   payment: ["订单收款", "Order payment"],
   refund: ["退款支出", "Refund"],
   payout: ["佣金结算", "Commission payout"],

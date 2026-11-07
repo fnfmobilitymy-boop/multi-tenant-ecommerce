@@ -11,6 +11,7 @@ Deno.serve(async(req:Request)=>{
  if(req.method==='OPTIONS')return new Response(null,{status:204,headers});
  if(req.method!=='POST')return reply({error:'POST required'},405);
  let body:any;try{body=await req.json()}catch{return reply({error:'Invalid JSON'},400)}
+ if(['connect-onboarding','connect-refresh','order-checkout'].includes(body?.action))return reply({error:'商家商品收款不使用Stripe，请使用商家本地收款方式。'},409);
  if(body?.action==='subscription-checkout')return reply({error:'平台Pro采用人工审核，请提交付款申请并等待平台确认到账。'},409);
  if(body?.action==='readiness')return reply(paymentReadiness(name=>Deno.env.get(name)));
  const key=Deno.env.get('STRIPE_SECRET_KEY');if(!key)return reply({error:'支付服务尚未配置，当前不会发起付款或订阅。'},503);

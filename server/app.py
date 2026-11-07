@@ -512,6 +512,7 @@ class Handler(BaseHTTPRequestHandler):
                 return self.reply({'error':'此订单已登记发货，请核实原运单记录'},409)
             db.execute("UPDATE orders SET fulfillment_status='shipped',carrier=?,tracking=?,shipped_at=datetime('now') WHERE id=?",(carrier,tracking,oid))
             db.execute('INSERT INTO audit_log(merchant_id,actor,action,object_id) VALUES(?,?,?,?)',(mid,str(member['id']) if member else 'owner','order.ship',oid))
+            db.execute("INSERT OR IGNORE INTO notification_jobs(merchant_id,order_id,kind,event_key) VALUES(?,?,'shipment',?)",(mid,oid,'shipment:'+str(oid)))
             db.commit();return self.reply({'ok':True})
         if path == '/api/orders/detail' and method == 'GET':
             query = parse_qs(urlparse(self.path).query)

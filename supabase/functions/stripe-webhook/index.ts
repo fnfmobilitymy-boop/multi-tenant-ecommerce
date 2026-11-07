@@ -14,7 +14,7 @@ Deno.serve(async(req:Request)=>{
  const service=createClient(Deno.env.get('SUPABASE_URL')!,Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,{auth:{persistSession:false}});
  const rpc=async(route:string,payload:unknown)=>{const {data,error}=await service.rpc('ezshop_payment_api',{route,payload});if(error)throw error;return data};
  try{
-  const payment=paymentEvent(event);if(payment)return reply(await rpc('service/payment-completed',payment));
+  const payment=paymentEvent(event);if(payment&&!key.startsWith('sk_live_'))return reply({ok:true,ignored:true,reason:'test_order_payment'});if(payment)return reply(await rpc('service/payment-completed',payment));
   const object=event.data.object as any;
   if(['checkout.session.expired','checkout.session.async_payment_failed'].includes(event.type)){
    if(object.mode==='payment'&&object.metadata?.ezshop_order_reference&&event.account)await rpc('service/expire-order-session',{session_id:object.id,account_id:event.account});
@@ -23,6 +23,7 @@ Deno.serve(async(req:Request)=>{
   }
   if(event.type==='account.updated'&&object.id){const account=await stripe.accounts.retrieve(object.id);await rpc('service/account-status',{account_id:account.id,charges_enabled:account.charges_enabled,payouts_enabled:account.payouts_enabled,details_submitted:account.details_submitted});return reply({ok:true})}
   if(event.account&&['charge.refunded','charge.dispute.created'].includes(event.type)){
+   if(!key.startsWith('sk_live_'))return reply({ok:true,ignored:true,reason:'test_order_adjustment'});
    const chargeId=event.type==='charge.refunded'?object.id:idOf(object.charge);
    if(!chargeId)throw new Error('Missing charge');
    const charge=await stripe.charges.retrieve(chargeId,{},{stripeAccount:event.account});

@@ -13,7 +13,7 @@
       "verified_at": null,
       "reviewed_by": "",
       "evidence": [],
-      "note": "用户2026-11-07改为人工查账批准Pro，不再以Stripe真实扣款及自动续期作为验收条件；旧Stripe订阅须在Stripe另行取消，不能视为已取消。"
+      "note": "平台Pro继续人工查账审批；商品自动核款明确不用Stripe，待商家开通当地支付网关并接入真实到账通知。目前尚无本地网关账号；不声称已自动查银行流水。Stripe历史订阅如存在仍需另行取消。"
     },
     "backup_restore": {
       "status": "pending",

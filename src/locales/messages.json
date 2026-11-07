@@ -5395,5 +5395,131 @@
     "รายการแนะนำอิงตามประเทศของร้านค้า พื้นที่จัดส่งจริงขึ้นอยู่กับบริษัทขนส่ง",
     "បញ្ជីណែនាំផ្អែកលើប្រទេសរបស់អាជីវករ។ តំបន់ដឹកជញ្ជូនជាក់ស្តែងអាស្រ័យលើក្រុមហ៊ុនដឹកជញ្ជូន។",
     "Danh sách gợi ý theo quốc gia của nhà bán hàng. Phạm vi giao hàng thực tế do đơn vị vận chuyển quyết định."
+  ],
+  "每批请选择1至50个已付款且待发货的订单。": [
+    "Select 1–50 paid orders awaiting shipment per batch.",
+    "Pilih 1–50 pesanan berbayar yang menunggu penghantaran bagi setiap kelompok.",
+    "เลือกคำสั่งซื้อที่ชำระแล้วและรอจัดส่ง 1–50 รายการต่อชุด",
+    "សូមជ្រើសរើសការបញ្ជាទិញដែលបានបង់ប្រាក់ និងរង់ចាំដឹកជញ្ជូនពី 1 ដល់ 50 ក្នុងមួយក្រុម។",
+    "Chọn 1–50 đơn đã thanh toán và đang chờ gửi trong mỗi đợt."
+  ],
+  "订单状态已变化，请刷新后重新选择。": [
+    "Order status changed. Refresh and select again.",
+    "Status pesanan telah berubah. Segarkan dan pilih semula.",
+    "สถานะคำสั่งซื้อเปลี่ยนแล้ว โปรดรีเฟรชและเลือกใหม่",
+    "ស្ថានភាពការបញ្ជាទិញបានផ្លាស់ប្តូរ។ សូមផ្ទុកឡើងវិញ និងជ្រើសរើសម្តងទៀត។",
+    "Trạng thái đơn hàng đã thay đổi. Hãy tải lại và chọn lại."
+  ],
+  "配货单": [
+    "Packing list",
+    "Senarai pembungkusan",
+    "ใบจัดสินค้า",
+    "បញ្ជីវេចខ្ចប់",
+    "Phiếu soạn hàng"
+  ],
+  "收货地址标签": [
+    "Delivery address label",
+    "Label alamat penghantaran",
+    "ป้ายที่อยู่ผู้รับ",
+    "ស្លាកអាសយដ្ឋានទទួល",
+    "Nhãn địa chỉ nhận hàng"
+  ],
+  "已选订单": [
+    "Selected orders",
+    "Pesanan dipilih",
+    "คำสั่งซื้อที่เลือก",
+    "ការបញ្ជាទិញដែលបានជ្រើសរើស",
+    "Đơn hàng đã chọn"
+  ],
+  "批量打印配货单": [
+    "Print packing lists",
+    "Cetak senarai pembungkusan",
+    "พิมพ์ใบจัดสินค้าหลายรายการ",
+    "បោះពុម្ពបញ្ជីវេចខ្ចប់ជាក្រុម",
+    "In phiếu soạn hàng hàng loạt"
+  ],
+  "批量打印地址标签": [
+    "Print address labels",
+    "Cetak label alamat",
+    "พิมพ์ป้ายที่อยู่หลายรายการ",
+    "បោះពុម្ពស្លាកអាសយដ្ឋានជាក្រុម",
+    "In nhãn địa chỉ hàng loạt"
+  ],
+  "打印不会确认收款或标记已发货。地址标签不是快递公司官方面单。": [
+    "Printing does not confirm payment or mark orders as shipped. Address labels are not official carrier labels.",
+    "Mencetak tidak mengesahkan bayaran atau menandakan pesanan sebagai dihantar. Label alamat bukan label rasmi syarikat penghantaran.",
+    "การพิมพ์ไม่ยืนยันการรับเงินหรือเปลี่ยนสถานะเป็นจัดส่งแล้ว ป้ายที่อยู่ไม่ใช่ใบปะหน้าทางการของบริษัทขนส่ง",
+    "ការបោះពុម្ពមិនបញ្ជាក់ការទទួលប្រាក់ ឬកំណត់ថាបានដឹកជញ្ជូនទេ។ ស្លាកអាសយដ្ឋានមិនមែនជាស្លាកផ្លូវការរបស់ក្រុមហ៊ុនដឹកជញ្ជូនទេ។",
+    "Việc in không xác nhận thanh toán hoặc đánh dấu đã gửi. Nhãn địa chỉ không phải vận đơn chính thức của hãng vận chuyển."
+  ],
+  "选择本页待发货订单": [
+    "Select orders awaiting shipment on this page",
+    "Pilih pesanan menunggu penghantaran pada halaman ini",
+    "เลือกคำสั่งซื้อรอจัดส่งในหน้านี้",
+    "ជ្រើសរើសការបញ្ជាទិញរង់ចាំដឹកជញ្ជូននៅទំព័រនេះ",
+    "Chọn đơn chờ gửi trên trang này"
+  ],
+  "选择订单 {reference}": [
+    "Select order {reference}",
+    "Pilih pesanan {reference}",
+    "เลือกคำสั่งซื้อ {reference}",
+    "ជ្រើសរើសការបញ្ជាទិញ {reference}",
+    "Chọn đơn {reference}"
+  ],
+  "发货通知": [
+    "Shipment notice",
+    "Notis penghantaran",
+    "แจ้งจัดส่งสินค้า",
+    "ការជូនដំណឹងដឹកជញ្ជូន",
+    "Thông báo gửi hàng"
+  ],
+  "收据、发货通知与付款提醒的处理记录。": [
+    "Processing records for receipts, shipment notices and payment reminders.",
+    "Rekod pemprosesan resit, notis penghantaran dan peringatan bayaran.",
+    "ประวัติการดำเนินการใบเสร็จ แจ้งจัดส่ง และเตือนชำระเงิน",
+    "កំណត់ត្រាដំណើរការបង្កាន់ដៃ ការជូនដំណឹងដឹកជញ្ជូន និងការរំលឹកទូទាត់។",
+    "Lịch sử xử lý biên nhận, thông báo gửi hàng và nhắc thanh toán."
+  ],
+  "登记发货后会加入发货通知队列；未配置邮件服务时不会发出。": [
+    "Registering shipment queues a notice. It will not be sent until email service is configured.",
+    "Mendaftar penghantaran memasukkan notis dalam baris gilir. Ia tidak dihantar sehingga perkhidmatan e-mel dikonfigurasi.",
+    "การลงทะเบียนจัดส่งจะเพิ่มการแจ้งเตือนในคิว โดยจะไม่ส่งจนกว่าจะตั้งค่าบริการอีเมล",
+    "ការចុះបញ្ជីដឹកជញ្ជូននឹងដាក់ការជូនដំណឹងក្នុងជួរ។ វាមិនត្រូវបានផ្ញើទេ រហូតដល់បានកំណត់សេវាអ៊ីមែល។",
+    "Ghi nhận gửi hàng sẽ đưa thông báo vào hàng đợi. Thông báo chỉ được gửi khi đã cấu hình dịch vụ email."
+  ],
+  "打印": [
+    "Print",
+    "Cetak",
+    "พิมพ์",
+    "បោះពុម្ព",
+    "In"
+  ],
+  "商品": [
+    "Products",
+    "Produk",
+    "สินค้า",
+    "ផលិតផល",
+    "Sản phẩm"
+  ],
+  "备注": [
+    "Notes",
+    "Catatan",
+    "หมายเหตุ",
+    "កំណត់សម្គាល់",
+    "Ghi chú"
+  ],
+  "待发货（已付款）": [
+    "Awaiting shipment (paid)",
+    "Menunggu penghantaran (sudah bayar)",
+    "รอจัดส่ง (ชำระแล้ว)",
+    "រង់ចាំដឹកជញ្ជូន (បានបង់ប្រាក់)",
+    "Chờ gửi (đã thanh toán)"
+  ],
+  "商家商品收款不使用Stripe，请使用商家本地收款方式。": [
+    "Merchant product payments do not use Stripe. Use the merchant’s local payment method.",
+    "Bayaran produk peniaga tidak menggunakan Stripe. Gunakan kaedah bayaran tempatan peniaga.",
+    "การรับเงินค่าสินค้าของร้านค้าไม่ใช้ Stripe โปรดใช้วิธีรับเงินในประเทศของร้านค้า",
+    "ការទទួលប្រាក់ថ្លៃទំនិញរបស់អាជីវករមិនប្រើ Stripe ទេ។ សូមប្រើវិធីទូទាត់ក្នុងស្រុករបស់អាជីវករ។",
+    "Thanh toán tiền hàng của nhà bán hàng không dùng Stripe. Hãy dùng phương thức thanh toán địa phương của nhà bán hàng."
   ]
 }

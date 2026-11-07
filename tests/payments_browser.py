@@ -53,27 +53,24 @@ try:
         page.get_by_text('使用下方平台订阅申请付款，平台核实到账后开通服务。',exact=True).wait_for()
         assert page.get_by_role('button',name='查看价格并订阅 Pro',exact=True).count()==0
         assert 'subscription-checkout' not in calls and 'readiness' not in calls
+        assert page.get_by_role('button',name='开通商家收款账户',exact=True).count()==0
         page.locator('.language-selector select').select_option('en')
         page.get_by_role('heading',name='Payments & subscription',exact=True).wait_for()
+        assert page.get_by_role('button',name='Open merchant payment account',exact=True).count()==0
+        assert not any(action in calls for action in ['connect-onboarding','readiness','subscription-checkout'])
         page.evaluate("sessionStorage.setItem('ezshop:order:EZ-TEST','test-order-access-token')")
         page.goto(base+'/shop/test-store/order-result?ref=EZ-TEST&payment_return=1')
         page.get_by_text('订单已保存，尚未确认收款。请联系商家安排付款。',exact=True).wait_for()
-        button=page.get_by_role('button',name='前往安全付款页',exact=True);button.click()
-        page.get_by_role('alert').wait_for()
-        assert page.url.startswith(base+'/shop/'), 'Untrusted payment redirect was followed'
-        assert not state['paid'], 'Return URL fabricated a paid order'
-        state['review']=True
-        page.get_by_role('button',name='刷新订单与付款状态',exact=True).click()
-        page.get_by_role('alert').filter(has_text='付款需要商家核查').wait_for()
         assert page.get_by_role('button',name='前往安全付款页',exact=True).count()==0
-        state['review']=False;state['paid']=True
+        assert not state['paid'], 'Return URL fabricated a paid order'
+        state['paid']=True
         page.get_by_role('button',name='刷新订单与付款状态',exact=True).click()
         page.locator('.badge.paid').wait_for()
-        assert page.get_by_role('button',name='前往安全付款页',exact=True).count()==0
+        assert 'order-checkout' not in calls
         assert not errors,errors
         (root/'test-results').mkdir(exist_ok=True)
         page.screenshot(path=str(root/'test-results/payment-result.png'),full_page=True)
         browser.close()
-        print('PASS: Pro人工申请且无自动订阅请求、后端订单状态、恶意跳转拒绝、付款核查及已付款后禁止重复支付。所有远端接口已模拟。')
+        print('PASS: 平台Pro人工申请、不展示商家Stripe入口、返回网址不能伪造收款、后端订单状态更新。所有远端接口已模拟。')
 finally:
     server.shutdown();server.server_close()

@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       confirm:
-        description: 发送已排队的真实收据及提醒，输入 SEND_NOTIFICATIONS
+        description: 发送已排队的真实收据、发货通知及提醒，输入 SEND_NOTIFICATIONS
         type: string
         required: true
   schedule:

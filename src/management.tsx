@@ -36,7 +36,7 @@ interface Audit {
   created: string;
 }
 export function Team() {
-  const dateLabel=useCommerceDate();
+  const dateLabel = useCommerceDate();
   const { t, locale, errorText } = useI18n();
   const [data, setData] = useState<{
       members: Member[];
@@ -320,7 +320,8 @@ export function Platform() {
             <thead>
               <tr>
                 <th>{t("商家")}</th>
-                <th>{t("商家国家／地区")}</th><th>{t("店铺币种")}</th>
+                <th>{t("商家国家／地区")}</th>
+                <th>{t("店铺币种")}</th>
                 <th>{locale === "en" ? "Business details" : "业务明细"}</th>
                 <th>{t("订单数")}</th>
                 <th>{t("已收款销售额")}</th>
@@ -335,7 +336,8 @@ export function Platform() {
                     {m.name}
                     <small>{m.email}</small>
                   </td>
-                  <td>{t(countryNames[m.country_code||"MY"])}</td><td>{m.currency||"MYR"}</td>
+                  <td>{t(countryNames[m.country_code || "MY"])}</td>
+                  <td>{m.currency || "MYR"}</td>
                   <td>
                     <button
                       className="text-button"
@@ -588,7 +590,7 @@ export function Notifications() {
       <div className="page-heading">
         <div>
           <h1>{t("邮件通知")}</h1>
-          <p>{t("收据与付款提醒的处理记录。")}</p>
+          <p>{t("收据、发货通知与付款提醒的处理记录。")}</p>
         </div>
         <button className="button secondary" onClick={load}>
           {t("刷新记录")}
@@ -599,6 +601,9 @@ export function Notifications() {
           "确认收款后会自动加入收据队列。未付款提醒需定时任务运行。只有配置邮件服务并启动发送任务后才会发出；「服务商已接受」不代表客户一定收到。",
         )}
       </div>
+      <p className="soft-note">
+        {t("登记发货后会加入发货通知队列；未配置邮件服务时不会发出。")}
+      </p>
       <ErrorBox error={error} />
       <div className="card table-scroll">
         <table>
@@ -616,7 +621,13 @@ export function Notifications() {
               <tr key={j.id}>
                 <td>{j.reference}</td>
                 <td>{j.recipient}</td>
-                <td>{j.kind === "receipt" ? t("付款收据") : t("付款提醒")}</td>
+                <td>
+                  {j.kind === "receipt"
+                    ? t("付款收据")
+                    : j.kind === "shipment"
+                      ? t("发货通知")
+                      : t("付款提醒")}
+                </td>
                 <td>
                   {{
                     queued: t("等待发送"),

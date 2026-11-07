@@ -1,3 +1,4 @@
+import { BatchDocuments } from "./batch-documents";
 import { ShippingZones } from "./shipping-zones";
 import {
   CommerceCurrency,
@@ -89,6 +90,7 @@ function MerchantPage({
     [refunding, setRefunding] = useState(false),
     [filter, setFilter] = useState("all"),
     [query, setQuery] = useState("");
+  const [selectedOrders, setSelectedOrders] = useState<number[]>([]);
   const [region, setRegion] = useState(initialRegion);
   const currency = data?.merchant.currency || "MYR";
   const money = (amount: number, loc: typeof locale) =>
@@ -109,6 +111,16 @@ function MerchantPage({
   async function refresh() {
     const next = await api<Dashboard>("dashboard");
     setData(next);
+    setSelectedOrders((ids) =>
+      ids.filter((id) =>
+        next.orders.some(
+          (o) =>
+            o.id === id &&
+            o.status === "paid" &&
+            o.fulfillment_status !== "shipped",
+        ),
+      ),
+    );
     setRegion({
       country: next.merchant.country_code || "MY",
       currency: next.merchant.currency || "MYR",
@@ -463,6 +475,44 @@ function MerchantPage({
       <table>
         <thead>
           <tr>
+            {tab === "orders" && (
+              <th>
+                <input
+                  type="checkbox"
+                  aria-label={t("选择本页待发货订单")}
+                  checked={
+                    rows.some(
+                      (o) =>
+                        o.status === "paid" &&
+                        o.fulfillment_status !== "shipped",
+                    ) &&
+                    rows
+                      .filter(
+                        (o) =>
+                          o.status === "paid" &&
+                          o.fulfillment_status !== "shipped",
+                      )
+                      .slice(0, 50)
+                      .every((o) => selectedOrders.includes(o.id))
+                  }
+                  onChange={(e) => {
+                    const ids = rows
+                      .filter(
+                        (o) =>
+                          o.status === "paid" &&
+                          o.fulfillment_status !== "shipped",
+                      )
+                      .slice(0, 50)
+                      .map((o) => o.id);
+                    setSelectedOrders((old) =>
+                      e.target.checked
+                        ? [...new Set([...old, ...ids])].slice(0, 50)
+                        : old.filter((id) => !ids.includes(id)),
+                    );
+                  }}
+                />
+              </th>
+            )}
             <th>{t("订单编号")}</th>
             <th>{t("顾客")}</th>
             <th>{t("下单时间（马来西亚）")}</th>
@@ -474,6 +524,34 @@ function MerchantPage({
         <tbody>
           {rows.map((o) => (
             <tr key={o.id}>
+              {tab === "orders" && (
+                <td>
+                  <input
+                    type="checkbox"
+                    aria-label={t("选择订单 {reference}", {
+                      reference: o.reference,
+                    })}
+                    disabled={
+                      o.status !== "paid" ||
+                      o.fulfillment_status === "shipped" ||
+                      (!selectedOrders.includes(o.id) &&
+                        selectedOrders.length >= 50)
+                    }
+                    checked={
+                      selectedOrders.includes(o.id) &&
+                      o.status === "paid" &&
+                      o.fulfillment_status !== "shipped"
+                    }
+                    onChange={(e) =>
+                      setSelectedOrders((old) =>
+                        e.target.checked
+                          ? [...old, o.id]
+                          : old.filter((id) => id !== o.id),
+                      )
+                    }
+                  />
+                </td>
+              )}
               <td className="purple font-medium">{o.reference}</td>
               <td>
                 {o.customer}
@@ -736,7 +814,7 @@ function MerchantPage({
             {tab === "payments" && (
               <>
                 <MerchantPayments
-                  plan={data.merchant.plan}
+                      plan={data.merchant.plan}
                   trialEndsAt={data.merchant.trial_ends_at}
                 />
                 <SubscriptionApplication />
@@ -832,6 +910,8 @@ function MerchantPage({
                     <option value="all">{t("全部状态")}</option>
                     <option value="pending">{t("待付款")}</option>
                     <option value="paid">{t("已付款")}</option>
+                    <option value="to_ship">{t("待发货（已付款）")}</option>
+                    <option value="shipped">{t("已登记发货")}</option>
                     <option value="cancelled">{t("已取消")}</option>
                     <option value="refunded">{t("已退款")}</option>
                   </select>
@@ -840,9 +920,23 @@ function MerchantPage({
                   {t("确认收款前请核对实际到账，当前尚未连接自动支付回调。")}
                 </div>
                 <section className="card">
+                  <BatchDocuments
+                    merchant={data.merchant}
+                    orders={data.orders.filter(
+                      (o) =>
+                        selectedOrders.includes(o.id) &&
+                        o.status === "paid" &&
+                        o.fulfillment_status !== "shipped",
+                    )}
+                  />
                   {orderTable(
-                    data.orders.filter(
-                      (o) => filter === "all" || o.status === filter,
+                    data.orders.filter((o) =>
+                      filter === "to_ship"
+                        ? o.status === "paid" &&
+                          o.fulfillment_status !== "shipped"
+                        : filter === "shipped"
+                          ? o.fulfillment_status === "shipped"
+                          : filter === "all" || o.status === filter,
                     ),
                   )}
                 </section>
@@ -1019,7 +1113,11 @@ function MerchantPage({
                       <option key={c} value={c} />
                     ))}
                   </datalist>
-                  <p className="muted">{t("列表按商家国家提供常见建议，实际配送范围以邮寄公司为准。")}</p>
+                  <p className="muted">
+                    {t(
+                      "列表按商家国家提供常见建议，实际配送范围以邮寄公司为准。",
+                    )}
+                  </p>
                   <p className="muted">
                     {t(
                       "快递由你自行安排，实际公司及运单号可在发货时填写。系统不会自动报价或叫件。",
@@ -1354,9 +1452,11 @@ function MerchantPage({
                     />
                   </label>
                   <datalist id="shipment-couriers">
-                    {couriersFor(data.merchant.country_code || "MY").map((c) => (
-                      <option key={c} value={c} />
-                    ))}
+                    {couriersFor(data.merchant.country_code || "MY").map(
+                      (c) => (
+                        <option key={c} value={c} />
+                      ),
+                    )}
                   </datalist>
                   <label>
                     {t("运单号")}

@@ -53,6 +53,7 @@ jobs:
           VITE_SUPABASE_URL= VITE_SUPABASE_ANON_KEY= npm run build -- --outDir=local-test-dist
           python tests/regional_browser.py
           python tests/shipping_zones_browser.py
+          python tests/fulfillment_browser.py
           python tests/i18n_browser.py
           python tests/content_browser.py
       - name: 隔离构建验证邮件界面

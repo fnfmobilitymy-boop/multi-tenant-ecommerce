@@ -1924,3 +1924,13 @@ td { font-size: 1rem; }
 .platform-detail-fields { margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:16px; }
 .platform-detail-fields dt { font-weight:600;margin-bottom:4px; }
 .platform-detail-fields dd { margin:0;overflow-wrap:anywhere;white-space:pre-wrap; }
+
+.packing-document { margin-top: 24px; padding: 20px; border: 1px solid #ddd; overflow-wrap: anywhere; }
+.packing-document li { margin: 12px 0; }
+@media print {
+  body:has(.batch-print-root) > :not(.batch-print-root) { display: none !important; }
+  .batch-print-root .batch-no-print, .batch-print-root .modal > .row:first-child { display: none !important; }
+  .batch-print-root .modal { max-width: none; margin: 0; }
+  .packing-document { break-after: page; border: 0; }
+  .packing-document:last-child { break-after: auto; }
+}
