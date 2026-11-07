@@ -1,3 +1,6 @@
+import { CustomerWorkspace } from "./customer-workspace";
+import { SalesAnalytics } from "./sales-analytics";
+import { ProductWorkspace } from "./product-workspace";
 import { BatchDocuments } from "./batch-documents";
 import { ShippingZones } from "./shipping-zones";
 import {
@@ -48,6 +51,7 @@ import { Team, Affiliate, Notifications } from "./management";
 type Tab =
   | "dashboard"
   | "products"
+  | "customers"
   | "orders"
   | "agents"
   | "settings"
@@ -268,6 +272,7 @@ function MerchantPage({
     { id: "dashboard", name: "生意总览", icon: LayoutDashboard },
     { id: "products", name: "商品管理", icon: Package },
     { id: "orders", name: "订单管理", icon: ShoppingBag },
+    { id: "customers", name: "顾客管理", icon: Users },
     { id: "agents", name: "代理与佣金", icon: Users },
     { id: "settings", name: "店铺设置", icon: Settings },
     { id: "notifications", name: "邮件通知", icon: ShoppingBag },
@@ -581,25 +586,54 @@ function MerchantPage({
   );
   return (
     <CommerceCurrency currency={currency}>
-      <div className="dashboard-layout">
+      <div className="dashboard-layout merchant-workspace">
         <aside className="sidebar">
           <Brand />
           <span className="nav-caption">{t("商家工作台")}</span>
           <nav>
-            {visibleTabs.map((entry) => (
-              <button
-                key={entry.id}
-                className={tab === entry.id ? "nav-item active" : "nav-item"}
-                onClick={() => {
-                  setTab(entry.id);
-                  setError("");
-                  setNotice("");
-                }}
-              >
-                <entry.icon size={19} />
-                {t(entry.name)}
-              </button>
-            ))}
+            {[
+              {
+                name: "经营管理",
+                ids: [
+                  "dashboard",
+                  "products",
+                  "orders",
+                  "customers",
+                  "books",
+                  "agents",
+                  "payouts",
+                ],
+              },
+              {
+                name: "店铺管理",
+                ids: ["settings", "payments", "notifications", "team"],
+              },
+            ].map((group) => {
+              const entries = visibleTabs.filter((entry) =>
+                group.ids.includes(entry.id),
+              );
+              return entries.length ? (
+                <div className="nav-section" key={group.name}>
+                  <span className="nav-section-label">{t(group.name)}</span>
+                  {entries.map((entry) => (
+                    <button
+                      key={entry.id}
+                      className={
+                        tab === entry.id ? "nav-item active" : "nav-item"
+                      }
+                      onClick={() => {
+                        setTab(entry.id);
+                        setError("");
+                        setNotice("");
+                      }}
+                    >
+                      <entry.icon size={19} />
+                      {t(entry.name)}
+                    </button>
+                  ))}
+                </div>
+              ) : null;
+            })}
           </nav>
           <div className="sidebar-bottom">
             <div className="upgrade-card">
@@ -622,6 +656,21 @@ function MerchantPage({
                 {t(tabs.find((entry) => entry.id === tab)?.name || "工作台")}
               </span>
             </p>
+            {visibleTabs.some((entry) => entry.id === "products") && (
+              <button
+                className="workspace-quick-search"
+                onClick={() => {
+                  setTab("products");
+                  requestAnimationFrame(() =>
+                    document.getElementById("product-search")?.focus(),
+                  );
+                }}
+              >
+                <Search size={17} />
+                <span>{t("快速查找商品")}</span>
+                <span className="keycap">⌕</span>
+              </button>
+            )}
             <div className="profile">
               <span>
                 {data.merchant.name}
@@ -707,28 +756,9 @@ function MerchantPage({
                   ))}
                 </div>
                 <div className="overview-grid">
-                  <section className="card">
-                    <div className="card-heading">
-                      <h2>{t("销售概况")}</h2>
-                      <span className="muted">{t("累计已付款订单")}</span>
-                    </div>
-                    <div className="sales-visual">
-                      <div className="sales-orbit">
-                        <BarChart3 size={48} strokeWidth={1.5} />
-                      </div>
-                      <div>
-                        <span className="muted">{t("已确认销售额")}</span>
-                        <h2>{money(sales, locale)}</h2>
-                        <p>
-                          {paid.length}
-                          {t("笔已付款 \u00B7")}
-                          {pending.length}
-                          {t("笔待付款")}
-                        </p>
-                        <small>{t("以商家实际核实到账记录为准")}</small>
-                      </div>
-                    </div>
-                  </section>
+                  <div className="overview-analytics">
+                    <SalesAnalytics orders={data.orders} />
+                  </div>
                   <section className="card">
                     <div className="card-heading">
                       <h2>{t("快捷操作")}</h2>
@@ -810,11 +840,14 @@ function MerchantPage({
                 </section>
               </>
             )}
+            {tab === "customers" && (
+              <CustomerWorkspace orders={data.orders} open={showOrder} />
+            )}
             {tab === "books" && <Bookkeeping />}
             {tab === "payments" && (
               <>
                 <MerchantPayments
-                      plan={data.merchant.plan}
+                  plan={data.merchant.plan}
                   trialEndsAt={data.merchant.trial_ends_at}
                 />
                 <SubscriptionApplication />
@@ -824,76 +857,46 @@ function MerchantPage({
             {tab === "notifications" && <Notifications />}
             {tab === "team" && <Team />}
             {tab === "products" && (
-              <>
-                <div className="page-heading">
-                  <div>
-                    <h1>{t("商品管理")}</h1>
-                    <p>{t("把好产品，带给更多顾客。")}</p>
-                  </div>
-                  <button className="button" onClick={addProduct}>
-                    <Plus size={17} />
-                    {t("添加商品")}
-                  </button>
-                </div>
-                <div className="search">
-                  <Search size={17} />
-                  <input
-                    aria-label={t("搜索商品")}
-                    placeholder={t("搜索商品名称…")}
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                  />
-                </div>
-                <div className="products-grid admin-products">
-                  {data.products
-                    .filter((p) => p.name.includes(query))
-                    .map((p) => (
-                      <article className="card" key={p.id}>
-                        <div className="product-image">
-                          {p.image ? (
-                            <img src={p.image} alt={p.name} />
-                          ) : (
-                            <span>{p.emoji}</span>
-                          )}
-                          <span className="product-status">
-                            {p.published === 0 ? t("未发布") : t("已发布")}
-                          </span>
-                        </div>
-                        <div className="product-info">
-                          <small>
-                            {!p.category || p.category === "全部商品"
-                              ? t("全部商品")
-                              : p.category}
-                          </small>
-                          <h3>{p.name}</h3>
-                          <div className="row between">
-                            <strong className="purple">
-                              {money(p.price, locale)}
-                            </strong>
-                            <span className="muted">
-                              {t("库存")}
-                              {p.stock}
-                              {t("件")}
-                            </span>
-                          </div>
-                          <button
-                            className="button secondary full small-button"
-                            onClick={() => {
-                              setEditing(p);
-                              setModal("product");
-                              setError("");
-                            }}
-                          >
-                            {t("编辑商品")}
-                          </button>
-                        </div>
-                      </article>
-                    ))}
-                </div>
-                {!data.products.length && (
-                  <Empty>{t("还没有商品。点击「添加商品」开始。")}</Empty>
-                )}
-              </>
+              <ProductWorkspace
+                products={data.products}
+                query={query}
+                setQuery={setQuery}
+                add={addProduct}
+                busy={busy}
+                edit={(p) => {
+                  setEditing(p);
+                  setModal("product");
+                  setError("");
+                }}
+                bulk={async (rows, published) => {
+                  if (!window.confirm(t("确认更新所选商品的上架状态？")))
+                    return false;
+                  setBusy(true);
+                  setError("");
+                  try {
+                    const results = await Promise.allSettled(
+                      rows.map((p) =>
+                        api("products/update", {
+                          ...p,
+                          currency,
+                          published,
+                          featured: p.featured || 0,
+                        }),
+                      ),
+                    );
+                    await refresh();
+                    if (results.some((r) => r.status === "rejected"))
+                      setError("部分商品未更新，请刷新后检查。");
+                    else setNotice("商品上架状态已更新");
+                    return results.every((r) => r.status === "fulfilled");
+                  } catch (e) {
+                    setError((e as Error).message);
+                    return false;
+                  } finally {
+                    setBusy(false);
+                  }
+                }}
+              />
             )}
             {tab === "orders" && (
               <>
@@ -1171,6 +1174,7 @@ function MerchantPage({
         </section>
         {modal && (
           <Modal
+            variant={modal === "product" ? "drawer" : "dialog"}
             title={
               modal === "product"
                 ? editing

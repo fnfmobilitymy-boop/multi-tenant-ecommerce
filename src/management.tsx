@@ -258,6 +258,9 @@ interface PlatformMerchant {
 }
 export function Platform() {
   const { t, locale, errorText } = useI18n();
+  const [merchantSearch, setMerchantSearch] = useState(""),
+    [merchantStatus, setMerchantStatus] = useState("all");
+  const L = (zh: string, en: string) => (locale === "en" ? en : zh);
   const [selected, setSelected] = useState<PlatformMerchant | null>(null);
   const [merchants, setMerchants] = useState<PlatformMerchant[]>([]),
     [error, setError] = useState(""),
@@ -292,6 +295,13 @@ export function Platform() {
       setError((e as Error).message);
     }
   }
+  const visibleMerchants = merchants.filter(
+    (m) =>
+      (merchantStatus === "all" || m.status === merchantStatus) &&
+      `${m.name} ${m.email} ${m.slug}`
+        .toLowerCase()
+        .includes(merchantSearch.trim().toLowerCase()),
+  );
   if (selected)
     return (
       <PlatformDetails merchant={selected} close={() => setSelected(null)} />
@@ -310,68 +320,126 @@ export function Platform() {
           ? "Manually assigning a plan does not confirm payment. Check subscription and payment records separately."
           : "手动修改套餐不代表已收款，请同时核对订阅状态和付款记录。"}
       </div>
-      <PlatformBillingAdmin />
+      <div className="catalog-stats platform-stats">
+        {[
+          [L("商家账号", "Merchant accounts"), merchants.length, "lavender"],
+          [
+            L("正常账号", "Active accounts"),
+            merchants.filter((m) => m.status === "active").length,
+            "mint",
+          ],
+          [
+            L("Pro方案账号", "Pro plan accounts"),
+            merchants.filter((m) => m.plan === "pro").length,
+            "sky",
+          ],
+          [
+            L("暂停账号", "Suspended accounts"),
+            merchants.filter((m) => m.status === "suspended").length,
+            "peach",
+          ],
+        ].map(([label, n, color]) => (
+          <article className={"catalog-stat " + color} key={label}>
+            <span>{label}</span>
+            <strong>{n}</strong>
+          </article>
+        ))}
+      </div>
+      <div id="platform-billing">
+        <PlatformBillingAdmin />
+      </div>
       <ErrorBox error={error} />
       {loading ? (
         <Loading />
       ) : (
-        <div className="card table-scroll">
-          <table>
-            <thead>
-              <tr>
-                <th>{t("商家")}</th>
-                <th>{t("商家国家／地区")}</th>
-                <th>{t("店铺币种")}</th>
-                <th>{locale === "en" ? "Business details" : "业务明细"}</th>
-                <th>{t("订单数")}</th>
-                <th>{t("已收款销售额")}</th>
-                <th>{t("方案")}</th>
-                <th>{t("状态")}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {merchants.map((m) => (
-                <tr key={m.id}>
-                  <td>
-                    {m.name}
-                    <small>{m.email}</small>
-                  </td>
-                  <td>{t(countryNames[m.country_code || "MY"])}</td>
-                  <td>{m.currency || "MYR"}</td>
-                  <td>
-                    <button
-                      className="text-button"
-                      onClick={() => setSelected(m)}
-                    >
-                      {locale === "en" ? "View details" : "查看明细"}
-                    </button>
-                  </td>
-                  <td>{m.orders_count}</td>
-                  <td>{money(m.sales, locale, m.currency || "MYR")}</td>
-                  <td>
-                    <select
-                      aria-label={m.name + t(" 方案")}
-                      value={m.plan}
-                      onChange={(e) => change(m, e.target.value, m.status)}
-                    >
-                      <option value="free">Free</option>
-                      <option value="pro">{t("Pro（手动分配）")}</option>
-                    </select>
-                  </td>
-                  <td>
-                    <select
-                      aria-label={m.name + t(" 状态")}
-                      value={m.status}
-                      onChange={(e) => change(m, m.plan, e.target.value)}
-                    >
-                      <option value="active">{t("正常")}</option>
-                      <option value="suspended">{t("暂停")}</option>
-                    </select>
-                  </td>
+        <div className="card platform-merchant-list">
+          <div className="catalog-toolbar">
+            <input
+              aria-label={L("搜索商家", "Search merchants")}
+              placeholder={L(
+                "搜索商家、邮箱或网址标识",
+                "Search name, email or store slug",
+              )}
+              value={merchantSearch}
+              onChange={(e) => setMerchantSearch(e.target.value)}
+            />
+            <select
+              aria-label={L("筛选商家状态", "Filter merchant status")}
+              value={merchantStatus}
+              onChange={(e) => setMerchantStatus(e.target.value)}
+            >
+              <option value="all">{L("全部状态", "All statuses")}</option>
+              <option value="active">{L("正常", "Active")}</option>
+              <option value="suspended">{L("暂停", "Suspended")}</option>
+            </select>
+          </div>
+          <div className="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>{t("商家")}</th>
+                  <th>{t("商家国家／地区")}</th>
+                  <th>{t("店铺币种")}</th>
+                  <th>{locale === "en" ? "Business details" : "业务明细"}</th>
+                  <th>{t("订单数")}</th>
+                  <th>{t("已收款销售额")}</th>
+                  <th>{t("方案")}</th>
+                  <th>{t("状态")}</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {visibleMerchants.map((m) => (
+                  <tr key={m.id}>
+                    <td>
+                      {m.name}
+                      <small>{m.email}</small>
+                    </td>
+                    <td>{t(countryNames[m.country_code || "MY"])}</td>
+                    <td>{m.currency || "MYR"}</td>
+                    <td>
+                      <button
+                        className="text-button"
+                        onClick={() => setSelected(m)}
+                      >
+                        {locale === "en" ? "View details" : "查看明细"}
+                      </button>
+                    </td>
+                    <td>{m.orders_count}</td>
+                    <td>{money(m.sales, locale, m.currency || "MYR")}</td>
+                    <td>
+                      <select
+                        aria-label={m.name + t(" 方案")}
+                        value={m.plan}
+                        onChange={(e) => change(m, e.target.value, m.status)}
+                      >
+                        <option value="free">Free</option>
+                        <option value="pro">{t("Pro（手动分配）")}</option>
+                      </select>
+                    </td>
+                    <td>
+                      <select
+                        aria-label={m.name + t(" 状态")}
+                        value={m.status}
+                        onChange={(e) => change(m, m.plan, e.target.value)}
+                      >
+                        <option value="active">{t("正常")}</option>
+                        <option value="suspended">{t("暂停")}</option>
+                      </select>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {!visibleMerchants.length && (
+            <div className="empty">
+              {L("没有匹配的商家", "No matching merchants")}
+            </div>
+          )}
+          <div className="catalog-pagination">
+            {L("匹配商家", "Matching merchants")} {visibleMerchants.length} /{" "}
+            {merchants.length}
+          </div>
         </div>
       )}
     </>

@@ -51,6 +51,7 @@ jobs:
       - name: 顾客及商家六语与平台双语
         run: |
           VITE_SUPABASE_URL= VITE_SUPABASE_ANON_KEY= npm run build -- --outDir=local-test-dist
+          python tests/redesign_browser.py
           python tests/regional_browser.py
           python tests/shipping_zones_browser.py
           python tests/fulfillment_browser.py

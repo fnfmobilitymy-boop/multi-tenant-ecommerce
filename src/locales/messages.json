@@ -5521,5 +5521,418 @@
     "การรับเงินค่าสินค้าของร้านค้าไม่ใช้ Stripe โปรดใช้วิธีรับเงินในประเทศของร้านค้า",
     "ការទទួលប្រាក់ថ្លៃទំនិញរបស់អាជីវករមិនប្រើ Stripe ទេ។ សូមប្រើវិធីទូទាត់ក្នុងស្រុករបស់អាជីវករ។",
     "Thanh toán tiền hàng của nhà bán hàng không dùng Stripe. Hãy dùng phương thức thanh toán địa phương của nhà bán hàng."
+  ],
+  "订单联系资料": [
+    "Order contacts",
+    "Kenalan pesanan",
+    "ข้อมูลติดต่อจากคำสั่งซื้อ",
+    "ទំនាក់ទំនងពីការបញ្ជាទិញ",
+    "Liên hệ từ đơn hàng"
+  ],
+  "顾客管理": [
+    "Customers",
+    "Pelanggan",
+    "ลูกค้า",
+    "អតិថិជន",
+    "Khách hàng"
+  ],
+  "根据店铺订单整理顾客资料与已付款消费，不代表已验证会员身份。": [
+    "Contacts and paid spending from store orders; these are not verified member identities.",
+    "Maklumat dan belanja berbayar daripada pesanan kedai; bukan identiti ahli yang disahkan.",
+    "ข้อมูลติดต่อและยอดชำระจากคำสั่งซื้อ ไม่ใช่ตัวตนสมาชิกที่ยืนยันแล้ว",
+    "ព័ត៌មានទំនាក់ទំនង និងចំណាយដែលបានបង់ពីការបញ្ជាទិញ មិនមែនជាអត្តសញ្ញាណសមាជិកដែលបានផ្ទៀងផ្ទាត់ទេ។",
+    "Thông tin liên hệ và chi tiêu đã thanh toán từ đơn hàng, không phải danh tính thành viên đã xác minh."
+  ],
+  "顾客数": [
+    "Customers",
+    "Bilangan pelanggan",
+    "จำนวนลูกค้า",
+    "ចំនួនអតិថិជន",
+    "Số khách hàng"
+  ],
+  "回购顾客": [
+    "Repeat customers",
+    "Pelanggan berulang",
+    "ลูกค้าซื้อซ้ำ",
+    "អតិថិជនទិញម្តងទៀត",
+    "Khách mua lại"
+  ],
+  "已付款订单": [
+    "Paid orders",
+    "Pesanan dibayar",
+    "คำสั่งซื้อที่ชำระแล้ว",
+    "ការបញ្ជាទិញបានបង់",
+    "Đơn đã thanh toán"
+  ],
+  "搜索顾客": [
+    "Search customers",
+    "Cari pelanggan",
+    "ค้นหาลูกค้า",
+    "ស្វែងរកអតិថិជន",
+    "Tìm khách hàng"
+  ],
+  "搜索姓名、邮箱或电话": [
+    "Search name, email or phone",
+    "Cari nama, e-mel atau telefon",
+    "ค้นหาชื่อ อีเมล หรือโทรศัพท์",
+    "ស្វែងរកឈ្មោះ អ៊ីមែល ឬទូរស័ព្ទ",
+    "Tìm tên, email hoặc điện thoại"
+  ],
+  "查看订单": [
+    "View orders",
+    "Lihat pesanan",
+    "ดูคำสั่งซื้อ",
+    "មើលការបញ្ជាទិញ",
+    "Xem đơn hàng"
+  ],
+  "暂无匹配顾客": [
+    "No matching customers",
+    "Tiada pelanggan sepadan",
+    "ไม่พบลูกค้าที่ตรงกัน",
+    "គ្មានអតិថិជនដែលត្រូវគ្នា",
+    "Không có khách phù hợp"
+  ],
+  "快速查找商品": [
+    "Quick product search",
+    "Carian pantas produk",
+    "ค้นหาสินค้าด่วน",
+    "ស្វែងរកផលិតផលរហ័ស",
+    "Tìm nhanh sản phẩm"
+  ],
+  "确认更新所选商品的上架状态？": [
+    "Update the selected products’ publishing status?",
+    "Kemas kini status penerbitan produk dipilih?",
+    "อัปเดตสถานะการเผยแพร่สินค้าที่เลือกหรือไม่?",
+    "ធ្វើបច្ចុប្បន្នភាពស្ថានភាពបោះផ្សាយផលិតផលដែលបានជ្រើស?",
+    "Cập nhật trạng thái đăng bán các sản phẩm đã chọn?"
+  ],
+  "价格": [
+    "Price",
+    "Harga",
+    "ราคา",
+    "តម្លៃ",
+    "Giá"
+  ],
+  "币种": [
+    "Currency",
+    "Mata wang",
+    "สกุลเงิน",
+    "រូបិយប័ណ្ណ",
+    "Tiền tệ"
+  ],
+  "商品目录": [
+    "Product catalog",
+    "Katalog produk",
+    "แคตตาล็อกสินค้า",
+    "កាតាឡុកផលិតផល",
+    "Danh mục sản phẩm"
+  ],
+  "导出商品": [
+    "Export products",
+    "Eksport produk",
+    "ส่งออกสินค้า",
+    "នាំចេញផលិតផល",
+    "Xuất sản phẩm"
+  ],
+  "库存1至5件": [
+    "1–5 units remaining",
+    "Baki 1–5 unit",
+    "เหลือ 1–5 ชิ้น",
+    "នៅសល់ 1–5 ឯកតា",
+    "Còn 1–5 sản phẩm"
+  ],
+  "实时商品数据": [
+    "Current product data",
+    "Data produk semasa",
+    "ข้อมูลสินค้าปัจจุบัน",
+    "ទិន្នន័យផលិតផលបច្ចុប្បន្ន",
+    "Dữ liệu sản phẩm hiện tại"
+  ],
+  "商品状态筛选": [
+    "Product status filter",
+    "Tapis status produk",
+    "กรองสถานะสินค้า",
+    "តម្រងស្ថានភាពផលិតផល",
+    "Lọc trạng thái sản phẩm"
+  ],
+  "商品排序": [
+    "Sort products",
+    "Susun produk",
+    "เรียงสินค้า",
+    "តម្រៀបផលិតផល",
+    "Sắp xếp sản phẩm"
+  ],
+  "商品显示方式": [
+    "Product display",
+    "Paparan produk",
+    "การแสดงสินค้า",
+    "ការបង្ហាញផលិតផល",
+    "Hiển thị sản phẩm"
+  ],
+  "表格视图": [
+    "Table view",
+    "Paparan jadual",
+    "มุมมองตาราง",
+    "ទិដ្ឋភាពតារាង",
+    "Dạng bảng"
+  ],
+  "卡片视图": [
+    "Card view",
+    "Paparan kad",
+    "มุมมองการ์ด",
+    "ទិដ្ឋភាពកាត",
+    "Dạng thẻ"
+  ],
+  "已选商品": [
+    "Selected products",
+    "Produk dipilih",
+    "สินค้าที่เลือก",
+    "ផលិតផលដែលបានជ្រើស",
+    "Sản phẩm đã chọn"
+  ],
+  "批量上架": [
+    "Publish selected",
+    "Terbitkan pilihan",
+    "เผยแพร่ที่เลือก",
+    "បោះផ្សាយដែលបានជ្រើស",
+    "Đăng bán đã chọn"
+  ],
+  "批量下架": [
+    "Unpublish selected",
+    "Nyahterbit pilihan",
+    "ยกเลิกเผยแพร่ที่เลือก",
+    "ដកការបោះផ្សាយដែលបានជ្រើស",
+    "Ẩn sản phẩm đã chọn"
+  ],
+  "清除选择": [
+    "Clear selection",
+    "Kosongkan pilihan",
+    "ล้างที่เลือก",
+    "សម្អាតការជ្រើស",
+    "Bỏ chọn"
+  ],
+  "选择本页商品": [
+    "Select this page",
+    "Pilih halaman ini",
+    "เลือกหน้านี้",
+    "ជ្រើសទំព័រនេះ",
+    "Chọn trang này"
+  ],
+  "选择商品 {name}": [
+    "Select {name}",
+    "Pilih {name}",
+    "เลือก {name}",
+    "ជ្រើស {name}",
+    "Chọn {name}"
+  ],
+  "重置筛选": [
+    "Reset filters",
+    "Tetapkan semula penapis",
+    "รีเซ็ตตัวกรอง",
+    "កំណត់តម្រងឡើងវិញ",
+    "Đặt lại bộ lọc"
+  ],
+  "匹配商品": [
+    "Matching products",
+    "Produk sepadan",
+    "สินค้าที่ตรงกัน",
+    "ផលិតផលដែលត្រូវគ្នា",
+    "Sản phẩm phù hợp"
+  ],
+  "上一页": [
+    "Previous page",
+    "Halaman sebelumnya",
+    "หน้าก่อน",
+    "ទំព័រមុន",
+    "Trang trước"
+  ],
+  "下一页": [
+    "Next page",
+    "Halaman seterusnya",
+    "หน้าถัดไป",
+    "ទំព័របន្ទាប់",
+    "Trang sau"
+  ],
+  "销售趋势": [
+    "Sales trend",
+    "Aliran jualan",
+    "แนวโน้มยอดขาย",
+    "និន្នាការលក់",
+    "Xu hướng bán hàng"
+  ],
+  "按下单日期统计当前已付款订单": [
+    "Currently paid orders by order date",
+    "Pesanan kini dibayar mengikut tarikh pesanan",
+    "คำสั่งซื้อที่ชำระแล้วในปัจจุบันตามวันที่สั่ง",
+    "ការបញ្ជាទិញដែលបានបង់បច្ចុប្បន្នតាមថ្ងៃបញ្ជាទិញ",
+    "Đơn hiện đã thanh toán theo ngày đặt hàng"
+  ],
+  "统计周期": [
+    "Reporting period",
+    "Tempoh laporan",
+    "ช่วงรายงาน",
+    "រយៈពេលរបាយការណ៍",
+    "Kỳ báo cáo"
+  ],
+  "最近7天": [
+    "Last 7 days",
+    "7 hari terakhir",
+    "7 วันที่ผ่านมา",
+    "7 ថ្ងៃចុងក្រោយ",
+    "7 ngày qua"
+  ],
+  "最近30天": [
+    "Last 30 days",
+    "30 hari terakhir",
+    "30 วันที่ผ่านมา",
+    "30 ថ្ងៃចុងក្រោយ",
+    "30 ngày qua"
+  ],
+  "笔已付款订单": [
+    "paid orders",
+    "pesanan dibayar",
+    "คำสั่งซื้อที่ชำระแล้ว",
+    "ការបញ្ជាទិញបានបង់",
+    "đơn đã thanh toán"
+  ],
+  "查看数据": [
+    "View data",
+    "Lihat data",
+    "ดูข้อมูล",
+    "មើលទិន្នន័យ",
+    "Xem dữ liệu"
+  ],
+  "此期间暂无已付款订单": [
+    "No paid orders in this period",
+    "Tiada pesanan dibayar dalam tempoh ini",
+    "ไม่มีคำสั่งซื้อที่ชำระแล้วในช่วงนี้",
+    "គ្មានការបញ្ជាទិញបានបង់ក្នុងរយៈពេលនេះ",
+    "Chưa có đơn đã thanh toán trong kỳ này"
+  ],
+  "日期不明的订单未计入趋势": [
+    "Orders with unknown dates are excluded",
+    "Pesanan tanpa tarikh sah tidak dikira",
+    "ไม่รวมคำสั่งซื้อที่ไม่ทราบวันที่",
+    "ការបញ្ជាទិញដែលមិនស្គាល់កាលបរិច្ឆេទមិនត្រូវបានរាប់",
+    "Không tính đơn không rõ ngày vào biểu đồ"
+  ],
+  "订单状态分布": [
+    "Order status breakdown",
+    "Pecahan status pesanan",
+    "สัดส่วนสถานะคำสั่งซื้อ",
+    "ការបែងចែកស្ថានភាពបញ្ជាទិញ",
+    "Phân bố trạng thái đơn"
+  ],
+  "全部真实订单": [
+    "All store orders",
+    "Semua pesanan kedai",
+    "คำสั่งซื้อทั้งหมดของร้าน",
+    "ការបញ្ជាទិញទាំងអស់របស់ហាង",
+    "Tất cả đơn của cửa hàng"
+  ],
+  "取消或退款": [
+    "Cancelled or refunded",
+    "Dibatalkan atau dipulangkan",
+    "ยกเลิกหรือคืนเงิน",
+    "បានលុបចោល ឬសងប្រាក់",
+    "Đã hủy hoặc hoàn tiền"
+  ],
+  "仅看有货": [
+    "In stock only",
+    "Stok tersedia sahaja",
+    "เฉพาะสินค้ามีสต็อก",
+    "តែផលិតផលមានស្តុក",
+    "Chỉ còn hàng"
+  ],
+  "经营管理": [
+    "Business",
+    "Perniagaan",
+    "จัดการธุรกิจ",
+    "គ្រប់គ្រងអាជីវកម្ម",
+    "Kinh doanh"
+  ],
+  "店铺管理": [
+    "Store settings",
+    "Pengurusan kedai",
+    "จัดการร้าน",
+    "គ្រប់គ្រងហាង",
+    "Quản lý cửa hàng"
+  ],
+  "最新添加": [
+    "Recently added",
+    "Terbaharu ditambah",
+    "เพิ่มล่าสุด",
+    "បានបន្ថែមថ្មីៗ",
+    "Mới thêm"
+  ],
+  "名称排序": [
+    "Name",
+    "Nama",
+    "ชื่อ",
+    "ឈ្មោះ",
+    "Tên"
+  ],
+  "价格从低到高": [
+    "Price: low to high",
+    "Harga: rendah ke tinggi",
+    "ราคา: ต่ำไปสูง",
+    "តម្លៃ៖ ទាបទៅខ្ពស់",
+    "Giá: thấp đến cao"
+  ],
+  "价格从高到低": [
+    "Price: high to low",
+    "Harga: tinggi ke rendah",
+    "ราคา: สูงไปต่ำ",
+    "តម្លៃ៖ ខ្ពស់ទៅទាប",
+    "Giá: cao đến thấp"
+  ],
+  "库存从少到多": [
+    "Stock: low to high",
+    "Stok: rendah ke tinggi",
+    "สต็อก: น้อยไปมาก",
+    "ស្តុក៖ តិចទៅច្រើន",
+    "Tồn kho: ít đến nhiều"
+  ],
+  "精选优先": [
+    "Featured first",
+    "Pilihan dahulu",
+    "แนะนำก่อน",
+    "ណែនាំមុន",
+    "Ưu tiên nổi bật"
+  ],
+  "部分商品未更新，请刷新后检查。": [
+    "Some products were not updated. Refresh and check.",
+    "Sesetengah produk tidak dikemas kini. Muat semula dan semak.",
+    "สินค้าบางรายการไม่อัปเดต โปรดรีเฟรชและตรวจสอบ",
+    "ផលិតផលខ្លះមិនបានធ្វើបច្ចុប្បន្នភាព សូមផ្ទុកឡើងវិញនិងពិនិត្យ។",
+    "Một số sản phẩm chưa cập nhật. Hãy tải lại và kiểm tra."
+  ],
+  "商品上架状态已更新": [
+    "Product publishing status updated",
+    "Status penerbitan produk dikemas kini",
+    "อัปเดตสถานะการเผยแพร่แล้ว",
+    "បានធ្វើបច្ចុប្បន្នភាពស្ថានភាពបោះផ្សាយ",
+    "Đã cập nhật trạng thái đăng bán"
+  ],
+  "最近下单": [
+    "Last order",
+    "Pesanan terakhir",
+    "คำสั่งซื้อล่าสุด",
+    "ការបញ្ជាទិញចុងក្រោយ",
+    "Đơn gần nhất"
+  ],
+  "库存售罄": [
+    "Out of stock",
+    "Stok habis",
+    "สินค้าหมด",
+    "អស់ស្តុក",
+    "Hết hàng"
+  ],
+  "低库存": [
+    "Low stock",
+    "Stok rendah",
+    "สต็อกต่ำ",
+    "ស្តុកទាប",
+    "Sắp hết hàng"
   ]
 }

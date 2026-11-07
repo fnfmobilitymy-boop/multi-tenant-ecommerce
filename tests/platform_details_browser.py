@@ -69,7 +69,14 @@ try:
                 raise AssertionError('Unexpected external request: '+url.path)
             c.route('**/*',intercept);return c
         c=context();page=c.new_page();page.on('pageerror',lambda e:errors.append(str(e)))
-        page.goto(base+'/platform');page.get_by_role('row').filter(has_text='owner@example.test').get_by_role('button',name='查看明细',exact=True).click()
+        page.goto(base+'/platform')
+        page.get_by_label('搜索商家',exact=True).fill('no-such-store');page.get_by_text('没有匹配的商家',exact=True).wait_for()
+        page.get_by_label('搜索商家',exact=True).fill('owner@example.test');page.get_by_role('row').filter(has_text='owner@example.test').wait_for()
+        page.get_by_label('筛选商家状态',exact=True).select_option('active');page.get_by_text('没有匹配的商家',exact=True).wait_for()
+        page.get_by_label('筛选商家状态',exact=True).select_option('suspended')
+        (root/'test-results').mkdir(exist_ok=True)
+        page.screenshot(path=str(root/'test-results/redesign-platform.png'),full_page=True)
+        page.get_by_role('row').filter(has_text='owner@example.test').get_by_role('button',name='查看明细',exact=True).click()
         page.get_by_role('heading',name='Target Store',exact=True).wait_for();page.get_by_text('not-a-real-account',exact=True).wait_for()
         page.locator('article.metric').filter(has_text='预计经营利润').locator('strong').filter(has_text='10.00').wait_for()
         assert page.locator('a[href*="/merchant"],a[href*="/shop/"]').count()==0

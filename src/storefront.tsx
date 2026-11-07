@@ -52,6 +52,8 @@ export function Storefront() {
   const [quote, setQuote] = useState<ShippingQuote | null>(null),
     [quoteError, setQuoteError] = useState(""),
     [quoteLoading, setQuoteLoading] = useState(false);
+  const [productSort, setProductSort] = useState("featured"),
+    [stockOnly, setStockOnly] = useState(false);
   const [destination, setDestination] = useState({
     state: "",
     city: "",
@@ -279,11 +281,22 @@ export function Storefront() {
     "全部商品",
     ...new Set(data.products.map((p) => p.category || "其他")),
   ].filter((c, i, a) => a.indexOf(c) === i);
-  const shown = data.products.filter(
-    (p) =>
-      (category === "全部商品" || p.category === category) &&
-      p.name.toLowerCase().includes(query.toLowerCase()),
-  );
+  const shown = data.products
+    .filter(
+      (p) =>
+        (category === "全部商品" || p.category === category) &&
+        p.name.toLowerCase().includes(query.toLowerCase()) &&
+        (!stockOnly || p.stock > 0),
+    )
+    .sort((a, b) =>
+      productSort === "price_asc"
+        ? a.price - b.price
+        : productSort === "price_desc"
+          ? b.price - a.price
+          : productSort === "newest"
+            ? b.id - a.id
+            : (b.featured || 0) - (a.featured || 0) || b.id - a.id,
+    );
   const productCard = (p: Product) => (
     <Link key={p.id} className="product-card" to={base + "/product/" + p.id}>
       <div className="product-image">
@@ -441,6 +454,35 @@ export function Storefront() {
                         )}
                   </button>
                 ))}
+              </div>
+              <div className="store-catalog-tools">
+                <span>
+                  {t("匹配商品")} {shown.length}
+                </span>
+                <label className="stock-filter">
+                  <input
+                    type="checkbox"
+                    checked={stockOnly}
+                    onChange={(e) => setStockOnly(e.target.checked)}
+                  />
+                  {t("仅看有货")}
+                </label>
+                <select
+                  aria-label={t("商品排序")}
+                  value={productSort}
+                  onChange={(e) => setProductSort(e.target.value)}
+                >
+                  {[
+                    ["featured", "精选优先"],
+                    ["newest", "最新添加"],
+                    ["price_asc", "价格从低到高"],
+                    ["price_desc", "价格从高到低"],
+                  ].map(([v, k]) => (
+                    <option key={v} value={v}>
+                      {t(k)}
+                    </option>
+                  ))}
+                </select>
               </div>
               {shown.length ? (
                 <div className="products-grid">{shown.map(productCard)}</div>

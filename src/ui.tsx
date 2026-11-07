@@ -36,19 +36,26 @@ export function Modal({
   title,
   children,
   close,
+  variant = "dialog",
 }: {
+  variant?: "dialog" | "drawer";
   title: string;
   children: ReactNode;
   close: () => void;
 }) {
   const { t, locale, errorText } = useI18n();
   return (
-    <div className="modal-backdrop" onClick={close}>
+    <div
+      className={
+        "modal-backdrop" + (variant === "drawer" ? " drawer-backdrop" : "")
+      }
+      onClick={close}
+    >
       <section
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        className="modal"
+        className={"modal" + (variant === "drawer" ? " product-drawer" : "")}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="row between">
