@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import platformIcon from "./assets/platform-icon.jpg";
-import merchantIcon from "./assets/merchant-icon.jpg";
-import customerIcon from "./assets/customer-icon.jpg";
+import platformIcon from "./assets/platform-icon.png";
+import merchantIcon from "./assets/merchant-icon.png";
+import customerIcon from "./assets/customer-icon.png";
 
 export function portalIcon(pathname: string) {
   if (pathname === "/platform" || pathname.startsWith("/platform/")) return platformIcon;
@@ -21,7 +21,7 @@ export function PortalFavicon() {
       link.dataset.ezshopIcon = "true";
       document.head.appendChild(link);
     }
-    link.type = "image/jpeg";
+    link.type = "image/png";
     link.href = icon;
   }, [icon]);
   return null;
