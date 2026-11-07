@@ -8,7 +8,7 @@ root=Path(__file__).resolve().parent.parent
 class Quiet(SimpleHTTPRequestHandler):
     def log_message(self,*args):pass
     def do_GET(self):
-        if urlparse(self.path).path.startswith('/shop/'):self.path='/index.html'
+        if urlparse(self.path).path == '/merchant' or urlparse(self.path).path.startswith('/shop/'):self.path='/index.html'
         return super().do_GET()
 server=ThreadingHTTPServer(('127.0.0.1',3105),functools.partial(Quiet,directory=str(root/os.environ.get('EZSHOP_AUTH_TEST_DIST','auth-test-dist'))))
 threading.Thread(target=server.serve_forever,daemon=True).start()
@@ -48,7 +48,7 @@ try:
             return route.abort()
         context.route('**/*',intercept)
         page=context.new_page();page.on('pageerror',lambda e:errors.append(str(e)))
-        page.goto(base)
+        page.goto(base+'/merchant')
         page.get_by_role('button',name='收款设置与套餐',exact=True).click()
         page.get_by_text('使用下方平台订阅申请付款，平台核实到账后开通服务。',exact=True).wait_for()
         assert page.get_by_role('button',name='查看价格并订阅 Pro',exact=True).count()==0

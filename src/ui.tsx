@@ -3,11 +3,22 @@ import { Link, useLocation } from "react-router-dom";
 import { portalIcon } from "./portal-branding";
 import { X, LoaderCircle } from "lucide-react";
 import type { ReactNode } from "react";
-export function Brand({ to = "/" }: { to?: string }) {
+export function Brand({ to }: { to?: string }) {
   const { pathname } = useLocation();
   const { t, locale, errorText } = useI18n();
   return (
-    <Link to={to} className="brand" aria-label="EZShop">
+    <Link
+      to={
+        to ??
+        (pathname === "/"
+          ? "/"
+          : pathname.startsWith("/platform")
+            ? "/platform"
+            : pathname.match(/^\/shop\/[^/]+/)?.[0] || "/merchant")
+      }
+      className="brand"
+      aria-label="EZShop"
+    >
       <span className="brand-icon portal-brand-icon">
         <img src={portalIcon(pathname)} alt="" width={48} height={48} />
       </span>

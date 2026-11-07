@@ -91,7 +91,7 @@ export function ForgotPassword() {
             </button>
           </>
         )}
-        <Link className="text-button" style={{ marginTop: 25 }} to="/">
+        <Link className="text-button" style={{ marginTop: 25 }} to="/merchant">
           {t("返回登录")}
         </Link>
       </form>
@@ -168,7 +168,7 @@ export function ResetPassword() {
                 {t("密码已更新，但退出会话未完成。请关闭此窗口后重新登录。")}
               </p>
             )}
-            <Link className="button full" to="/">
+            <Link className="button full" to="/merchant">
               {t("返回登录")}
             </Link>
           </>

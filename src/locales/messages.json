@@ -5990,5 +5990,54 @@
     "เลือกดูตามหมวดหมู่ หรือค้นหาชื่อสินค้า",
     "រកតាមប្រភេទ ឬស្វែងរកតាមឈ្មោះផលិតផល។",
     "Duyệt theo danh mục hoặc tìm theo tên sản phẩm."
+  ],
+  "欢迎来到 EZShop": [
+    "Welcome to EZShop",
+    "Selamat datang ke EZShop",
+    "ยินดีต้อนรับสู่ EZShop",
+    "សូមស្វាគមន៍មកកាន់ EZShop",
+    "Chào mừng đến EZShop"
+  ],
+  "使用商家分享的店铺链接，浏览商品和查询订单。": [
+    "Use your merchant’s store link to browse products and check orders.",
+    "Gunakan pautan kedai daripada peniaga untuk melihat produk dan menyemak pesanan.",
+    "ใช้ลิงก์ร้านค้าจากผู้ขายเพื่อเลือกสินค้าและตรวจสอบคำสั่งซื้อ",
+    "ប្រើតំណហាងដែលអ្នកលក់បានចែករំលែក ដើម្បីមើលផលិតផល និងពិនិត្យការបញ្ជាទិញ។",
+    "Dùng liên kết cửa hàng do người bán chia sẻ để xem sản phẩm và tra cứu đơn hàng."
+  ],
+  "店铺链接或标识": [
+    "Store link or identifier",
+    "Pautan atau pengenal kedai",
+    "ลิงก์หรือรหัสร้านค้า",
+    "តំណ ឬសម្គាល់ហាង",
+    "Liên kết hoặc mã cửa hàng"
+  ],
+  "粘贴商家分享的店铺链接": [
+    "Paste your merchant’s store link",
+    "Tampal pautan kedai daripada peniaga",
+    "วางลิงก์ร้านค้าจากผู้ขาย",
+    "បិទភ្ជាប់តំណហាងពីអ្នកលក់",
+    "Dán liên kết cửa hàng từ người bán"
+  ],
+  "进入店铺": [
+    "Enter store",
+    "Masuk kedai",
+    "เข้าร้าน",
+    "ចូលហាង",
+    "Vào cửa hàng"
+  ],
+  "每家店铺独立经营，请向商家索取专属链接。": [
+    "Each store operates independently. Ask your merchant for their store link.",
+    "Setiap kedai beroperasi secara berasingan. Minta pautan kedai daripada peniaga.",
+    "แต่ละร้านดำเนินการแยกกัน โปรดขอลิงก์ร้านจากผู้ขาย",
+    "ហាងនីមួយៗដំណើរការដោយឯករាជ្យ សូមស្នើតំណហាងពីអ្នកលក់។",
+    "Mỗi cửa hàng hoạt động độc lập. Hãy xin liên kết riêng từ người bán."
+  ],
+  "请输入有效的店铺链接或标识。": [
+    "Enter a valid store link or identifier.",
+    "Masukkan pautan atau pengenal kedai yang sah.",
+    "กรุณาใส่ลิงก์หรือรหัสร้านค้าที่ถูกต้อง",
+    "សូមបញ្ចូលតំណ ឬសម្គាល់ហាងដែលត្រឹមត្រូវ។",
+    "Nhập liên kết hoặc mã cửa hàng hợp lệ."
   ]
 }

@@ -24,7 +24,7 @@ with tempfile.TemporaryDirectory() as temp:
                 return context
             merchant=isolated_context(viewport={'width':1440,'height':1050}).new_page()
             errors=[];merchant.on('pageerror',lambda e:errors.append(str(e)))
-            merchant.goto(base)
+            merchant.goto(base+'/merchant')
             merchant.get_by_role('button',name='免费注册',exact=True).click()
             merchant.get_by_label('店铺名称',exact=True).fill('Kedai Kita')
             merchant.get_by_label('店铺网址标识').fill('kedai-kita')

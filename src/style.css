@@ -2995,3 +2995,10 @@ small { color: #64748b; }
 /* Portal artwork with the exterior white background removed. */
 .portal-brand-icon { width: 48px; height: 48px; flex-shrink: 0; background: transparent; border-radius: 10px; }
 .portal-brand-icon img { display: block; width: 100%; height: 100%; object-fit: contain; border-radius: inherit; }
+.customer-home { min-height: calc(100dvh - 4rem); background: #f8fafc; padding: 28px 24px 64px; }
+.customer-home > header { max-width: 1120px; margin: 0 auto; }
+.customer-entry { max-width: 480px; margin: 60px auto 0; padding: 36px; }
+.customer-entry h1 { margin: 20px 0 12px; }
+.customer-entry form { margin: 28px 0 20px; }
+.customer-entry > small { display: block; }
+@media(max-width:650px) { .customer-home { padding: 20px 16px 40px; }.customer-entry { margin-top: 28px; padding: 25px; } }

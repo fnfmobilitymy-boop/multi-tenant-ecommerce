@@ -28,6 +28,14 @@ with tempfile.TemporaryDirectory() as temp:
     call('checkout',{'slug':'kenny-lifestyle','customer':'Alex Tan' if i<2 else 'Maya','email':'alex@example.test' if i<2 else 'maya@example.test','phone':'0123456789','address':'Kuala Lumpur','city':'Kuala Lumpur','state':'Kuala Lumpur','postcode':'50000','items':[{'id':products[0]['id'],'quantity':1}],'checkout_key':'workspace-checkout-'+str(i)+'-1234567890'})
    # Fixture paid orders only. No payment provider or production database touched.
    with sqlite3.connect(db) as c:c.execute("UPDATE orders SET status='paid' WHERE id IN (1,2)");c.commit()
+   page.goto(base);page.get_by_role('heading',name='欢迎来到 EZShop',exact=True).wait_for()
+   assert page.locator('a[href*="/merchant"],a[href*="/platform"]').count()==0
+   assert 'Kenny Lifestyle' not in page.locator('body').inner_text()
+   (root/'test-results').mkdir(exist_ok=True);page.screenshot(path=str(root/'test-results/customer-home.png'),full_page=True)
+   page.get_by_label('店铺链接或标识',exact=True).fill('https://other.example/shop/kenny-lifestyle');page.get_by_role('button',name='进入店铺',exact=True).click()
+   page.get_by_role('alert').filter(has_text='请输入有效的店铺链接或标识').wait_for()
+   page.get_by_label('店铺链接或标识',exact=True).fill('https://ezshop.lifestyle/shop/kenny-lifestyle');page.get_by_role('button',name='进入店铺',exact=True).click()
+   page.get_by_role('heading',name='Kenny Lifestyle',exact=True).wait_for()
    page.goto(base+'/merchant');page.get_by_role('heading',name='经营概览',exact=True).wait_for()
    expect(page.locator('.brand-icon img').first).to_have_attribute('src', __import__('re').compile('merchant-icon'))
    page.wait_for_function("document.querySelector('.brand-icon img').naturalWidth > 0 && document.querySelector('link[data-ezshop-icon]').href.includes('merchant-icon')")

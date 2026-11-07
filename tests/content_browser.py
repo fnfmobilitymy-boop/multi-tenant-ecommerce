@@ -20,7 +20,7 @@ with tempfile.TemporaryDirectory() as directory:
                 return value
             merchant=context('vi-VN');page=merchant.new_page();page.on('pageerror',lambda e:errors.append(str(e)))
             for attempt in range(80):
-                try:page.goto(base);break
+                try:page.goto(base+'/merchant');break
                 except Exception:time.sleep(.05)
             else:raise RuntimeError('Server failed')
             assert page.locator('.language-selector select').input_value()=='vi','Merchant browser default was ignored'

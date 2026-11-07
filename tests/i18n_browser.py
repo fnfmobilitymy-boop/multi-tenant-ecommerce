@@ -18,7 +18,7 @@ with tempfile.TemporaryDirectory() as directory:
             context.route('**/*',lambda route:route.continue_() if urlparse(route.request.url).hostname=='127.0.0.1' else route.abort())
             page=context.new_page();page.on('pageerror',lambda e:errors.append(str(e)))
             for attempt in range(80):
-                try:page.goto(base);break
+                try:page.goto(base+'/merchant');break
                 except Exception:time.sleep(.05)
             else:raise RuntimeError('Local server did not start')
             selector=page.locator('.language-selector select')

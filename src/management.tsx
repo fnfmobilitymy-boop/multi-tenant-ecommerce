@@ -586,7 +586,7 @@ export function Join() {
             <button
               type="button"
               className="button full"
-              onClick={() => navigate("/")}
+              onClick={() => navigate("/merchant")}
             >
               {t("前往登录")}
             </button>

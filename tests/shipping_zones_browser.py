@@ -16,7 +16,7 @@ with tempfile.TemporaryDirectory() as tmp:
             if os.environ.get('EZSHOP_CHROMIUM'):options['executable_path']=os.environ['EZSHOP_CHROMIUM']
             browser=p.chromium.launch(**options);context=browser.new_context(locale='zh-CN',timezone_id='Asia/Kuala_Lumpur');errors=[]
             context.route('**/*',lambda route:route.continue_() if urlparse(route.request.url).hostname=='127.0.0.1' else route.abort())
-            owner=context.new_page();owner.on('pageerror',lambda e:errors.append(str(e)));owner.goto(base);owner.get_by_role('button',name='免费注册',exact=True).click()
+            owner=context.new_page();owner.on('pageerror',lambda e:errors.append(str(e)));owner.goto(base+'/merchant');owner.get_by_role('button',name='免费注册',exact=True).click()
             for name,value in [('店铺名称','Zones Store'),('店铺网址标识','zones-store'),('邮箱地址','zones@example.test'),('密码','Fixture-password-12345')]:owner.get_by_label(name,exact=True).fill(value)
             owner.get_by_role('button',name='创建店铺',exact=True).click();owner.get_by_role('heading',name='经营概览',exact=True).wait_for()
             owner.get_by_role('button',name='添加新商品',exact=False).click();dialog=owner.get_by_role('dialog');dialog.get_by_label('商品名称',exact=True).fill('Zones Item');dialog.get_by_label('价格（MYR）',exact=True).fill('10.00');dialog.get_by_role('button',name='保存',exact=True).click();dialog.wait_for(state='hidden')

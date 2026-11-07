@@ -1,15 +1,10 @@
+import { CustomerHome } from "./customer-home";
 import { PortalFavicon } from "./portal-branding";
 import { CustomerAccount } from "./customer-account";
 import { I18nProvider, LanguageToolbar, useI18n } from "./i18n";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  useLocation,
-  Navigate,
-} from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { PlatformApp } from "./platform";
 import { MerchantApp } from "./merchant";
 import { OrderLookup } from "./order-lookup";
@@ -25,7 +20,10 @@ function AppRoutes() {
   const location = useLocation();
   if (location.pathname === "/")
     return (
-      <Navigate to={"/merchant" + location.search + location.hash} replace />
+      <I18nProvider audience="customer">
+        <LanguageToolbar />
+        <CustomerHome />
+      </I18nProvider>
     );
   if (location.pathname === "/merchant") return <MerchantApp />;
   if (

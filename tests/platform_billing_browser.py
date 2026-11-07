@@ -53,7 +53,7 @@ try:
                         state['approve_calls']+=1;state['plan']='pro';state['paid_until']='2026-12-05T00:00:00Z';state['requests'][0].update(status='approved',approved_until=state['paid_until']);return reply({'ok':True})
                 return route.abort()
             result.route('**/*',intercept);return result
-        merchant=context(False).new_page();merchant.on('pageerror',lambda e:errors.append(str(e)));merchant.goto('http://127.0.0.1:3108');merchant.get_by_role('button',name='收款设置与套餐',exact=True).click();merchant.get_by_text('Pro：MYR 99.90/月，另加6%税费，共MYR 105.89/月。',exact=True).wait_for()
+        merchant=context(False).new_page();merchant.on('pageerror',lambda e:errors.append(str(e)));merchant.goto('http://127.0.0.1:3108/merchant');merchant.get_by_role('button',name='收款设置与套餐',exact=True).click();merchant.get_by_text('Pro：MYR 99.90/月，另加6%税费，共MYR 105.89/月。',exact=True).wait_for()
         assert merchant.get_by_role('button',name='平台管理',exact=True).count()==0
         denied=context(False).new_page();denied.goto('http://127.0.0.1:3108/platform');denied.get_by_role('heading',name='平台管理员登录',exact=True).wait_for();assert denied.get_by_role('button',name='核实并处理',exact=True).count()==0
         receiving_panel=merchant.locator('section.card').filter(has=merchant.get_by_role('heading',name='商家收款方式与资料',exact=True))
@@ -79,6 +79,6 @@ try:
         dialog.get_by_role('button',name='确认到账并开通服务',exact=True).click();assert state['approve_calls']==0
         dialog.get_by_label('已核对银行、钱包或 Stripe 的真实到账',exact=True).check();dialog.get_by_role('button',name='确认到账并开通服务',exact=True).click();dialog.wait_for(state='hidden');assert state['plan']=='pro'
         section.get_by_role('button',name='刷新记录',exact=True).click();section.get_by_text('已核实并开通',exact=True).wait_for()
-        expired=context(False,True).new_page();expired.goto('http://127.0.0.1:3108');expired.get_by_role('heading',name='Pro试用或订阅已到期，请先续费。',exact=True).wait_for();assert expired.get_by_role('button',name='商品管理',exact=True).count()==0;expired.get_by_role('heading',name='平台订阅申请',exact=True).wait_for()
+        expired=context(False,True).new_page();expired.goto('http://127.0.0.1:3108/merchant');expired.get_by_role('heading',name='Pro试用或订阅已到期，请先续费。',exact=True).wait_for();assert expired.get_by_role('button',name='商品管理',exact=True).count()==0;expired.get_by_role('heading',name='平台订阅申请',exact=True).wait_for()
         assert not errors,errors;browser.close();print('PASS: 商家银行/钱包/USDT/链接设置、顾客选择与账户隔离；平台申请不自动升级、管理员到账审核、到期限制及平台双语。全部远端接口已模拟。')
 finally:server.shutdown();server.server_close()

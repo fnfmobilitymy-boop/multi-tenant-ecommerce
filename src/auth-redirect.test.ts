@@ -3,7 +3,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { authRedirectUrl } from "./auth-redirect";
 import { supabaseApi } from "./supabase-api";
 const origin = "https://fnfmobilitymy-boop.github.io";
-const callback = origin + "/multi-tenant-ecommerce/";
+const callback = origin + "/multi-tenant-ecommerce/merchant";
 afterEach(() => {
   vi.unstubAllGlobals();
   vi.unstubAllEnvs();
@@ -13,10 +13,10 @@ describe("验证邮件回跳", () => {
     expect(authRedirectUrl(origin, "/multi-tenant-ecommerce/")).toBe(callback));
   it("支持独立域名和本地开发", () => {
     expect(authRedirectUrl("https://shop.example", "/")).toBe(
-      "https://shop.example/",
+      "https://shop.example/merchant",
     );
     expect(authRedirectUrl("http://localhost:5173", "/")).toBe(
-      "http://localhost:5173/",
+      "http://localhost:5173/merchant",
     );
   });
   it("拒绝外站和带查询凭证的回跳", () => {

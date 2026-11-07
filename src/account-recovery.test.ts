@@ -19,7 +19,7 @@ describe("账号找回", () => {
       ),
     ).toBe(false);
   });
-  it("重设邮件使用实际应用根路径，测试不发送邮件", async () => {
+  it("重设邮件使用商家回跳路径，测试不发送邮件", async () => {
     vi.stubGlobal("window", {
       location: { origin: "https://fnfmobilitymy-boop.github.io" },
     });
@@ -33,7 +33,7 @@ describe("账号找回", () => {
     });
     expect(send).toHaveBeenCalledWith("test@example.test", {
       redirectTo:
-        "https://fnfmobilitymy-boop.github.io/multi-tenant-ecommerce/",
+        "https://fnfmobilitymy-boop.github.io/multi-tenant-ecommerce/merchant",
     });
   });
   it("没有有效用户时不能更新密码", async () => {

@@ -8,7 +8,7 @@ root=Path(__file__).resolve().parent.parent
 class Quiet(SimpleHTTPRequestHandler):
     def log_message(self,*args):pass
     def do_GET(self):
-        if urlparse(self.path).path in ('/forgot-password','/reset-password'):self.path='/index.html'
+        if urlparse(self.path).path in ('/merchant','/forgot-password','/reset-password'):self.path='/index.html'
         return super().do_GET()
 server=ThreadingHTTPServer(('127.0.0.1',3104),functools.partial(Quiet,directory=str(root/os.environ.get('EZSHOP_AUTH_TEST_DIST','dist'))))
 threading.Thread(target=server.serve_forever,daemon=True).start()
@@ -40,7 +40,7 @@ try:
             return route.abort()
         context.route('**/*',intercept)
         page=context.new_page();page.on('pageerror',lambda error:errors.append(str(error)))
-        page.goto(base)
+        page.goto(base+'/merchant')
         page.get_by_role('button',name='免费注册',exact=True).click()
         page.get_by_label('店铺名称',exact=True).fill('Test Store')
         page.get_by_label('店铺网址标识').fill('test-store')
@@ -52,8 +52,8 @@ try:
         page.get_by_role('status').filter(has_text='验证邮件请求已提交').wait_for()
         signup=next(c for c in captured if c[0].endswith('/signup'))
         resend=next(c for c in captured if c[0].endswith('/resend'))
-        assert signup[1].get('redirect_to')==[base+'/'], 'Wrong signup callback'
-        assert resend[1].get('redirect_to')==[base+'/'] or resend[2].get('email_redirect_to')==base+'/', 'Wrong resend callback'
+        assert signup[1].get('redirect_to')==[base+'/merchant'], 'Wrong signup callback'
+        assert resend[1].get('redirect_to')==[base+'/merchant'] or resend[2].get('email_redirect_to')==base+'/merchant', 'Wrong resend callback'
         page.get_by_role('button',name='立即登录',exact=True).click()
         page.get_by_role('link',name='忘记密码？',exact=True).click()
         page.get_by_label('注册邮箱',exact=True).fill('test@example.test')
@@ -61,7 +61,7 @@ try:
         page.get_by_role('status').filter(has_text='若此邮箱已注册').wait_for()
         recover=next(c for c in captured if c[0].endswith('/recover'))
         assert recover[2].get('email')=='test@example.test'
-        assert recover[1].get('redirect_to')==[base+'/'], 'Wrong password recovery callback'
+        assert recover[1].get('redirect_to')==[base+'/merchant'], 'Wrong password recovery callback'
         def encoded(value):return base64.urlsafe_b64encode(json.dumps(value).encode()).decode().rstrip('=')
         token=encoded({'alg':'HS256','typ':'JWT'})+'.'+encoded({'iss':'https://auth-test.supabase.co/auth/v1','sub':'11111111-1111-4111-8111-111111111111','aud':'authenticated','role':'authenticated','iat':int(time.time()),'exp':int(time.time())+3600})+'.'+base64.urlsafe_b64encode(b'test-only-signature-bytes').decode().rstrip('=')
         page.goto(base+'/#access_token='+token+'&refresh_token=fixture-only-refresh&expires_in=3600&token_type=bearer&type=recovery')
