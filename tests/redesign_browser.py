@@ -29,6 +29,8 @@ with tempfile.TemporaryDirectory() as temp:
    # Fixture paid orders only. No payment provider or production database touched.
    with sqlite3.connect(db) as c:c.execute("UPDATE orders SET status='paid' WHERE id IN (1,2)");c.commit()
    page.goto(base+'/merchant');page.get_by_role('heading',name='经营概览',exact=True).wait_for()
+   expect(page.locator('.brand-icon img').first).to_have_attribute('src', __import__('re').compile('merchant-icon'))
+   page.wait_for_function("document.querySelector('.brand-icon img').naturalWidth > 0 && document.querySelector('link[data-ezshop-icon]').href.includes('merchant-icon')")
    expect(page.locator('.chart-summary')).to_contain_text('2');page.get_by_label('统计周期').select_option('30');expect(page.locator('.chart-column')).to_have_count(30)
    page.get_by_label('统计周期').select_option('7');expect(page.locator('.chart-column')).to_have_count(7)
    results=root/'test-results';results.mkdir(exist_ok=True)
@@ -63,6 +65,8 @@ with tempfile.TemporaryDirectory() as temp:
    page.set_viewport_size({'width':390,'height':844});assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+1')
    page.get_by_role('button',name='商品管理',exact=True).click();page.screenshot(path=str(results/'redesign-merchant-mobile.png'),full_page=True);assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+1')
    shopper=context.new_page();shopper.goto(base+'/shop/kenny-lifestyle');shopper.get_by_label('商品排序').select_option('price_asc')
+   expect(shopper.locator('.brand-icon img').first).to_have_attribute('src', __import__('re').compile('customer-icon'))
+   shopper.wait_for_function("document.querySelector('.brand-icon img').naturalWidth > 0 && document.querySelector('link[data-ezshop-icon]').href.includes('customer-icon')")
    expect(shopper.locator('.products-grid .product-card').first).to_contain_text('精选商品 01')
    shopper.get_by_label('仅看有货').check();expect(shopper.locator('.products-grid .product-card').first).to_contain_text('精选商品 02')
    shopper.get_by_label('商品排序').select_option('price_desc');expect(shopper.locator('.products-grid .product-card').first).to_contain_text('精选商品 15')

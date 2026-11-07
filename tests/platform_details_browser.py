@@ -70,6 +70,7 @@ try:
             c.route('**/*',intercept);return c
         c=context();page=c.new_page();page.on('pageerror',lambda e:errors.append(str(e)))
         page.goto(base+'/platform')
+        page.wait_for_function("document.querySelector('.brand-icon img').naturalWidth > 0 && document.querySelector('.brand-icon img').src.includes('platform-icon') && document.querySelector('link[data-ezshop-icon]').href.includes('platform-icon')")
         page.get_by_label('搜索商家',exact=True).fill('no-such-store');page.get_by_text('没有匹配的商家',exact=True).wait_for()
         page.get_by_label('搜索商家',exact=True).fill('owner@example.test');page.get_by_role('row').filter(has_text='owner@example.test').wait_for()
         page.get_by_label('筛选商家状态',exact=True).select_option('active');page.get_by_text('没有匹配的商家',exact=True).wait_for()

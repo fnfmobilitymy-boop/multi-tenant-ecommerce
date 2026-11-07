@@ -1,3 +1,4 @@
+import { PortalFavicon } from "./portal-branding";
 import { CustomerAccount } from "./customer-account";
 import { I18nProvider, LanguageToolbar, useI18n } from "./i18n";
 import { StrictMode } from "react";
@@ -86,6 +87,7 @@ createRoot(document.getElementById("root")!).render(
     <BrowserRouter
       basename={import.meta.env.BASE_URL.replace(/\/$/, "") || "/"}
     >
+      <PortalFavicon />
       <RecoveryListener />
       <AppRoutes />
     </BrowserRouter>

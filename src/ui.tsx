@@ -1,13 +1,15 @@
 import { useI18n } from "./i18n";
-import { Link } from "react-router-dom";
-import { ShoppingBag, X, LoaderCircle } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
+import { portalIcon } from "./portal-branding";
+import { X, LoaderCircle } from "lucide-react";
 import type { ReactNode } from "react";
 export function Brand({ to = "/" }: { to?: string }) {
+  const { pathname } = useLocation();
   const { t, locale, errorText } = useI18n();
   return (
     <Link to={to} className="brand" aria-label="EZShop">
-      <span className="brand-icon">
-        <ShoppingBag size={23} />
+      <span className="brand-icon portal-brand-icon">
+        <img src={portalIcon(pathname)} alt="" width={48} height={48} />
       </span>
       <strong>
         EZ<span>Shop</span>
