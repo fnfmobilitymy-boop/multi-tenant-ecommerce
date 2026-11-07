@@ -1,6 +1,9 @@
 import type { Currency, CountryCode } from "./commerce-currency";
 import type { ContentTranslations } from "./content";
 export interface Merchant {
+  shipping_rules?: import("./shipping-zones").ShippingRule[];
+  shipping_rules_enabled?: boolean;
+  shipping_zones?: boolean;
   country_code?: CountryCode;
   currency?: Currency;
   currency_locked?: boolean;

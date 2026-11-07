@@ -39,7 +39,8 @@ it("只读检查拒绝服务端密钥并且不把可达状态冒充生产验收"
               : url.endsWith("ezshop_manual_billing_status")
                 ? { ready: true, automatic_pro_enabled: false }
                 : url.endsWith("ezshop_platform_read_status") ||
-                    url.endsWith("ezshop_region_status")
+                    url.endsWith("ezshop_region_status") ||
+                    url.endsWith("ezshop_shipping_zones_status")
                   ? { ready: true }
                   : {},
         ),

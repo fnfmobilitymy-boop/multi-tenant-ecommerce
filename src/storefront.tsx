@@ -52,6 +52,11 @@ export function Storefront() {
   const [quote, setQuote] = useState<ShippingQuote | null>(null),
     [quoteError, setQuoteError] = useState(""),
     [quoteLoading, setQuoteLoading] = useState(false);
+  const [destination, setDestination] = useState({
+    state: "",
+    city: "",
+    postcode: "",
+  });
   const data = useMemo(
     () =>
       rawData
@@ -187,7 +192,12 @@ export function Storefront() {
       return;
     }
     setQuoteLoading(true);
-    api<ShippingQuote>("shipping-quote", { slug, items: cart })
+    api<ShippingQuote>("shipping-quote", {
+      slug,
+      items: cart,
+      ...destination,
+      country,
+    })
       .then((q) => {
         if (current) setQuote(q);
       })
@@ -200,11 +210,11 @@ export function Storefront() {
     return () => {
       current = false;
     };
-  }, [data, cart, slug, kind]);
+  }, [data, cart, slug, kind, destination, country]);
   async function checkout(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (busy) return;
-    if (!quote || quoteLoading) {
+    if (!quote || quoteLoading || quote.destination_required) {
       setError("订单金额尚未确认，请等待邮费更新后再提交。");
       return;
     }
@@ -231,6 +241,7 @@ export function Storefront() {
         items: cart,
         agent: sessionStorage.getItem("ezshop:agent:" + slug) || "",
         checkout_key: key,
+        expected_shipping: quote.shipping,
         payment_method: "manual",
         currency: data?.store.currency || "MYR",
         locale,
@@ -659,6 +670,20 @@ export function Storefront() {
                         id="checkout-form"
                         className="card checkout-form"
                         onSubmit={checkout}
+                        onChange={(e) => {
+                          const form = e.currentTarget;
+                          const f = new FormData(form);
+                          const next = {
+                            state: String(f.get("state") || ""),
+                            city: String(f.get("city") || ""),
+                            postcode: String(f.get("postcode") || ""),
+                          };
+                          setDestination((old) =>
+                            JSON.stringify(old) === JSON.stringify(next)
+                              ? old
+                              : next,
+                          );
+                        }}
                       >
                         <h2>{t("联系及收货资料")}</h2>
                         <div className="form-grid">
@@ -819,7 +844,9 @@ export function Storefront() {
                       <span>{t("邮费")}</span>
                       <span>
                         {quote
-                          ? money(quote.shipping, locale)
+                          ? quote.shipping === null
+                            ? t("填写收货地区后计算")
+                            : money(quote.shipping, locale)
                           : quoteLoading
                             ? t("计算中…")
                             : t("待确认")}
@@ -832,7 +859,11 @@ export function Storefront() {
                     <div className="summary-total">
                       <strong>{t("应付总额")}</strong>
                       <strong>
-                        {quote ? money(quote.total, locale) : t("待确认")}
+                        {quote
+                          ? quote.total === null
+                            ? t("填写收货地区后计算")
+                            : money(quote.total, locale)
+                          : t("待确认")}
                       </strong>
                     </div>
                     {kind === "cart" ? (
@@ -847,7 +878,13 @@ export function Storefront() {
                       <button
                         className="button full"
                         form="checkout-form"
-                        disabled={busy || invalid || !quote || quoteLoading}
+                        disabled={
+                          busy ||
+                          invalid ||
+                          !quote ||
+                          quoteLoading ||
+                          quote.destination_required
+                        }
                       >
                         {busy ? t("正在提交…") : t("确认提交订单")}{" "}
                         <ArrowRight size={17} />

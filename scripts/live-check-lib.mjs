@@ -126,6 +126,17 @@ export async function liveChecks(env, fetcher = fetch) {
       manual.result?.automatic_pro_enabled === false,
     http: manual.http,
   });
+  const zones = await probe(
+    "shipping_zones",
+    "/rest/v1/rpc/ezshop_shipping_zones_status",
+    "POST",
+    {},
+  );
+  checks.push({
+    id: "shipping_zones",
+    ok: zones.result?.ready === true,
+    http: zones.http,
+  });
   const functions = await Promise.all(
     ["payments", "stripe-webhook", "send-notifications"].map(async (name) => {
       const response = await probe(name, "/functions/v1/" + name, "OPTIONS");
@@ -139,7 +150,7 @@ export async function liveChecks(env, fetcher = fetch) {
   checks.push(...functions);
   return {
     checks,
-    database_ok: checks.slice(0, 5).every((check) => check.ok),
+    database_ok: checks.slice(0, 6).every((check) => check.ok),
     functions_deployed: functions.every((check) => check.ok),
     features: manifest?.features || {},
     production_verified: false,

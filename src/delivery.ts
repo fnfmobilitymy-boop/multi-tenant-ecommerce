@@ -28,7 +28,8 @@ export const COURIERS = [
 ];
 export interface ShippingQuote {
   subtotal: number;
-  shipping: number;
+  shipping: number | null;
+  destination_required?: boolean;
   discount: number;
-  total: number;
+  total: number | null;
 }

@@ -1,3 +1,4 @@
+import { ShippingZones } from "./shipping-zones";
 import {
   CommerceCurrency,
   RegionFields,
@@ -188,6 +189,16 @@ function MerchantPage({
         await api("settings", {
           ...form,
           ...versions,
+          ...(form.shipping_rules === undefined
+            ? {}
+            : {
+                shipping_rules: JSON.parse(String(form.shipping_rules)).map(
+                  (r: Record<string, unknown>) => ({
+                    ...r,
+                    fee: toMinor(r.fee, region.currency),
+                  }),
+                ),
+              }),
           shipping_fee:
             form.shipping_fee === undefined
               ? data?.merchant.shipping_fee || 0
@@ -985,6 +996,14 @@ function MerchantPage({
                       "由你自行设定，填 0 代表免邮。只影响新订单，邮费不计入代理佣金。",
                     )}
                   </p>
+                  {data.merchant.shipping_rules_enabled && (
+                    <ShippingZones
+                      key={data.merchant.id + region.country + region.currency}
+                      rules={data.merchant.shipping_rules || []}
+                      currency={region.currency}
+                      country={region.country}
+                    />
+                  )}
                   <label>
                     {t("常用快递公司")}
                     <input

@@ -3,7 +3,7 @@ from content import translations,public_content,snapshot
 import os, json, sqlite3, secrets, hashlib, hmac, re, time, mimetypes
 from pathlib import Path
 from finance import handle as handle_finance, FinanceError
-from delivery import cart_items, destination
+from delivery import cart_items, destination, shipping_rules, zone_fee
 from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
 from urllib.parse import urlparse, parse_qs
 
@@ -49,6 +49,7 @@ def init():
             ('orders','country_code',"TEXT NOT NULL DEFAULT 'MY'"),
             ('orders','currency',"TEXT NOT NULL DEFAULT 'MYR'"),
             ('merchants', 'shipping_fee', 'INTEGER NOT NULL DEFAULT 0'),
+            ('merchants', 'shipping_rules', "TEXT NOT NULL DEFAULT '[]'"),
             ('merchants', 'courier', "TEXT NOT NULL DEFAULT ''"),
             ('orders', 'subtotal', 'INTEGER NOT NULL DEFAULT 0'),
             ('orders', 'state', "TEXT NOT NULL DEFAULT ''"),
@@ -295,11 +296,11 @@ class Handler(BaseHTTPRequestHandler):
             return self.reply({'ok': True}, cookie='ezshop_session=' + token + '; HttpOnly; SameSite=Lax; Path=/; Max-Age=86400')
         if path == '/api/store' and method == 'GET':
             slug = parse_qs(urlparse(self.path).query).get('slug', [''])[0]
-            merchant = db.execute("SELECT id,name,slug,phone,description,logo,banner,shipping_fee,courier,content_translations,country_code,currency FROM merchants WHERE slug=? AND status='active'", (slug,)).fetchone()
+            merchant = db.execute("SELECT id,name,slug,phone,description,logo,banner,shipping_fee,shipping_rules,courier,content_translations,country_code,currency FROM merchants WHERE slug=? AND status='active'", (slug,)).fetchone()
             if not merchant:
                 return self.reply({'error': '找不到这家店铺'}, 404)
             products = [dict(p) for p in db.execute('SELECT id,name,price,stock,emoji,description,category,image,featured,variant,content_translations FROM products WHERE merchant_id=? AND published=1 ORDER BY id DESC', (merchant['id'],))]
-            return self.reply({'store': {**{k: merchant[k] for k in ('name', 'slug', 'phone', 'description','shipping_fee','courier','content_translations','country_code','currency')}, **{k:merchant[k] for k in ('logo','banner') if merchant[k]}}, 'products': products})
+            return self.reply({'store': {**{k: merchant[k] for k in ('name', 'slug', 'phone', 'description','shipping_fee','courier','content_translations','country_code','currency')}, **{k:merchant[k] for k in ('logo','banner') if merchant[k]}, 'shipping_zones':bool(json.loads(merchant['shipping_rules']))},'products': products})
         if path == '/api/order-result' and method == 'POST':
             reference = text_field(data, 'reference', 50)
             token = text_field(data, 'token', 100)
@@ -314,15 +315,16 @@ class Handler(BaseHTTPRequestHandler):
             return self.reply({'order': safe, 'items': items, 'store': dict(store)})
         if path == '/api/shipping-quote' and method == 'POST':
             slug=text_field(data,'slug',60)
-            store=db.execute("SELECT id,shipping_fee FROM merchants WHERE slug=? AND status='active'",(slug,)).fetchone()
+            store=db.execute("SELECT id,shipping_fee,shipping_rules,country_code FROM merchants WHERE slug=? AND status='active'",(slug,)).fetchone()
             if not store:return self.reply({'error':'找不到店铺'},404)
             _,subtotal=cart_items(db,store['id'],data.get('items'))
-            return self.reply({'subtotal':subtotal,'shipping':store['shipping_fee'],'discount':0,'total':subtotal+store['shipping_fee']})
+            fee=zone_fee(store,data,quote=True)
+            return self.reply({'subtotal':subtotal,'shipping':fee,'discount':0,'total':None if fee is None else subtotal+fee,**({'destination_required':True} if fee is None else {})})
         if path == '/api/checkout' and method == 'POST':
             return self.checkout(db, data)
         cookie = self.headers.get('Cookie', '')
         token = next((p.strip().split('=', 1)[1] for p in cookie.split(';') if p.strip().startswith('ezshop_session=')), '')
-        merchant = db.execute('SELECT m.id,m.name,m.slug,m.email,m.phone,m.description,m.logo,m.banner,m.content_translations,m.shipping_fee,m.courier,m.country_code,m.currency,m.is_admin,m.plan,m.status,s.member_id FROM merchants m JOIN sessions s ON s.merchant_id=m.id WHERE s.token=? AND s.expires>?', (token, int(time.time()))).fetchone()
+        merchant = db.execute('SELECT m.id,m.name,m.slug,m.email,m.phone,m.description,m.logo,m.banner,m.content_translations,m.shipping_fee,m.shipping_rules,m.courier,m.country_code,m.currency,m.is_admin,m.plan,m.status,s.member_id FROM merchants m JOIN sessions s ON s.merchant_id=m.id WHERE s.token=? AND s.expires>?', (token, int(time.time()))).fetchone()
         if not merchant:
             return self.reply({'error': '请先登录'}, 401)
         mid = merchant['id']
@@ -332,7 +334,9 @@ class Handler(BaseHTTPRequestHandler):
         role = member['role'] if member else 'owner'
         safe_merchant = dict(merchant)
         safe_merchant['regional_enabled']=True
-        safe_merchant['currency_locked']=bool(merchant['shipping_fee'] or db.execute('SELECT 1 FROM products WHERE merchant_id=? UNION ALL SELECT 1 FROM orders WHERE merchant_id=? LIMIT 1',(mid,mid)).fetchone())
+        safe_merchant['shipping_rules']=json.loads(merchant['shipping_rules'])
+        safe_merchant['shipping_rules_enabled']=True
+        safe_merchant['currency_locked']=bool(json.loads(merchant['shipping_rules']) or merchant['shipping_fee'] or db.execute('SELECT 1 FROM products WHERE merchant_id=? UNION ALL SELECT 1 FROM orders WHERE merchant_id=? LIMIT 1',(mid,mid)).fetchone())
         safe_merchant.update(role=role, is_admin=merchant['is_admin'] if role=='owner' else 0)
         safe_merchant.pop('member_id', None)
         if member:
@@ -480,12 +484,13 @@ class Handler(BaseHTTPRequestHandler):
                 if not isinstance(value,str) or len(value)>2000 or (value and not valid_image_url(value)):
                     raise ValueError('店铺图片必须使用 HTTPS 网址')
                 assets.append(value)
+            rules=shipping_rules(data.get('shipping_rules',json.loads(merchant['shipping_rules'])),country)
             shipping_fee=data.get('shipping_fee',merchant['shipping_fee'])
             courier=data.get('courier',merchant['courier'])
             if type(shipping_fee) is not int or not 0<=shipping_fee<=1000000:raise ValueError('邮费超出允许范围')
             if not isinstance(courier,str) or len(courier)>100:raise ValueError('快递公司名称不能超过 100 字')
             versions=translations(data.get('content_translations',json.loads(merchant['content_translations'])),'store')
-            db.execute('UPDATE merchants SET name=?,phone=?,description=?,logo=?,banner=?,shipping_fee=?,courier=?,content_translations=? WHERE id=?', (name, phone, description.strip(), *assets, shipping_fee,courier.strip(),json.dumps(versions,ensure_ascii=False),mid))
+            db.execute('UPDATE merchants SET name=?,phone=?,description=?,logo=?,banner=?,shipping_fee=?,shipping_rules=?,courier=?,content_translations=? WHERE id=?', (name, phone, description.strip(), *assets, shipping_fee,json.dumps(rules),courier.strip(),json.dumps(versions,ensure_ascii=False),mid))
             db.commit()
             return self.reply({'ok': True})
         if path == '/api/agents' and method == 'POST':
@@ -566,7 +571,9 @@ class Handler(BaseHTTPRequestHandler):
         phone = text_field(data, 'phone', 40)
         address = text_field(data, 'address', 500)
         lines,subtotal=cart_items(db,mid,data.get('items'))
-        shipping=store['shipping_fee']
+        if json.loads(store['shipping_rules']) and 'expected_shipping' not in data:raise ValueError('分区邮费已启用，请刷新后重新结账')
+        shipping=zone_fee(store,data)
+        if 'expected_shipping' in data and (type(data['expected_shipping']) is not int or data['expected_shipping']!=shipping):raise ValueError('邮费已更新，请刷新金额后重新提交')
         state,postcode,city=destination(data,required=shipping>0,country=store['country_code'])
         total=subtotal+shipping
         code = data.get('agent', '')

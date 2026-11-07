@@ -5262,5 +5262,131 @@
     "Pro ของแพลตฟอร์มต้องอนุมัติด้วยตนเอง โปรดส่งคำขอชำระเงินและรอแพลตฟอร์มยืนยันยอดรับ",
     "Pro របស់វេទិកាត្រូវការអនុម័តដោយដៃ។ សូមដាក់សំណើទូទាត់ ហើយរង់ចាំវេទិកាបញ្ជាក់ការទទួលប្រាក់។",
     "Pro của nền tảng cần được duyệt thủ công. Gửi yêu cầu thanh toán và chờ nền tảng xác nhận đã nhận tiền."
+  ],
+  "分区固定邮费": [
+    "Fixed shipping by area",
+    "Caj penghantaran tetap mengikut kawasan",
+    "ค่าส่งคงที่ตามพื้นที่",
+    "ថ្លៃដឹកជញ្ជូនថេរតាមតំបន់",
+    "Phí vận chuyển cố định theo khu vực"
+  ],
+  "可按州属、城市或邮编前缀设置。填0免邮；留空适用全部。邮编优先，其次城市、州属，未匹配使用默认邮费。": [
+    "Set fees by state, city or postal prefix. Enter 0 for free shipping; leave fields blank for all areas. Postal prefixes take priority, then city and state. Unmatched addresses use the default fee.",
+    "Tetapkan caj mengikut negeri, bandar atau awalan poskod. Masukkan 0 untuk penghantaran percuma; kosongkan medan untuk semua kawasan. Awalan poskod diutamakan, kemudian bandar dan negeri. Alamat tanpa padanan menggunakan caj lalai.",
+    "ตั้งค่าตามจังหวัด เมือง หรือเลขต้นรหัสไปรษณีย์ ใส่ 0 เพื่อส่งฟรี เว้นว่างเพื่อใช้กับทุกพื้นที่ ให้ความสำคัญกับรหัสไปรษณีย์ก่อน ตามด้วยเมืองและจังหวัด หากไม่ตรงจะใช้ค่าส่งเริ่มต้น",
+    "កំណត់តាមខេត្ត ក្រុង ឬលេខដើមកូដប្រៃសណីយ៍។ បញ្ចូល 0 សម្រាប់ដឹកឥតគិតថ្លៃ និងទុកទទេសម្រាប់គ្រប់តំបន់។ កូដប្រៃសណីយ៍មានអាទិភាព បន្ទាប់មកក្រុង និងខេត្ត។ អាសយដ្ឋានមិនត្រូវគ្នាប្រើថ្លៃលំនាំដើម។",
+    "Đặt phí theo tỉnh, thành phố hoặc tiền tố mã bưu chính. Nhập 0 để miễn phí; để trống để áp dụng cho mọi khu vực. Ưu tiên mã bưu chính, sau đó thành phố và tỉnh. Địa chỉ không khớp dùng phí mặc định."
+  ],
+  "运费规则": [
+    "Shipping rule",
+    "Peraturan penghantaran",
+    "กฎค่าส่ง",
+    "ច្បាប់ថ្លៃដឹក",
+    "Quy tắc phí vận chuyển"
+  ],
+  "适用州属": [
+    "Applicable state",
+    "Negeri berkenaan",
+    "จังหวัดที่ใช้",
+    "ខេត្តដែលអនុវត្ត",
+    "Tỉnh áp dụng"
+  ],
+  "全部州属": [
+    "All states",
+    "Semua negeri",
+    "ทุกจังหวัด",
+    "គ្រប់ខេត្ត",
+    "Tất cả các tỉnh"
+  ],
+  "适用城市／地区": [
+    "Applicable city / area",
+    "Bandar / kawasan berkenaan",
+    "เมือง / พื้นที่ที่ใช้",
+    "ក្រុង / តំបន់ដែលអនុវត្ត",
+    "Thành phố / khu vực áp dụng"
+  ],
+  "邮编前缀（选填）": [
+    "Postal prefix (optional)",
+    "Awalan poskod (pilihan)",
+    "เลขต้นรหัสไปรษณีย์ (ไม่บังคับ)",
+    "លេខដើមកូដប្រៃសណីយ៍ (ស្រេចចិត្ត)",
+    "Tiền tố mã bưu chính (tùy chọn)"
+  ],
+  "固定邮费（{currency}）": [
+    "Fixed shipping fee ({currency})",
+    "Caj penghantaran tetap ({currency})",
+    "ค่าส่งคงที่ ({currency})",
+    "ថ្លៃដឹកថេរ ({currency})",
+    "Phí vận chuyển cố định ({currency})"
+  ],
+  "删除运费规则": [
+    "Remove shipping rule",
+    "Padam peraturan penghantaran",
+    "ลบกฎค่าส่ง",
+    "លុបច្បាប់ថ្លៃដឹក",
+    "Xóa quy tắc phí vận chuyển"
+  ],
+  "添加运费规则": [
+    "Add shipping rule",
+    "Tambah peraturan penghantaran",
+    "เพิ่มกฎค่าส่ง",
+    "បន្ថែមច្បាប់ថ្លៃដឹក",
+    "Thêm quy tắc phí vận chuyển"
+  ],
+  "填写收货地区后计算": [
+    "Calculated after entering the delivery area",
+    "Dikira selepas mengisi kawasan penghantaran",
+    "คำนวณหลังระบุพื้นที่จัดส่ง",
+    "គណនាបន្ទាប់ពីបញ្ចូលតំបន់ដឹកជញ្ជូន",
+    "Tính sau khi nhập khu vực nhận hàng"
+  ],
+  "运费规则无效": [
+    "Invalid shipping rules",
+    "Peraturan penghantaran tidak sah",
+    "กฎค่าส่งไม่ถูกต้อง",
+    "ច្បាប់ថ្លៃដឹកមិនត្រឹមត្រូវ",
+    "Quy tắc phí vận chuyển không hợp lệ"
+  ],
+  "运费规则金额无效": [
+    "Invalid shipping rule amount",
+    "Amaun peraturan penghantaran tidak sah",
+    "จำนวนเงินค่าส่งไม่ถูกต้อง",
+    "ចំនួនថ្លៃដឹកមិនត្រឹមត្រូវ",
+    "Số tiền phí vận chuyển không hợp lệ"
+  ],
+  "运费规则地区无效": [
+    "Invalid shipping rule area",
+    "Kawasan peraturan penghantaran tidak sah",
+    "พื้นที่ค่าส่งไม่ถูกต้อง",
+    "តំបន់ថ្លៃដឹកមិនត្រឹមត្រូវ",
+    "Khu vực phí vận chuyển không hợp lệ"
+  ],
+  "运费规则地区重复": [
+    "Duplicate shipping rule area",
+    "Kawasan peraturan penghantaran berulang",
+    "พื้นที่กฎค่าส่งซ้ำกัน",
+    "តំបន់ច្បាប់ថ្លៃដឹកស្ទួន",
+    "Khu vực phí vận chuyển bị trùng"
+  ],
+  "请先清除分区邮费再修改国家币种": [
+    "Remove area shipping fees before changing the country or currency",
+    "Padam caj kawasan sebelum menukar negara atau mata wang",
+    "ลบค่าส่งตามพื้นที่ก่อนเปลี่ยนประเทศหรือสกุลเงิน",
+    "សូមលុបថ្លៃដឹកតាមតំបន់មុនប្តូរប្រទេស ឬរូបិយប័ណ្ណ",
+    "Xóa phí theo khu vực trước khi đổi quốc gia hoặc tiền tệ"
+  ],
+  "邮费已更新，请刷新金额后重新提交": [
+    "Shipping fees changed. Refresh the amount before submitting again.",
+    "Caj penghantaran telah berubah. Segarkan amaun sebelum menghantar semula.",
+    "ค่าส่งเปลี่ยนแล้ว โปรดอัปเดตยอดก่อนส่งอีกครั้ง",
+    "ថ្លៃដឹកបានផ្លាស់ប្តូរ។ សូមធ្វើបច្ចុប្បន្នភាពចំនួនប្រាក់មុនដាក់ស្នើម្តងទៀត។",
+    "Phí vận chuyển đã thay đổi. Hãy cập nhật số tiền trước khi gửi lại."
+  ],
+  "分区邮费已启用，请刷新后重新结账": [
+    "Area shipping fees are enabled. Refresh before checking out again.",
+    "Caj kawasan telah diaktifkan. Segarkan sebelum membuat pesanan semula.",
+    "เปิดค่าส่งตามพื้นที่แล้ว โปรดรีเฟรชก่อนสั่งซื้ออีกครั้ง",
+    "ថ្លៃដឹកតាមតំបន់ត្រូវបានបើក។ សូមផ្ទុកឡើងវិញមុនពេលបញ្ជាទិញម្តងទៀត។",
+    "Phí theo khu vực đã bật. Hãy tải lại trước khi thanh toán lại."
   ]
 }
